@@ -1,0 +1,74 @@
+{
+  "kind": "collectionType",
+  "collectionName": "profiles",
+  "info": {
+    "singularName": "profile",
+    "pluralName": "profiles",
+    "displayName": "Profile",
+    "description": "Open Badges 3.0 Profile for issuers and recipients"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email"
+    },
+    "url": {
+      "type": "string"
+    },
+    "telephone": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "publicKey": {
+      "type": "component",
+      "repeatable": true,
+      "component": "badge.public-key"
+    },
+    "profileType": {
+      "type": "enumeration",
+      "enum": ["Issuer", "Recipient", "Both"],
+      "default": "Both"
+    },
+    "did": {
+      "type": "string"
+    },
+    "createdAchievements": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::achievement.achievement",
+      "mappedBy": "creator"
+    },
+    "issuedCredentials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credential.credential",
+      "mappedBy": "issuer"
+    },
+    "receivedCredentials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credential.credential",
+      "mappedBy": "recipient"
+    },
+    "revocationLists": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::revocation-list.revocation-list",
+      "mappedBy": "issuer"
+    }
+  }
+} 

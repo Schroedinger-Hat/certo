@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_badge_skills",
+  "info": {
+    "displayName": "Skill",
+    "description": "Skills associated with achievements"
+  },
+  "options": {},
+  "attributes": {
+    "skillName": {
+      "type": "string",
+      "required": true
+    },
+    "skillDescription": {
+      "type": "text"
+    },
+    "skillUrl": {
+      "type": "string",
+      "description": "URL to a skill definition or standard"
+    },
+    "skillType": {
+      "type": "string"
+    },
+    "level": {
+      "type": "string",
+      "description": "Proficiency level of the skill"
+    }
+  }
+} 

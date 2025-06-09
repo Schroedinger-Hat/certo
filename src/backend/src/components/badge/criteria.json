@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_badge_criteria",
+  "info": {
+    "displayName": "Criteria",
+    "description": "Criteria for achievement completion"
+  },
+  "options": {},
+  "attributes": {
+    "narrative": {
+      "type": "text",
+      "description": "Narrative description of the criteria"
+    },
+    "url": {
+      "type": "string",
+      "description": "URL to a page describing the criteria"
+    }
+  }
+} 

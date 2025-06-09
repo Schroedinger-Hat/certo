@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_badge_public_keys",
+  "info": {
+    "displayName": "Public Key",
+    "description": "Public key for verification of signatures"
+  },
+  "options": {},
+  "attributes": {
+    "identifier": {
+      "type": "string",
+      "required": true,
+      "description": "Key identifier"
+    },
+    "type": {
+      "type": "string",
+      "required": true,
+      "description": "Type of the key (e.g., Ed25519VerificationKey2020)"
+    },
+    "controller": {
+      "type": "string",
+      "required": true,
+      "description": "DID or URL of the controller of this key"
+    },
+    "publicKeyJwk": {
+      "type": "json",
+      "description": "Public key in JWK format"
+    },
+    "publicKeyMultibase": {
+      "type": "string",
+      "description": "Public key in multibase format"
+    },
+    "expirationDate": {
+      "type": "datetime",
+      "description": "When this key expires"
+    },
+    "revoked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this key has been revoked"
+    }
+  }
+} 

@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "evidences",
+  "info": {
+    "singularName": "evidence",
+    "pluralName": "evidences",
+    "displayName": "Evidence",
+    "description": "Open Badges 3.0 Evidence for credentials"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "narrative": {
+      "type": "text"
+    },
+    "genre": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "evidenceId": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "credential": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::credential.credential",
+      "inversedBy": "evidence"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images", "files", "videos"]
+    }
+  }
+} 

@@ -1,0 +1,85 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: certo_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: certo
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - certo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: certo_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - certo-network
+
+  backend:
+    build:
+      context: ./src/backend
+    container_name: certo_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    environment:
+      HOST: 0.0.0.0
+      PORT: 1337
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: certo
+      DATABASE_USERNAME: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-your-admin-jwt-secret}
+      APP_KEYS: ${APP_KEYS:-your-app-keys}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:-your-api-token-salt}
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:1337}
+    ports:
+      - "1337:1337"
+    networks:
+      - certo-network
+
+  frontend:
+    build:
+      context: ./src/frontend
+    container_name: certo_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:1337
+    ports:
+      - "3000:3000"
+    networks:
+      - certo-network
+
+networks:
+  certo-network:
+    driver: bridge
+
+volumes:
+  postgres-data: 

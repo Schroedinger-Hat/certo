@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "revocation_lists",
+  "info": {
+    "singularName": "revocation-list",
+    "pluralName": "revocation-lists",
+    "displayName": "Revocation List",
+    "description": "StatusList2021 credential revocation list"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "statusListCredential": {
+      "type": "string",
+      "required": true
+    },
+    "statusPurpose": {
+      "type": "string",
+      "default": "revocation"
+    },
+    "encodedList": {
+      "type": "text",
+      "required": true
+    },
+    "lastUpdated": {
+      "type": "datetime",
+      "required": true
+    },
+    "issuer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::profile.profile",
+      "inversedBy": "revocationLists"
+    }
+  }
+} 

@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_badge_proofs",
+  "info": {
+    "displayName": "Proof",
+    "description": "Cryptographic proof for verifiable credentials"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "string",
+      "required": true,
+      "description": "Type of proof (e.g., Ed25519Signature2020)"
+    },
+    "created": {
+      "type": "datetime",
+      "required": true,
+      "description": "Timestamp when the proof was created"
+    },
+    "verificationMethod": {
+      "type": "string",
+      "required": true,
+      "description": "URI to the verification method (e.g., a key)"
+    },
+    "proofPurpose": {
+      "type": "string",
+      "required": true,
+      "description": "Purpose of the proof (e.g., assertionMethod)"
+    },
+    "proofValue": {
+      "type": "text",
+      "description": "Value of the proof"
+    },
+    "jws": {
+      "type": "text",
+      "description": "JWS value if using JOSE"
+    }
+  }
+} 

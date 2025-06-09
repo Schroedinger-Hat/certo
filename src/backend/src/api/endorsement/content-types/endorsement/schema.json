@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "endorsements",
+  "info": {
+    "singularName": "endorsement",
+    "pluralName": "endorsements",
+    "displayName": "Endorsement",
+    "description": "Open Badges 3.0 Endorsement"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "endorsementId": {
+      "type": "uid",
+      "required": true
+    },
+    "type": {
+      "type": "json",
+      "default": ["VerifiableCredential", "EndorsementCredential"]
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "issuanceDate": {
+      "type": "datetime",
+      "required": true
+    },
+    "endorser": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::profile.profile"
+    },
+    "endorsedObject": {
+      "type": "string",
+      "required": true,
+      "description": "URI of the endorsed object (achievement, credential, etc.)"
+    },
+    "claim": {
+      "type": "json",
+      "description": "JSON representation of the endorsement claim"
+    },
+    "proof": {
+      "type": "component",
+      "repeatable": true,
+      "component": "badge.proof"
+    }
+  }
+} 

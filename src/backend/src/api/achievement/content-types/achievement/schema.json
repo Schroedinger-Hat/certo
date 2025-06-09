@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "achievements",
+  "info": {
+    "singularName": "achievement",
+    "pluralName": "achievements",
+    "displayName": "Achievement",
+    "description": "Open Badges 3.0 Achievement (Badge Class) definition"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "achievementType": {
+      "type": "string",
+      "default": "Achievement"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "criteria": {
+      "type": "component",
+      "repeatable": false,
+      "component": "badge.criteria"
+    },
+    "tags": {
+      "type": "json",
+      "default": []
+    },
+    "achievementId": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "alignment": {
+      "type": "component",
+      "repeatable": true,
+      "component": "badge.alignment"
+    },
+    "creator": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::profile.profile",
+      "inversedBy": "createdAchievements"
+    },
+    "skills": {
+      "type": "component",
+      "repeatable": true,
+      "component": "badge.skill"
+    },
+    "credentials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credential.credential",
+      "mappedBy": "achievement"
+    }
+  }
+} 

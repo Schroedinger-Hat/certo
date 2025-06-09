@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_badge_alignments",
+  "info": {
+    "displayName": "Alignment",
+    "description": "Alignment to standards, skills, or competencies"
+  },
+  "options": {},
+  "attributes": {
+    "targetName": {
+      "type": "string",
+      "required": true,
+      "description": "Name of the alignment target"
+    },
+    "targetUrl": {
+      "type": "string",
+      "required": true,
+      "description": "URL of the alignment target"
+    },
+    "targetDescription": {
+      "type": "text",
+      "description": "Description of the alignment target"
+    },
+    "targetFramework": {
+      "type": "string",
+      "description": "Framework the target belongs to"
+    },
+    "targetCode": {
+      "type": "string",
+      "description": "Code for the target within the framework"
+    }
+  }
+} 
