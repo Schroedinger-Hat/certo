@@ -1,35 +1,55 @@
-# Strapi TypeScript Backend
+# Certo Backend
 
-This is a Strapi TypeScript backend for the Certo application.
+This is a Strapi TypeScript backend for the Certo application, a digital certificate platform built on the Open Badges 3.0 standard.
 
 ## Features
 
-- Custom content types (Products, Categories)
+- Full Open Badges 3.0 implementation
+- Verifiable Credentials support
+- Certificate issuance and verification
+- User profiles and credential management
+- RESTful API for credential operations
 - TypeScript support
-- Custom services and controllers
-- Enhanced file upload service
-- Custom middleware
+- Custom controllers and services
 - Admin panel customization
 
 ## API Endpoints
 
-### Products
+### Credentials
 
-- `GET /api/products` - Get all products
-- `GET /api/products/:id` - Get a specific product
-- `GET /api/products/featured` - Get featured products
-- `POST /api/products` - Create a new product
-- `PUT /api/products/:id` - Update a product
-- `DELETE /api/products/:id` - Delete a product
+- `GET /api/credentials` - Get all credentials (authenticated)
+- `GET /api/credentials/:id` - Get a specific credential
+- `POST /api/credentials` - Create a new credential (authenticated)
+- `PUT /api/credentials/:id` - Update a credential (authenticated)
+- `DELETE /api/credentials/:id` - Delete a credential (authenticated)
+- `POST /api/credentials/issue` - Issue a new credential
+- `GET /api/credentials/:id/verify` - Verify a credential's authenticity
+- `POST /api/credentials/validate` - Validate an external credential
+- `GET /api/credentials/:id/export` - Export a credential in Open Badge format
+- `POST /api/credentials/import` - Import a credential
+- `POST /api/credentials/:id/revoke` - Revoke a credential
+- `GET /api/credentials/:id/certificate` - Get a credential's certificate image
 
-### Categories
+### Profiles
 
-- `GET /api/categories` - Get all categories
-- `GET /api/categories/:id` - Get a specific category
-- `GET /api/categories/:id/products` - Get a category with all its products
-- `POST /api/categories` - Create a new category
-- `PUT /api/categories/:id` - Update a category
-- `DELETE /api/categories/:id` - Delete a category
+- `GET /api/profiles/me` - Get the current user's profile
+- `GET /api/profiles/:id` - Get a specific profile
+- `GET /api/profiles/:id/issued-credentials` - Get credentials issued by a profile
+- `GET /api/profiles/:id/received-credentials` - Get credentials received by a profile
+- `PUT /api/profiles/:id` - Update a profile
+
+### Achievements
+
+- `GET /api/achievements` - Get all achievements
+- `GET /api/achievements/:id` - Get a specific achievement
+- `GET /api/achievements/:id/credentials` - Get credentials for an achievement
+- `POST /api/achievements` - Create a new achievement
+- `PUT /api/achievements/:id` - Update an achievement
+- `DELETE /api/achievements/:id` - Delete an achievement
+
+### Revocation
+
+- `GET /credentials/:credentialId/status` - Check if a credential has been revoked
 
 ## Getting Started
 
@@ -37,6 +57,7 @@ This is a Strapi TypeScript backend for the Certo application.
 
 - Node.js >= 18.0.0
 - npm >= 6.0.0
+- PostgreSQL (recommended for production)
 
 ### Installation
 
@@ -68,10 +89,31 @@ In a production environment, make sure to set:
 - `API_TOKEN_SALT` - Salt for API tokens
 - `ADMIN_JWT_SECRET` - JWT secret for admin
 - `JWT_SECRET` - JWT secret for API
-- `DATABASE_CLIENT` - Database client (default: sqlite)
-- `DATABASE_FILENAME` - Database filename (default: .tmp/data.db)
+- `DATABASE_CLIENT` - Database client (default: sqlite, recommend postgres for production)
+- `DATABASE_URL` - Database connection URL (for postgres/mysql)
+- `FRONTEND_URL` - URL to the frontend application (for email links)
+- `EMAIL_PROVIDER` - Email provider configuration (for sending certificate notifications)
 
-For production, it's recommended to use PostgreSQL or MySQL instead of SQLite.
+## Working with Open Badges 3.0
+
+The backend implements the [Open Badges 3.0 specification](https://www.imsglobal.org/spec/ob/v3p0/) and [W3C Verifiable Credentials Data Model](https://www.w3.org/TR/vc-data-model/).
+
+Key components:
+
+- **Credential Service**: Handles credential lifecycle (issuance, verification, revocation)
+- **OpenBadge Service**: Transforms internal data to Open Badge 3.0 format
+- **Verification Service**: Validates the authenticity of credentials
+- **Revocation Service**: Manages credential revocation status
+
+## Permissions Setup
+
+Strapi uses a role-based permission system. For Certo, you'll need to configure:
+
+1. Public routes (credential verification, public badge viewing)
+2. Authenticated routes (user credential management)
+3. Admin routes (achievement and issuer management)
+
+See `permissions-fix.md` for detailed instructions on setting up the correct permissions.
 
 ## Development
 
@@ -97,25 +139,6 @@ export default factories.createCoreController('api::yourmodel.yourmodel', ({ str
 }))
 ```
 
-### Adding a Custom Route
-
-Create a new file in `src/api/[api-name]/routes/` with your route definition:
-
-```typescript
-export default {
-  routes: [
-    {
-      method: 'GET',
-      path: '/yourpath',
-      handler: 'controller.method',
-      config: {
-        auth: false,
-      },
-    },
-  ],
-}
-```
-
 ## Deployment
 
 To build the Strapi application for production:
@@ -134,64 +157,9 @@ npm run start
 
 This project is licensed under the MIT License.
 
-# 🚀 Getting started with Strapi
+## Resources
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
-
-### `develop`
-
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
-
-```
-npm run develop
-# or
-yarn develop
-```
-
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
-npm run build
-# or
-yarn build
-```
-
-## ⚙️ Deployment
-
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
-```
-yarn strapi deploy
-```
-
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+- [Open Badges 3.0 Specification](https://www.imsglobal.org/spec/ob/v3p0/)
+- [Verifiable Credentials Data Model](https://www.w3.org/TR/vc-data-model/)
+- [Strapi Documentation](https://docs.strapi.io)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
