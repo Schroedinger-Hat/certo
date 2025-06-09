@@ -17,11 +17,10 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      headers: '*',
-      origin: '*',
+      origin: ['http://localhost:3000', 'http://localhost:1337'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
-      expose: ['WWW-Authenticate', 'Server-Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Access-Control-Allow-Headers', 'Content-Type'],
-      maxAge: 86400,
+      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+      keepHeaderOnError: true,
       credentials: true,
     }
   },

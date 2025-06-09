@@ -61,25 +61,28 @@ export class ApiClient {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
     }
 
-    if (this.token) {
-      headers.Authorization = `Bearer ${this.token}`
-      console.log('Using token in request:', this.token.substring(0, 10) + '...')
-    } else if (typeof window !== 'undefined') {
-      // Try to get token from localStorage if not already set
-      const storedToken = localStorage.getItem('token')
-      if (storedToken) {
-        this.token = storedToken
-        headers.Authorization = `Bearer ${storedToken}`
-        console.log('Retrieved token from localStorage for request:', storedToken.substring(0, 10) + '...')
-      } else {
-        console.warn('No authentication token available for request')
+    // Get token from instance, localStorage, or cookie
+    let token = this.token;
+    
+    if (!token && typeof window !== 'undefined') {
+      // Try localStorage
+      const localToken = localStorage.getItem('token');
+      if (localToken) {
+        token = localToken;
+        this.token = localToken; // Update instance token
       }
     }
 
-    return headers
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+      console.log('Using Authorization header with token');
+    } else {
+      console.warn('No authentication token available for request');
+    }
+
+    return headers;
   }
 
   /**
@@ -98,6 +101,7 @@ export class ApiClient {
         ...headers,
         ...options.headers,
       },
+      credentials: 'include', // Include cookies in requests
     }
 
     console.log(`Making ${options.method || 'GET'} request to: ${url}`)
@@ -240,16 +244,28 @@ export class ApiClient {
 
   /**
    * Get certificates issued by the current user
+   * First gets the current user profile, then gets credentials issued by that profile
    */
   async getIssuedCertificates() {
-    return this.get<StrapiResponse<any>>('/api/profiles/me/issued-credentials')
+    // First get the current user's profile
+    const profileResponse = await this.get<any>('/api/profiles/me');
+    const profileId = profileResponse.data.id;
+    
+    // Then get credentials issued by that profile
+    return this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/issued-credentials`);
   }
 
   /**
    * Get certificates received by the current user
+   * First gets the current user profile, then gets credentials received by that profile
    */
   async getReceivedCertificates() {
-    return this.get<StrapiResponse<any>>('/api/profiles/me/received-credentials')
+    // First get the current user's profile
+    const profileResponse = await this.get<any>('/api/profiles/me');
+    const profileId = profileResponse.data.id;
+    
+    // Then get credentials received by that profile
+    return this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/received-credentials`);
   }
 
   /**
@@ -285,6 +301,13 @@ export class ApiClient {
    */
   getCertificateUrl(id: number | string): string {
     return `${this.baseUrl}/api/credentials/${id}/certificate`
+  }
+
+  /**
+   * Debug authentication
+   */
+  async debugAuth() {
+    return this.get<any>('/api/auth-debug');
   }
 }
 

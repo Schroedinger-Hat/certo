@@ -5,7 +5,9 @@ export default {
       path: '/profiles/:id/issued-credentials',
       handler: 'profile.findIssuedCredentials',
       config: {
-        auth: false,
+        auth: {
+          strategies: ['users-permissions']
+        },
       },
     },
     {
@@ -13,7 +15,9 @@ export default {
       path: '/profiles/:id/received-credentials',
       handler: 'profile.findReceivedCredentials',
       config: {
-        auth: false,
+        auth: {
+          strategies: ['users-permissions']
+        },
       },
     },
   ],

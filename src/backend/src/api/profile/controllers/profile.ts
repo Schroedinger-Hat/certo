@@ -37,193 +37,42 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
    */
   async me(ctx) {
     try {
+      console.log("me endpoint called");
+      
       if (!ctx.state.user) {
+        console.log("No authenticated user found");
         return ctx.unauthorized('You must be logged in');
       }
 
+      // Log what's available in the user object for debugging
+      console.log("User state:", JSON.stringify(ctx.state.user));
+      
       const userEmail = ctx.state.user.email;
+      
+      console.log(`Looking for profile with email: ${userEmail}`);
       
       // Find profile by email
       const profiles = await strapi.entityService.findMany('api::profile.profile', {
         filters: { email: userEmail },
+        limit: 1
       });
       
-      // Return the first profile that matches the email
+      console.log(`Found ${profiles?.length || 0} profiles`);
+      
+      // Return the first profile that matches
       if (profiles && profiles.length > 0) {
         return { data: profiles[0] };
       }
       
       // If no profile found, return error
+      console.log("No profile found for the current user");
       return ctx.notFound('Profile not found for the current user');
     } catch (err) {
       console.error('Error fetching current user profile:', err);
       return ctx.badRequest('Error fetching profile', { error: err });
     }
   },
-  
-  /**
-   * Get credentials issued by the current user
-   */
-  async myIssuedCredentials(ctx) {
-    try {
-      console.log("myIssuedCredentials called");
-      console.log("User authenticated:", !!ctx.state.user);
-      
-      if (!ctx.state.user) {
-        console.log("No user in ctx.state");
-        return ctx.unauthorized('You must be logged in');
-      }
 
-      const userEmail = ctx.state.user.email;
-      console.log("Looking for profile with email:", userEmail);
-      
-      // Find profile by email
-      const profiles = await strapi.entityService.findMany('api::profile.profile', {
-        filters: { email: userEmail },
-      });
-      
-      console.log("Found profiles:", profiles?.length || 0);
-      
-      // Return the issued credentials
-      if (profiles && profiles.length > 0) {
-        const profileId = profiles[0].id;
-        console.log("Profile ID:", profileId);
-        
-        // Get credentials where this profile is the issuer
-        const credentials = await strapi.entityService.findMany('api::credential.credential', {
-          filters: {
-            issuer: { id: profileId }
-          },
-          populate: ['achievement', 'recipient']
-        }) as any[];
-        
-        console.log("Found issued credentials:", credentials?.length || 0);
-        
-        // Format the response in Strapi's data/attributes format
-        return { 
-          data: credentials.map(credential => {
-            // Create a clean credential object with proper typing
-            const formattedCredential = {
-              id: credential.id,
-              attributes: {
-                ...credential
-              }
-            };
-            
-            // Safely add related entities if they exist
-            if (credential.achievement) {
-              formattedCredential.attributes.achievement = {
-                data: {
-                  id: credential.achievement.id,
-                  attributes: credential.achievement
-                }
-              };
-            }
-            
-            if (credential.recipient) {
-              formattedCredential.attributes.recipient = {
-                data: {
-                  id: credential.recipient.id,
-                  attributes: credential.recipient
-                }
-              };
-            }
-            
-            return formattedCredential;
-          })
-        };
-      }
-      
-      // If no profile found, return empty array
-      console.log("No profile found, returning empty array");
-      return { data: [] };
-    } catch (err) {
-      console.error('Error fetching issued credentials:', err);
-      return ctx.badRequest('Error fetching issued credentials', { error: err });
-    }
-  },
-  
-  /**
-   * Get credentials received by the current user
-   */
-  async myReceivedCredentials(ctx) {
-    try {
-      console.log("myReceivedCredentials called");
-      console.log("User authenticated:", !!ctx.state.user);
-      
-      if (!ctx.state.user) {
-        console.log("No user in ctx.state");
-        return ctx.unauthorized('You must be logged in');
-      }
-
-      const userEmail = ctx.state.user.email;
-      console.log("Looking for profile with email:", userEmail);
-      
-      // Find profile by email
-      const profiles = await strapi.entityService.findMany('api::profile.profile', {
-        filters: { email: userEmail },
-      });
-      
-      console.log("Found profiles:", profiles?.length || 0);
-      
-      // Return the received credentials
-      if (profiles && profiles.length > 0) {
-        const profileId = profiles[0].id;
-        console.log("Profile ID:", profileId);
-        
-        // Get credentials where this profile is the recipient
-        const credentials = await strapi.entityService.findMany('api::credential.credential', {
-          filters: {
-            recipient: { id: profileId }
-          },
-          populate: ['achievement', 'issuer']
-        }) as any[];
-        
-        console.log("Found received credentials:", credentials?.length || 0);
-        
-        // Format the response in Strapi's data/attributes format
-        return { 
-          data: credentials.map(credential => {
-            // Create a clean credential object with proper typing
-            const formattedCredential = {
-              id: credential.id,
-              attributes: {
-                ...credential
-              }
-            };
-            
-            // Safely add related entities if they exist
-            if (credential.achievement) {
-              formattedCredential.attributes.achievement = {
-                data: {
-                  id: credential.achievement.id,
-                  attributes: credential.achievement
-                }
-              };
-            }
-            
-            if (credential.issuer) {
-              formattedCredential.attributes.issuer = {
-                data: {
-                  id: credential.issuer.id,
-                  attributes: credential.issuer
-                }
-              };
-            }
-            
-            return formattedCredential;
-          })
-        };
-      }
-      
-      // If no profile found, return empty array
-      console.log("No profile found, returning empty array");
-      return { data: [] };
-    } catch (err) {
-      console.error('Error fetching received credentials:', err);
-      return ctx.badRequest('Error fetching received credentials', { error: err });
-    }
-  },
   
   async findIssuedCredentials(ctx) {
     try {
@@ -324,6 +173,34 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
     } catch (err) {
       console.error('Error fetching JWKS:', err)
       return ctx.internalServerError('Error fetching JWKS')
+    }
+  },
+
+  /**
+   * Debug handler to inspect authentication
+   */
+  async debugAuth(ctx) {
+    try {
+      console.log("Auth Debug endpoint called");
+      console.log("Headers:", ctx.request.header);
+      
+      if (!ctx.state.user) {
+        console.log("No authenticated user found");
+        return ctx.unauthorized('You must be logged in');
+      }
+      
+      // Return the user object from the JWT token
+      return {
+        message: "Authentication successful",
+        user: ctx.state.user,
+        headers: {
+          authorization: ctx.request.header.authorization ? "Present" : "Missing",
+          cookie: ctx.request.header.cookie ? "Present" : "Missing"
+        }
+      };
+    } catch (err) {
+      console.error('Error in auth debug:', err);
+      return ctx.badRequest('Error in auth debug', { error: err });
     }
   }
 })) 

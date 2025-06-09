@@ -94,10 +94,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('token', response.jwt)
       
       // Set token in cookie for server-side auth checks
-      Cookies.set('token', response.jwt, { expires: 7 })
+      Cookies.set('token', response.jwt, { 
+        expires: 7,
+        path: '/',
+        sameSite: 'strict'
+      })
+      
+      // Log the token for debugging
+      console.log('Token saved (first 20 chars):', response.jwt.substring(0, 20))
+      console.log('User data:', response.user)
       
       // Make sure token is set in API client
       apiClient.setToken(response.jwt)
+      
+      // Test token is working
+      try {
+        const debugResponse = await apiClient.debugAuth()
+        console.log('Auth debug response:', debugResponse)
+      } catch (authErr) {
+        console.error('Auth debug test failed:', authErr)
+      }
       
       router.push('/dashboard')
     } catch (err) {

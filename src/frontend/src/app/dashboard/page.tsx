@@ -6,37 +6,60 @@ import CertificateCard from '@/components/certificates/CertificateCard'
 import { apiClient } from '@/api/api-client'
 import { useRouter } from 'next/navigation'
 
+// Update to match the Certificate type in CertificateCard component
 interface Certificate {
-  id: string | number
-  attributes: {
+  id: number
+  documentId: string
+  credentialId: string
+  type: string[]
+  name: string
+  description: string
+  issuanceDate: string
+  expirationDate?: string
+  narrative?: string | null
+  revoked: boolean
+  revocationReason?: string | null
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+  locale: string | null
+  issuer: {
+    id: number
+    documentId: string
     name: string
-    credentialId: string
-    issuanceDate: string
-    expirationDate?: string
-    revoked: boolean
-    image?: {
-      data?: {
-        attributes?: {
-          url: string
-        }
-      }
-    }
-    achievement?: {
-      data?: {
-        attributes?: {
-          name: string
-          description?: string
-        }
-      }
-    }
-    issuer?: {
-      data?: {
-        attributes?: {
-          name: string
-        }
-      }
-    }
+    email: string | null
+    url: string | null
+    telephone: string | null
+    description: string | null
+    profileType: string
+    did: string | null
+    createdAt: string
+    updatedAt: string
+    publishedAt: string | null
+    locale: string | null
   }
+  achievement: {
+    id: number
+    documentId: string
+    name: string
+    description: string
+    achievementType: string
+    tags: string[]
+    achievementId: string
+    createdAt: string
+    updatedAt: string
+    publishedAt: string | null
+    locale: string | null
+  }
+  image?: {
+    url: string
+  }
+}
+
+// API response format might be different, this is for handling the API response
+interface ApiCertificate {
+  id: string | number
+  attributes: any
 }
 
 export default function DashboardPage() {
@@ -75,22 +98,22 @@ export default function DashboardPage() {
         response = await apiClient.getUserCertificates()
       }
 
-      setCertificates(response.data || [])
+      // Transform the data to match the Certificate interface
+      const transformedCertificates = response.data.map((cert: ApiCertificate) => {
+        // The API might return data in a different format, so this is a placeholder transformation
+        // Adjust according to your actual API response structure
+        return {
+          id: cert.id,
+          ...cert.attributes
+        } as Certificate
+      })
+
+      setCertificates(transformedCertificates || [])
     } catch (err) {
       console.error('Error fetching certificates:', err)
       setError('Failed to load certificates. Please make sure the backend is properly configured.')
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handleDeleteCertificate = async (id: string | number) => {
-    try {
-      await apiClient.delete(`/api/credentials/${id}`)
-      // Refresh the list
-      fetchCertificates()
-    } catch (error) {
-      console.error('Error deleting certificate:', error)
     }
   }
 
@@ -166,7 +189,6 @@ export default function DashboardPage() {
               key={certificate.id}
               certificate={certificate}
               onExport={() => console.log('Certificate exported')}
-              onDelete={() => handleDeleteCertificate(certificate.id)}
               onRevoke={activeTab === 'issued' ? () => fetchCertificates() : undefined}
             />
           ))}

@@ -5,54 +5,69 @@ import { useState } from 'react'
 import { apiClient } from '@/api/api-client'
 import Link from 'next/link'
 
-interface CertificateCardProps {
-  certificate: {
-    id: string | number
-    attributes: {
-      name: string
-      credentialId: string
-      issuanceDate: string
-      expirationDate?: string
-      revoked: boolean
-      image?: {
-        data?: {
-          attributes?: {
-            url: string
-          }
-        }
-      }
-      achievement?: {
-        data?: {
-          attributes?: {
-            name: string
-            description?: string
-          }
-        }
-      }
-      issuer?: {
-        data?: {
-          attributes?: {
-            name: string
-          }
-        }
-      }
-    }
+interface Certificate {
+  id: number
+  documentId: string
+  credentialId: string
+  type: string[]
+  name: string
+  description: string
+  issuanceDate: string
+  expirationDate?: string
+  narrative?: string | null
+  revoked: boolean
+  revocationReason?: string | null
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+  locale: string | null
+  issuer: {
+    id: number
+    documentId: string
+    name: string
+    email: string | null
+    url: string | null
+    telephone: string | null
+    description: string | null
+    profileType: string
+    did: string | null
+    createdAt: string
+    updatedAt: string
+    publishedAt: string | null
+    locale: string | null
   }
+  achievement: {
+    id: number
+    documentId: string
+    name: string
+    description: string
+    achievementType: string
+    tags: string[]
+    achievementId: string
+    createdAt: string
+    updatedAt: string
+    publishedAt: string | null
+    locale: string | null
+  }
+  image?: {
+    url: string
+  }
+}
+
+interface CertificateCardProps {
+  certificate: Certificate
   onExport?: () => void
-  onDelete?: () => void
   onRevoke?: () => void
 }
 
 export default function CertificateCard({ 
   certificate, 
   onExport, 
-  onDelete, 
   onRevoke 
 }: CertificateCardProps) {
   const [isRevoking, setIsRevoking] = useState(false)
   const [revocationReason, setRevocationReason] = useState('')
   const [isExporting, setIsExporting] = useState(false)
-  const [isVerifying, setIsVerifying] = useState(false)
 
   const { 
     name, 
@@ -60,15 +75,16 @@ export default function CertificateCard({
     issuanceDate, 
     expirationDate,
     revoked,
-    image,
-    achievement,
-    issuer
-  } = certificate.attributes
+    description,
+    issuer,
+    achievement
+  } = certificate
 
-  const achievementName = achievement?.data?.attributes?.name || 'Unknown Achievement'
-  const achievementDescription = achievement?.data?.attributes?.description || 'No description available'
-  const issuerName = issuer?.data?.attributes?.name || 'Unknown Issuer'
-  const imageUrl = image?.data?.attributes?.url || '/placeholder-badge.png'
+  const achievementName = achievement?.name || 'Unknown Achievement'
+  const achievementDescription = achievement?.description || 'No description available'
+  const issuerName = issuer?.name || 'Unknown Issuer'
+  // Get the certificate image URL from the API
+  const imageUrl = certificate.image?.url || apiClient.getCertificateUrl(certificate.id) || '/placeholder-badge.png'
   
   const formattedIssuanceDate = new Date(issuanceDate).toLocaleDateString()
   const formattedExpirationDate = expirationDate 
@@ -134,6 +150,7 @@ export default function CertificateCard({
                 alt={name}
                 fill
                 className="rounded-md object-cover"
+                unoptimized
               />
             </div>
             <div className="ml-4">
@@ -150,7 +167,7 @@ export default function CertificateCard({
         </div>
         
         <div className="mb-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300">{achievementDescription}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{description || achievementDescription}</p>
         </div>
         
         <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
@@ -187,15 +204,6 @@ export default function CertificateCard({
               className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
             >
               {isExporting ? 'Exporting...' : 'Export'}
-            </button>
-          )}
-          
-          {onDelete && (
-            <button
-              onClick={onDelete}
-              className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-md transition"
-            >
-              Delete
             </button>
           )}
 
