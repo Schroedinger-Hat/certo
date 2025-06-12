@@ -1,0 +1,44 @@
+{
+  "name": "certo-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "@una-ui/nuxt": "^0.58.0",
+    "js-cookie": "^3.0.5",
+    "nuxt": "^3.10.0",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5",
+    "zod": "^3.22.4",
+    "jose": "^5.2.0",
+    "lucide-vue-next": "^0.323.0",
+    "vue-i18n": "^9.9.1",
+    "nuqs": "^1.16.0",
+    "jwt-decode": "^4.0.0",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.1.133",
+    "@iconify-json/radix-icons": "^1.2.2",
+    "@iconify-json/tabler": "^1.2.19",
+    "@nuxt/devtools": "latest",
+    "@types/js-cookie": "^3.0.6",
+    "@types/node": "^20.11.15",
+    "typescript": "^5.3.3",
+    "@nuxtjs/tailwindcss": "^6.11.1",
+    "vitest": "^1.2.2",
+    "postcss": "^8.4.33",
+    "eslint": "^8.56.0",
+    "eslint-plugin-vue": "^9.20.1"
+  }
+}
