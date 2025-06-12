@@ -1,5 +1,7 @@
 # Shared Module
 
+**NOTE**: this is not used in Vue frontend.
+
 This folder contains shared code that can be used across both frontend and backend parts of the application.
 
 ## Structure
