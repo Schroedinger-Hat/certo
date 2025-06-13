@@ -1,5 +1,6 @@
 <script setup>
 import BadgeIssuanceForm from '~/components/BadgeIssuanceForm.vue'
+import { useAuthStore } from '~/stores/auth'
 
 definePageMeta({
   middleware: 'auth'
@@ -11,6 +12,8 @@ useHead({
     { name: 'description', content: 'Issue digital badges using the Open Badges 3.0 standard.' }
   ]
 })
+
+const authStore = useAuthStore()
 </script>
 
 <template>
@@ -23,7 +26,35 @@ useHead({
         social media platforms.
       </p>
 
-      <BadgeIssuanceForm />
+      <template v-if="authStore.isLoading">
+        <div class="flex justify-center py-12">
+          <div class="i-lucide-loader animate-spin w-8 h-8"></div>
+        </div>
+      </template>
+      
+      <template v-else-if="!authStore.isAuthenticated">
+        <NAlert variant="warning" class="mb-6">
+          <div class="flex flex-col items-center text-center">
+            <p class="font-medium">You need to be logged in to issue badges.</p>
+            <NButton class="mt-4" @click="() => navigateTo('/login')">
+              Log In
+            </NButton>
+          </div>
+        </NAlert>
+      </template>
+      
+      <template v-else-if="!authStore.isIssuer">
+        <NAlert variant="warning" class="mb-6">
+          <div class="flex flex-col items-center text-center">
+            <p class="font-medium">You need to have an Issuer profile to issue badges.</p>
+            <p class="text-sm mt-2">Please contact an administrator to upgrade your account.</p>
+          </div>
+        </NAlert>
+      </template>
+      
+      <template v-else>
+        <BadgeIssuanceForm />
+      </template>
     </div>
   </main>
 </template> 

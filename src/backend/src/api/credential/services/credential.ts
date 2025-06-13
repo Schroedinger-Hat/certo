@@ -134,7 +134,7 @@ A user account has been created for you to manage your credentials.
 Username: ${user.username}
 Email: ${user.email}
 
-To set your password, please visit: ${frontendUrl}/auth/forgot-password
+To set your password, please visit: ${frontendUrl}/forgot-password
 ` : ''}
 
 Thank you,
@@ -149,7 +149,7 @@ The Certo Team`,
                   <p><strong>Username:</strong> ${user.username}<br />
                   <strong>Email:</strong> ${user.email}</p>
                   
-                  <p>To set your password, please <a href="${frontendUrl}/auth/forgot-password">click here</a> and enter your email address.</p>
+                  <p>To set your password, please <a href="${frontendUrl}/forgot-password">click here</a> and enter your email address.</p>
                   ` : ''}
                   
                   <p>Thank you,<br />
@@ -198,7 +198,22 @@ The Certo Team`,
 
       // Check if user already exists
       const existingUser = await strapi.query('plugin::users-permissions.user').findOne({
-        where: { email: profile.email }
+        where: { email: profile.email },
+        populate: {
+          role: true,
+          createdBy: true,
+          updatedBy: true,
+          localizations: true,
+          provider: true,
+          resetPasswordToken: true,
+          username: true,
+          email: true,
+          password: true,
+          locale: true,
+          publishedAt: true,
+          createdAt: true,
+          updatedAt: true
+        }
       })
 
       if (existingUser) {

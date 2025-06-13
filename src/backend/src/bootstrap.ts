@@ -14,6 +14,9 @@ export default async ({ strapi }) => {
   
   // Enable all authenticated permissions
   await enableAllAuthenticatedPermissions(strapi);
+  
+  // Setup issuer permissions
+  await setupIssuerPermissions(strapi);
 };
 
 /**
@@ -299,4 +302,97 @@ async function enableAllAuthenticatedPermissions(strapi) {
   }
   
   strapi.log.info(`Enabled ${allPermissions.length} permissions for authenticated users`);
+}
+
+/**
+ * Set up permissions for the Issuer role
+ */
+async function setupIssuerPermissions(strapi) {
+  strapi.log.info('Setting up Issuer permissions...')
+
+  // Find the Issuer role by type or name
+  const issuerRole = await strapi
+    .query('plugin::users-permissions.role')
+    .findOne({ where: { type: 'issuer' } }) ||
+    await strapi
+      .query('plugin::users-permissions.role')
+      .findOne({ where: { name: 'Issuer' } })
+
+  if (!issuerRole) {
+    strapi.log.error('Issuer role not found')
+    return
+  }
+
+  // List of permissions to enable for Issuer users
+  const permissionsToEnable = [
+    // Credential actions
+    { action: 'find', subject: 'api::credential.credential' },
+    { action: 'findOne', subject: 'api::credential.credential' },
+    { action: 'create', subject: 'api::credential.credential' },
+    { action: 'update', subject: 'api::credential.credential' },
+    { action: 'delete', subject: 'api::credential.credential' },
+    { action: 'issue', subject: 'api::credential.credential' },
+    { action: 'validate', subject: 'api::credential.credential' },
+    { action: 'verify', subject: 'api::credential.credential' },
+    { action: 'import', subject: 'api::credential.credential' },
+    { action: 'export', subject: 'api::credential.credential' },
+    { action: 'revoke', subject: 'api::credential.credential' },
+
+    // Profile actions
+    { action: 'find', subject: 'api::profile.profile' },
+    { action: 'findOne', subject: 'api::profile.profile' },
+    { action: 'me', subject: 'api::profile.profile' },
+    { action: 'myIssuedCredentials', subject: 'api::profile.profile' },
+    { action: 'myReceivedCredentials', subject: 'api::profile.profile' },
+
+    // Achievement actions
+    { action: 'find', subject: 'api::achievement.achievement' },
+    { action: 'findOne', subject: 'api::achievement.achievement' },
+    { action: 'create', subject: 'api::achievement.achievement' },
+    { action: 'update', subject: 'api::achievement.achievement' },
+    { action: 'delete', subject: 'api::achievement.achievement' }
+  ]
+
+  for (const perm of permissionsToEnable) {
+    try {
+      // Find the permission in the database
+      const permissionRecord = await strapi
+        .query('plugin::users-permissions.permission')
+        .findOne({
+          where: {
+            action: perm.action,
+            subject: perm.subject,
+            role: issuerRole.id,
+          },
+        })
+
+      if (permissionRecord) {
+        // Update the permission to enable it
+        await strapi
+          .query('plugin::users-permissions.permission')
+          .update({
+            where: { id: permissionRecord.id },
+            data: { enabled: true },
+          })
+        strapi.log.info(`Enabled Issuer permission: ${perm.subject}.${perm.action}`)
+      } else {
+        // Create the permission if it doesn't exist
+        await strapi
+          .query('plugin::users-permissions.permission')
+          .create({
+            data: {
+              action: perm.action,
+              subject: perm.subject,
+              role: issuerRole.id,
+              enabled: true,
+            },
+          })
+        strapi.log.info(`Created Issuer permission: ${perm.subject}.${perm.action}`)
+      }
+    } catch (error) {
+      strapi.log.error(`Error setting Issuer permission ${perm.subject}.${perm.action}:`, error)
+    }
+  }
+
+  strapi.log.info('Issuer permissions setup complete')
 } 

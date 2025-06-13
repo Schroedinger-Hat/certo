@@ -11,6 +11,11 @@ interface LoginResponse {
     blocked: boolean
     createdAt: string
     updatedAt: string
+    role: {
+      id: number
+      name: string
+      type: string
+    }
   }
 }
 
@@ -32,6 +37,22 @@ interface LoginData {
  */
 export class AuthClient {
   /**
+   * Fetch and save the fully populated user (with role)
+   */
+  private async fetchAndSaveFullUser() {
+    try {
+      const fullUser = await apiClient.get<any>('/api/users/me', { populate: '*' })
+      if (fullUser) {
+        this.saveUser(fullUser)
+        return fullUser
+      }
+    } catch (error) {
+      console.error('Failed to fetch full user:', error)
+    }
+    return null
+  }
+
+  /**
    * Register a new user
    */
   async register(data: RegisterData): Promise<RegisterResponse> {
@@ -45,6 +66,8 @@ export class AuthClient {
         this.saveUser(response.user)
         apiClient.setToken(response.jwt)
         console.log('Registration successful, token saved')
+        // Fetch and save the full user with role
+        await this.fetchAndSaveFullUser()
       }
       
       return response
@@ -68,6 +91,8 @@ export class AuthClient {
         this.saveUser(response.user)
         apiClient.setToken(response.jwt)
         console.log('Login successful, token saved')
+        // Fetch and save the full user with role
+        await this.fetchAndSaveFullUser()
       }
       
       return response

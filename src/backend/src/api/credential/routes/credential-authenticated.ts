@@ -51,7 +51,7 @@ export default {
     // Authenticated route for issuing a credential
     {
       method: 'POST',
-      path: '/api/credentials/issue',
+      path: '/credentials/issue',
       handler: 'credential.issue',
       config: {
         auth: {

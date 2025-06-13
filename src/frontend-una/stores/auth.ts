@@ -13,6 +13,28 @@ interface User {
   blocked?: boolean
   createdAt?: string
   updatedAt?: string
+  role?: {
+    name: string
+  }
+}
+
+interface Profile {
+  id: number
+  name: string
+  email: string
+  profileType: 'Issuer' | 'Recipient' | null
+}
+
+interface ProfileResponse {
+  data: Profile | Profile[]
+  meta: {
+    pagination?: {
+      page: number
+      pageSize: number
+      pageCount: number
+      total: number
+    }
+  }
 }
 
 // Flag to prevent multiple initializations
@@ -21,10 +43,13 @@ let isInitialized = false
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const token = ref<string | null>(null)
+  const profile = ref<Profile | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
   
   const isAuthenticated = computed(() => !!user.value && !!token.value)
+  const isIssuer = computed(() => profile.value?.profileType === 'Issuer')
+  const userRole = computed(() => user.value?.role?.name || null)
   
   // Initialize auth state from localStorage/cookies
   async function init() {
@@ -54,9 +79,15 @@ export const useAuthStore = defineStore('auth', () => {
             console.log('User found in localStorage:', currentUser.email)
             user.value = currentUser
             
-            // Validate token with a test request
+            // Validate token and get profile
             try {
-              await apiClient.get('/api/profiles/me')
+              const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
+              if (profileResponse.data) {
+                profile.value = Array.isArray(profileResponse.data) 
+                  ? profileResponse.data[0] 
+                  : profileResponse.data
+                console.log('Profile loaded:', profile.value)
+              }
               console.log('Token verified successfully')
             } catch (validationError) {
               console.error('Token validation failed:', validationError)
@@ -93,7 +124,29 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = response.user
       token.value = response.jwt
       
-      // Store token in localStorage (already done by authClient)
+      // Fetch full user with role using /api/users/me?populate=*
+      try {
+        const fullUser = await apiClient.get<User>('/api/users/me', { populate: '*' })
+        if (fullUser) {
+          user.value = fullUser
+          console.log('Full user loaded:', fullUser)
+        }
+      } catch (userError) {
+        console.error('Error loading full user:', userError)
+      }
+      
+      // Get user profile
+      try {
+        const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
+        if (profileResponse.data) {
+          profile.value = Array.isArray(profileResponse.data) 
+            ? profileResponse.data[0] 
+            : profileResponse.data
+          console.log('Profile loaded:', profile.value)
+        }
+      } catch (profileError) {
+        console.error('Error loading profile:', profileError)
+      }
       
       // Set token in cookie for server-side auth checks
       if (process.client) {
@@ -107,8 +160,6 @@ export const useAuthStore = defineStore('auth', () => {
       // Log the token for debugging
       console.log('Token saved (first 20 chars):', response.jwt.substring(0, 20))
       console.log('User data:', response.user)
-      
-      // Make sure token is set in API client (already done by authClient)
       
       // Test token is working
       try {
@@ -141,7 +192,29 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = response.user
       token.value = response.jwt
       
-      // Store token in localStorage (already done by authClient)
+      // Fetch full user with role using /api/users/me?populate=*
+      try {
+        const fullUser = await apiClient.get<User>('/api/users/me', { populate: '*' })
+        if (fullUser) {
+          user.value = fullUser
+          console.log('Full user loaded:', fullUser)
+        }
+      } catch (userError) {
+        console.error('Error loading full user:', userError)
+      }
+      
+      // Get user profile
+      try {
+        const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
+        if (profileResponse.data) {
+          profile.value = Array.isArray(profileResponse.data) 
+            ? profileResponse.data[0] 
+            : profileResponse.data
+          console.log('Profile loaded:', profile.value)
+        }
+      } catch (profileError) {
+        console.error('Error loading profile:', profileError)
+      }
       
       // Set token in cookie for server-side auth checks
       if (process.client) {
@@ -172,6 +245,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Clear state
     user.value = null
     token.value = null
+    profile.value = null
   }
   
   // Do NOT initialize on store creation
@@ -180,9 +254,12 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     user,
     token,
+    profile,
     isLoading,
     error,
     isAuthenticated,
+    isIssuer,
+    userRole,
     login,
     register,
     logout,

@@ -17,18 +17,6 @@ interface Route {
 
 export default {
   routes: [
-    // Credential issuance
-    {
-      method: 'POST',
-      path: '/credentials/issue',
-      handler: 'credential.issue',
-      config: {
-        policies: [],
-        middlewares: [],
-        auth: false,
-      },
-    },
-    
     // Credential verification
     {
       method: 'GET',
