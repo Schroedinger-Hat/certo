@@ -554,5 +554,49 @@ export default factories.createCoreController('api::credential.credential', ({ s
       console.error('Unexpected error in credential.find:', error);
       return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
     }
+  },
+
+  /**
+   * Batch issue badges to multiple recipients
+   */
+  async batchIssue(ctx) {
+    try {
+      ctx.set('Access-Control-Allow-Origin', '*')
+      ctx.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS')
+      ctx.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,Accept')
+
+      const { data } = ctx.request.body
+      if (!data) return ctx.badRequest('Missing required data')
+      const { achievementId, recipients, evidence = [] } = data
+      if (!achievementId) return ctx.badRequest('Achievement ID is required')
+      if (!Array.isArray(recipients) || recipients.length === 0) return ctx.badRequest('At least one recipient is required')
+
+      // Find the achievement once
+      const achievement = await strapi.entityService.findOne(
+        'api::achievement.achievement',
+        achievementId,
+        { populate: { creator: true, image: true } }
+      )
+      if (!achievement) return ctx.notFound('Achievement not found')
+
+      // Process each recipient
+      const results = await Promise.all(recipients.map(async (recipient) => {
+        try {
+          if (!recipient.email || !recipient.name) throw new Error('Recipient name and email are required')
+          const credential = await strapi.service('api::credential.credential').issue(
+            achievement,
+            recipient,
+            evidence
+          )
+          return { recipient, success: true, credential }
+        } catch (error) {
+          return { recipient, success: false, error: error.message || 'Failed to issue badge' }
+        }
+      }))
+      return { results }
+    } catch (error) {
+      strapi.log.error('[credential.batchIssue] Error:', error)
+      return ctx.badRequest(error.message || 'Failed to batch issue credentials')
+    }
   }
 })) 

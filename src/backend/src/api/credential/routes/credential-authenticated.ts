@@ -91,6 +91,17 @@ export default {
           strategies: ['users-permissions']
         }
       }
+    },
+    // Authenticated route for batch issuing credentials
+    {
+      method: 'POST',
+      path: '/credentials/batch-issue',
+      handler: 'credential.batchIssue',
+      config: {
+        auth: {
+          strategies: ['users-permissions']
+        }
+      }
     }
   ]
 } 

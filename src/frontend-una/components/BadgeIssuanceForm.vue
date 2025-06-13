@@ -6,6 +6,7 @@ defineOptions({
 import { ref, onMounted, computed } from 'vue'
 import { apiClient } from '~/api/api-client'
 import { useRuntimeConfig } from '#app'
+import Papa from 'papaparse'
 
 const badges = ref([])
 const selectedBadge = ref(null)
@@ -23,6 +24,14 @@ const emailError = ref(null)
 
 // Evidence fields
 const evidenceEntries = ref([{ name: '', description: '', url: '' }])
+
+// Batch issuance state
+const csvFile = ref(null)
+const csvResults = ref([])
+const batchIssuing = ref(false)
+const batchError = ref(null)
+const batchSuccess = ref(false)
+const batchResults = ref([])
 
 // Helper function to get badge image URL from various data structures
 function getBadgeImageUrl(badge) {
@@ -317,6 +326,73 @@ async function handleSubmit() {
     issuingBadge.value = false
   }
 }
+
+function handleCsvFileChange(event) {
+  const files = event.target.files
+  if (files && files.length > 0) {
+    csvFile.value = files[0]
+    batchError.value = null
+    batchResults.value = []
+  }
+}
+
+function downloadCsvTemplate() {
+  const csv = 'name,email\nJane Doe,jane@example.com\nJohn Smith,john@example.com\n'
+  const blob = new Blob([csv], { type: 'text/csv' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'recipients-template.csv'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+async function handleBatchIssue() {
+  batchError.value = null
+  batchSuccess.value = false
+  batchResults.value = []
+  if (!selectedBadge.value) {
+    batchError.value = 'Please select a badge to issue.'
+    return
+  }
+  if (!csvFile.value) {
+    batchError.value = 'Please select a CSV file.'
+    return
+  }
+  batchIssuing.value = true
+  try {
+    const text = await csvFile.value.text()
+    const { data, errors } = Papa.parse(text, { header: true, skipEmptyLines: true })
+    if (errors.length > 0) {
+      batchError.value = 'CSV parsing error: ' + errors.map(e => e.message).join('; ')
+      batchIssuing.value = false
+      return
+    }
+    // Validate rows
+    const recipients = Array.isArray(data) ? data.filter(row => row.name && row.email) : []
+    if (recipients.length === 0) {
+      batchError.value = 'No valid recipients found in CSV.'
+      batchIssuing.value = false
+      return
+    }
+    // Optionally: validate email format
+    const invalidRows = recipients.filter(r => !/^\S+@\S+\.\S+$/.test(r.email))
+    if (invalidRows.length > 0) {
+      batchError.value = `Invalid email(s): ${invalidRows.map(r => r.email).join(', ')}`
+      batchIssuing.value = false
+      return
+    }
+    // Call API
+    const badgeId = selectedBadge.value.id
+    const result = await apiClient.batchIssueBadges(badgeId, recipients, evidenceEntries.value)
+    batchResults.value = result.results
+    batchSuccess.value = true
+  } catch (error) {
+    batchError.value = error && error.message ? error.message : 'Batch issuance failed.'
+  } finally {
+    batchIssuing.value = false
+  }
+}
 </script>
 
 <template>
@@ -531,6 +607,54 @@ async function handleSubmit() {
         >
           {{ issuingBadge ? 'Issuing Badge...' : 'Issue Badge' }}
         </NButton>
+      </div>
+
+      <!-- Batch Issuance Section -->
+      <div class="mt-12 border-t pt-10">
+        <h2 class="text-xl font-semibold mb-4">Batch Issue via CSV</h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          Import a CSV file of recipients to issue this badge to multiple people at once.<br>
+          <NButton size="xs" variant="outline" class="mt-2" @click="downloadCsvTemplate">
+            Download CSV Template
+          </NButton>
+        </p>
+        <NFormItem label="Upload CSV File">
+          <NInput type="file" accept=".csv" @change="handleCsvFileChange" />
+        </NFormItem>
+        <NButton 
+          variant="primary" 
+          :loading="batchIssuing"
+          :disabled="batchIssuing || !selectedBadge || !csvFile"
+          class="mt-2"
+          @click="handleBatchIssue"
+        >
+          {{ batchIssuing ? 'Issuing Badges...' : 'Batch Issue Badges' }}
+        </NButton>
+        <NAlert v-if="batchError" variant="error" class="mt-4">{{ batchError }}</NAlert>
+        <NAlert v-if="batchSuccess" variant="success" class="mt-4">Batch issuance complete.</NAlert>
+        <div v-if="batchResults.length > 0" class="mt-6 overflow-x-auto">
+          <table class="min-w-full text-sm border rounded-lg">
+            <thead>
+              <tr class="bg-primary-50 dark:bg-primary-900/10">
+                <th class="px-4 py-2 text-left">Name</th>
+                <th class="px-4 py-2 text-left">Email</th>
+                <th class="px-4 py-2 text-left">Status</th>
+                <th class="px-4 py-2 text-left">Error</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in batchResults" :key="row.recipient.email">
+                <td class="px-4 py-2">{{ row.recipient.name }}</td>
+                <td class="px-4 py-2">{{ row.recipient.email }}</td>
+                <td class="px-4 py-2">
+                  <span v-if="row.success" class="text-green-600">Success</span>
+                  <span v-else class="text-red-600">Failed</span>
+                </td>
+                <td class="px-4 py-2 text-xs text-red-500">{{ row.error || '' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </form>
   </div>

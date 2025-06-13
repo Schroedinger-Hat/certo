@@ -653,6 +653,40 @@ export class ApiClient {
     if (!credentials || !Array.isArray(credentials)) return []
     return credentials.map(credential => this.formatCredential(credential))
   }
+
+  /**
+   * Batch issue badges to multiple recipients
+   */
+  async batchIssueBadges(
+    badgeId: number | string,
+    recipients: { name: string; email: string }[],
+    evidence: any[] = []
+  ) {
+    if (!badgeId) {
+      throw new Error('Badge ID is required')
+    }
+    if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+      throw new Error('At least one recipient is required')
+    }
+    try {
+      const token = this.token || (process.client ? localStorage.getItem('token') : null)
+      if (!token) {
+        throw new Error('Authentication required. Please log in to issue badges.')
+      }
+      const payload = {
+        data: {
+          achievementId: badgeId,
+          recipients,
+          evidence
+        }
+      }
+      const result = await this.post<any>('/api/credentials/batch-issue', payload)
+      return result
+    } catch (error) {
+      console.error('Batch badge issuance error:', error)
+      throw error
+    }
+  }
 }
 
 // Export a singleton instance
