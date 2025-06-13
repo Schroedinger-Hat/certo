@@ -1,6 +1,6 @@
-# Certo Frontend (Una UI)
+# Certo Frontend (Nuxt 3 + Una UI)
 
-This is the Vue 3 + Nuxt 3 + Una UI implementation of the Certo frontend for managing digital credentials and badges using the Open Badges standard.
+This is the Nuxt 3 (Vue 3 + Una UI) implementation of the Certo frontend for managing digital credentials and badges using the Open Badges standard.
 
 ## Features
 
@@ -126,4 +126,4 @@ npm run preview
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the GNU Affero General Public License v3.0. See the LICENSE file for details.

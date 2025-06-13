@@ -15,31 +15,40 @@ Certo is a digital certificate platform for issuing, managing, and verifying bad
 ```
 certo/
 ├── src/
-│   ├── backend/               # Strapi backend (TypeScript)
-│   │   ├── src/
-│   │   │   ├── api/           # API controllers, routes, services
-│   │   │   └── extensions/    # Strapi extensions
-│   │   ├── config/            # Strapi configuration
-│   │   ├── public/            # Static files
-│   │   ├── package.json       # Backend dependencies
-│   │   ├── tsconfig.json      # TypeScript configuration
-│   │   └── Dockerfile         # Backend Docker configuration
+│   ├── backend/                # Strapi backend (TypeScript)
+│   │   ├── src/                # Backend source (APIs, utils, admin, etc.)
+│   │   ├── config/             # Strapi configuration
+│   │   ├── public/             # Static files
+│   │   ├── types/              # TypeScript types
+│   │   ├── scripts/            # Utility scripts
+│   │   ├── database/           # Database config/data
+│   │   ├── Dockerfile          # Backend Docker configuration
+│   │   ├── package.json        # Backend dependencies
+│   │   ├── tsconfig.json       # TypeScript configuration
+│   │   └── ...                 # Other backend files
 │   │
-│   ├── frontend/              # Next.js frontend (TypeScript)
-│   │   ├── src/
-│   │   │   ├── app/           # Next.js App Router
-│   │   │   └── components/    # React components
-│   │   ├── public/            # Static assets
-│   │   ├── package.json       # Frontend dependencies
-│   │   ├── tsconfig.json      # TypeScript configuration
-│   │   └── Dockerfile         # Frontend Docker configuration
+│   ├── frontend/               # Nuxt 3 frontend (Vue 3 + Una UI)
+│   │   ├── assets/             # Static assets
+│   │   ├── components/         # Vue components
+│   │   ├── layouts/            # Nuxt layouts
+│   │   ├── middleware/         # Nuxt middleware
+│   │   ├── pages/              # Nuxt pages
+│   │   ├── plugins/            # Nuxt plugins
+│   │   ├── stores/             # Pinia stores
+│   │   ├── types/              # TypeScript types
+│   │   ├── api/                # API clients
+│   │   ├── public/             # Public static files
+│   │   ├── nuxt.config.ts      # Nuxt configuration
+│   │   ├── package.json        # Frontend dependencies
+│   │   ├── tsconfig.json       # TypeScript configuration
+│   │   ├── Dockerfile          # Frontend Docker configuration
+│   │   └── ...                 # Other frontend files
 │   │
-│   └── shared/                # Shared code between frontend and backend
-│       ├── api/               # API client
-│       └── types/             # TypeScript types and interfaces
 │
-├── docker-compose.yml         # Docker configuration
-└── README.md                  # Project documentation
+├── docker-compose.yml          # Docker configuration
+├── README.md                   # Project documentation
+├── LICENSE                     # License file
+└── docs/                       # Additional documentation
 ```
 
 ## Requirements
@@ -72,12 +81,12 @@ JWT_SECRET=your-jwt-secret
 docker-compose up -d
 ```
 
-This will start the backend (Strapi), frontend (Next.js), and PostgreSQL database.
+This will start the backend (Strapi), frontend (Nuxt 3), and PostgreSQL database.
 
 4. Access the applications:
 
 - Backend (Strapi Admin): http://localhost:1337/admin
-- Frontend: http://localhost:3000
+- Frontend (Nuxt 3): http://localhost:3000
 
 ## Running Locally (Without Docker)
 
@@ -91,7 +100,7 @@ npm install
 npm run develop
 ```
 
-### Frontend (Next.js)
+### Frontend (Nuxt 3)
 
 ```bash
 cd src/frontend
@@ -105,10 +114,9 @@ The API follows the Open Badges 3.0 specification. You can access the Strapi API
 
 Key endpoints:
 
-- `/api/badges`: Badge management
-- `/api/issuers`: Issuer management
-- `/api/assertions`: Badge issuance and verification
-- `/api/recipients`: Recipient management
+- `/api/credentials`: Credential management
+- `/api/profiles`: Profile management
+- `/api/achievements`: Achievement management
 
 ## Contributing
 
@@ -122,12 +130,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see the LICENSE file for details.
 
 ## Acknowledgments
 
 - [Open Badges 3.0 Specification](https://www.imsglobal.org/spec/ob/v3p0/)
 - [Verifiable Credentials Data Model](https://www.w3.org/TR/vc-data-model/)
 - [Strapi](https://strapi.io/)
-- [Next.js](https://nextjs.org/)
+- [Nuxt 3](https://nuxt.com/)
+- [Una UI](https://una-ui.vercel.app/)
 - [Schrödinger Hat](https://www.schrodinger-hat.it/) 
