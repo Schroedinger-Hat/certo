@@ -6,7 +6,7 @@ import type {
   VerificationResult,
 } from '../types/openbadges'
 
-let API_URL = 'http://localhost:1337' // Default value
+let API_URL = 'https://bold-approval-5bde4fbd5d.strapiapp.com' // Default value
 
 // This will be updated when the module is initialized in the browser
 export function updateApiUrl(url: string) {
