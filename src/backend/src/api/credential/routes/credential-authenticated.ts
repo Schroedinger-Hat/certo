@@ -7,7 +7,7 @@ export default {
     // Authenticated route for getting all credentials
     {
       method: 'GET',
-      path: '/api/credentials',
+      path: '/credentials',
       handler: 'credential.find',
       config: {
         auth: {
@@ -18,7 +18,7 @@ export default {
     // Authenticated route for creating a credential
     {
       method: 'POST',
-      path: '/api/credentials',
+      path: '/credentials',
       handler: 'credential.create',
       config: {
         auth: {
@@ -29,7 +29,7 @@ export default {
     // Authenticated route for updating a credential
     {
       method: 'PUT',
-      path: '/api/credentials/:id',
+      path: '/credentials/:id',
       handler: 'credential.update',
       config: {
         auth: {
@@ -40,7 +40,7 @@ export default {
     // Authenticated route for deleting a credential
     {
       method: 'DELETE',
-      path: '/api/credentials/:id',
+      path: '/credentials/:id',
       handler: 'credential.delete',
       config: {
         auth: {
@@ -62,7 +62,7 @@ export default {
     // Authenticated route for exporting a credential
     {
       method: 'GET',
-      path: '/api/credentials/:id/export',
+      path: '/credentials/:id/export',
       handler: 'credential.export',
       config: {
         auth: {
@@ -73,7 +73,7 @@ export default {
     // Authenticated route for importing a credential
     {
       method: 'POST',
-      path: '/api/credentials/import',
+      path: '/credentials/import',
       handler: 'credential.import',
       config: {
         auth: {
@@ -84,7 +84,7 @@ export default {
     // Authenticated route for revoking a credential
     {
       method: 'POST',
-      path: '/api/credentials/:id/revoke',
+      path: '/credentials/:id/revoke',
       handler: 'credential.revoke',
       config: {
         auth: {
