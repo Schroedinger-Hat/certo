@@ -1,10 +1,27 @@
 import { useAuthStore } from '~/stores/auth'
+import { watch } from 'vue'
 
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   // Skip middleware if it's a server route
   if (process.server) return
   
   const authStore = useAuthStore()
+
+  // Wait for store to finish loading if needed
+  if (authStore.isLoading) {
+    await new Promise<void>(resolve => {
+      const unwatch = watch(
+        () => authStore.isLoading,
+        (loading) => {
+          if (!loading) {
+            unwatch()
+            resolve()
+          }
+        },
+        { immediate: true }
+      )
+    })
+  }
   
   // Protected routes that require authentication
   const protectedRoutes = ['/dashboard', '/profile']

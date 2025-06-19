@@ -141,64 +141,80 @@ function handleShare() {
 </script>
 
 <template>
-  <div class="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden p-6">
-    <template v-if="!autoVerify">
-      <h2 class="text-2xl font-bold mb-4">Verify Open Badge</h2>
-      
-      <div class="mb-6">
-        <div class="flex gap-4 mb-4">
-          <NButton
-            @click="verifyMode = 'id'"
-            :variant="verifyMode === 'id' ? 'solid' : 'outline'"
-          >
-            Verify by ID
-          </NButton>
-          <NButton
-            @click="verifyMode = 'json'"
-            :variant="verifyMode === 'json' ? 'solid' : 'outline'"
-          >
-            Verify JSON
-          </NButton>
-        </div>
+  <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-bold text-text-primary">Verify Certificate</h2>
+      <p class="mt-2 text-text-secondary">Verify the authenticity of a certificate or badge</p>
+    </div>
 
-        <div v-if="verifyMode === 'id'" class="flex gap-2">
-          <NInput
+    <!-- Verification Form -->
+    <form @submit.prevent="handleVerify" class="space-y-6">
+      <!-- Certificate ID Input -->
+      <div>
+        <label for="certificateId" class="block text-sm font-medium text-text-primary">
+          Certificate ID or Hash
+        </label>
+        <div class="mt-1">
+          <input
+            id="certificateId"
             v-model="identifier"
-            placeholder="Enter credential identifier"
-            class="flex-1"
+            type="text"
+            required
+            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+            placeholder="Enter certificate ID or hash"
           />
-          <NButton
-            @click="handleVerify"
-            :loading="loading"
-          >
-            {{ loading ? 'Verifying...' : 'Verify' }}
-          </NButton>
-        </div>
-        
-        <div v-else class="flex flex-col gap-2">
-          <NTextarea
-            v-model="jsonInput"
-            placeholder="Paste credential JSON here"
-            rows="8"
-            class="font-mono text-sm"
-          />
-          <div class="flex justify-end">
-            <NButton
-              @click="handleVerify"
-              :loading="loading"
-            >
-              {{ loading ? 'Verifying...' : 'Verify' }}
-            </NButton>
-          </div>
         </div>
       </div>
-    </template>
 
-    <template v-if="loading">
+      <!-- File Upload -->
+      <div class="text-center">
+        <p class="text-text-secondary mb-4">Or</p>
+        <div class="flex flex-col items-center justify-center px-6 py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#00E5C5] transition-colors">
+          <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-full flex items-center justify-center mb-4">
+            <div class="w-6 h-6 i-heroicons-cloud-arrow-up text-[#00E5C5]"></div>
+          </div>
+          <div class="text-sm text-text-secondary">
+            <label 
+              for="file-upload" 
+              class="relative cursor-pointer rounded-md font-medium text-[#00E5C5] hover:text-[#00E5C5]/80 focus-within:outline-none"
+            >
+              <span>Upload a file</span>
+              <input 
+                id="file-upload" 
+                name="file-upload" 
+                type="file" 
+                class="sr-only"
+                @change="handleFileUpload"
+                accept=".json,.pdf"
+              />
+            </label>
+            <p class="pl-1">or drag and drop</p>
+          </div>
+          <p class="text-xs text-text-secondary mt-2">
+            Supports JSON files containing Open Badges or Verifiable Credentials
+          </p>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          :disabled="loading"
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span v-if="!loading">Verify Certificate</span>
+          <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        </button>
+      </div>
+    </form>
+
+    <!-- Verification Result -->
+    <div v-if="loading">
       <div class="flex justify-center py-8">
         <div class="i-lucide-loader animate-spin w-8 h-8"></div>
       </div>
-    </template>
+    </div>
 
     <template v-else-if="error">
       <NAlert variant="error" class="mb-4">
@@ -207,100 +223,74 @@ function handleShare() {
     </template>
 
     <template v-else-if="isVerified !== null">
-      <div class="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg mb-6">
-        <div class="flex items-center mb-4">
-          <div v-if="isVerified" class="i-lucide-check-circle w-6 h-6 text-green-500 mr-2"></div>
-          <div v-else class="i-lucide-x-circle w-6 h-6 text-red-500 mr-2"></div>
-          <h3 class="text-xl font-semibold">
-            {{ isVerified ? 'Credential Verified' : 'Verification Failed' }}
-          </h3>
-        </div>
-
-        <template v-if="verificationChecks && verificationChecks.length > 0">
-          <div class="mb-4">
-            <h4 class="font-medium mb-2">Verification Details:</h4>
-            <ul class="space-y-2">
-              <li 
-                v-for="(check, index) in verificationChecks" 
-                :key="index"
-                class="flex items-start"
+      <div class="mt-8">
+        <div 
+          class="p-6 rounded-lg"
+          :class="{
+            'bg-green-50': isVerified,
+            'bg-red-50': !isVerified
+          }"
+        >
+          <!-- Result Header -->
+          <div class="flex items-center">
+            <div 
+              class="w-12 h-12 rounded-full flex items-center justify-center"
+              :class="{
+                'bg-green-100': isVerified,
+                'bg-red-100': !isVerified
+              }"
+            >
+              <div 
+                class="w-6 h-6"
+                :class="{
+                  'i-heroicons-check-circle text-green-600': isVerified,
+                  'i-heroicons-x-circle text-red-600': !isVerified
+                }"
+              ></div>
+            </div>
+            <div class="ml-4">
+              <h3 
+                class="text-lg font-medium"
+                :class="{
+                  'text-green-800': isVerified,
+                  'text-red-800': !isVerified
+                }"
               >
-                <div 
-                  :class="[
-                    'w-5 h-5 mr-2 flex-shrink-0', 
-                    check.result === 'success' ? 'i-lucide-check text-green-500' : 
-                    check.result === 'warning' ? 'i-lucide-alert-triangle text-yellow-500' : 
-                    'i-lucide-x text-red-500'
-                  ]"
-                ></div>
-                <div>
-                  <div class="font-medium">{{ check.check }}</div>
-                  <div v-if="check.message" class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ check.message }}
-                  </div>
-                </div>
-              </li>
-            </ul>
+                {{ isVerified ? 'Certificate Verified' : 'Verification Failed' }}
+              </h3>
+              <p 
+                class="text-sm"
+                :class="{
+                  'text-green-600': isVerified,
+                  'text-red-600': !isVerified
+                }"
+              >
+                {{ verificationChecks && verificationChecks.length > 0 ? verificationChecks[0].message : error }}
+              </p>
+            </div>
           </div>
-        </template>
 
-        <template v-if="badge">
-          <div class="border-t dark:border-gray-700 pt-4 mt-4">
-            <h4 class="font-medium mb-2">Credential Information:</h4>
-            
-            <div class="grid md:grid-cols-2 gap-4">
-              <div>
-                <div class="mb-4">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</div>
-                  <div>{{ badge.name || 'Unnamed Credential' }}</div>
-                </div>
-                
-                <div class="mb-4">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</div>
-                  <div>{{ badge.description || 'No description provided' }}</div>
-                </div>
-                
-                <div class="mb-4">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Issuer</div>
-                  <div>{{ badge.issuer?.name || 'Unknown Issuer' }}</div>
-                </div>
-              </div>
-              
-              <div>
-                <div class="mb-4">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Issuance Date</div>
-                  <div>{{ badge.issuanceDate ? new Date(badge.issuanceDate).toLocaleDateString() : 'Unknown' }}</div>
-                </div>
-                
-                <div class="mb-4" v-if="badge.expirationDate">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Expiration Date</div>
-                  <div>{{ new Date(badge.expirationDate).toLocaleDateString() }}</div>
-                </div>
-                
-                <div class="mb-4">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-400">ID</div>
-                  <div class="truncate">{{ badge.id }}</div>
-                </div>
-              </div>
+          <!-- Certificate Details -->
+          <div v-if="isVerified" class="mt-6 space-y-4">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-secondary">Issuer</span>
+              <span class="font-medium text-text-primary">{{ badge?.issuer?.name || 'Unknown Issuer' }}</span>
             </div>
-            
-            <div class="flex justify-end mt-4">
-              <NuxtLink :to="`/credentials/${encodeURIComponent(identifier)}`" v-if="!autoVerify && isVerified" class="mr-3">
-                <NButton variant="outline">
-                  <div class="i-lucide-external-link mr-2"></div>
-                  View Full Details
-                </NButton>
-              </NuxtLink>
-              <NButton @click="handleShare">
-                <div class="i-lucide-share-2 mr-2"></div>
-                Share Credential
-              </NButton>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-secondary">Issue Date</span>
+              <span class="font-medium text-text-primary">{{ badge?.issuanceDate ? new Date(badge.issuanceDate).toLocaleDateString() : 'Unknown' }}</span>
+            </div>
+            <div v-if="badge?.expirationDate" class="flex items-center justify-between text-sm">
+              <span class="text-text-secondary">Expiry Date</span>
+              <span class="font-medium text-text-primary">{{ new Date(badge.expirationDate).toLocaleDateString() }}</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-secondary">ID</span>
+              <span class="font-medium text-text-primary">{{ badge?.id }}</span>
             </div>
           </div>
-        </template>
+        </div>
       </div>
     </template>
-
-
   </div>
 </template> 

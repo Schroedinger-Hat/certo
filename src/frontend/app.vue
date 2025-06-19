@@ -8,7 +8,9 @@
 </template>
 
 <script setup>
-// This is the main app component
+import { useAuthStore } from '~/stores/auth'
+
+const authStore = useAuthStore()
 </script>
 
 <style>

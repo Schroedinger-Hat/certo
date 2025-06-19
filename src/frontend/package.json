@@ -29,8 +29,10 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@iconify-json/heroicons": "^1.2.2",
     "@iconify-json/lucide": "^1.1.133",
     "@iconify-json/radix-icons": "^1.2.2",
+    "@iconify-json/simple-icons": "^1.2.39",
     "@iconify-json/tabler": "^1.2.19",
     "@nuxt/devtools": "latest",
     "@nuxtjs/tailwindcss": "^6.11.1",

@@ -6,7 +6,7 @@ import type {
   VerificationResult,
 } from '../types/openbadges'
 
-let API_URL = 'https://bold-approval-5bde4fbd5d.strapiapp.com' // Default value
+let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337'
 
 // This will be updated when the module is initialized in the browser
 export function updateApiUrl(url: string) {
@@ -551,6 +551,31 @@ export class ApiClient {
   }
 
   /**
+   * Get dashboard stats
+   */
+  async getDashboardStats() {
+    try {
+      const response = await this.get<any>('/api/dashboard/stats')
+      return {
+        data: response.data || {
+          totalCertificates: 0,
+          totalRecipients: 0,
+          activeTemplates: 0
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error)
+      return {
+        data: {
+          totalCertificates: 0,
+          totalRecipients: 0,
+          activeTemplates: 0
+        }
+      }
+    }
+  }
+
+  /**
    * Debug authentication
    */
   async debugAuth() {
@@ -685,6 +710,30 @@ export class ApiClient {
     } catch (error) {
       console.error('Batch badge issuance error:', error)
       throw error
+    }
+  }
+
+  /**
+   * Get available badges that can be issued
+   */
+  async getAvailableBadges() {
+    try {
+      const response = await this.get<StrapiResponse<any>>('/api/achievements', {
+        'populate': '*',
+        'filters[publishedAt][$notNull]': 'true'
+      })
+      
+      if (!response.data) {
+        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
+      }
+
+      return {
+        data: Array.isArray(response.data) ? response.data : [response.data],
+        meta: response.meta
+      }
+    } catch (error) {
+      console.error('Error fetching available badges:', error)
+      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
     }
   }
 }

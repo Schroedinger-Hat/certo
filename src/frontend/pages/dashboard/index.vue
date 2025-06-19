@@ -8,6 +8,7 @@ import { useAuthStore } from '~/stores/auth'
 import { apiClient } from '~/api/api-client'
 import CertificateCard from '~/components/CertificateCard.vue'
 import ImportCertificate from '~/components/ImportCertificate.vue'
+import { useRouter } from 'vue-router'
 
 definePageMeta({
   middleware: 'auth'
@@ -22,6 +23,8 @@ const receivedCertificates = ref([])
 const issuedCertificates = ref([])
 const loading = ref(false)
 const error = ref(null)
+
+const router = useRouter()
 
 onMounted(async () => {
   if (isAuthenticated.value) {
@@ -40,9 +43,9 @@ async function loadCertificates() {
       apiClient.getIssuedCertificates(),
     ])
     
-    // Format the data for use in the UI
-    receivedCertificates.value = formatCredentials(receivedResponse.data || [])
-    issuedCertificates.value = formatCredentials(issuedResponse.data || [])
+    // The API client already formats the credentials
+    receivedCertificates.value = receivedResponse.data || []
+    issuedCertificates.value = issuedResponse.data || []
     
     console.log('Received certificates:', receivedCertificates.value.length)
     console.log('Issued certificates:', issuedCertificates.value.length)
@@ -52,64 +55,6 @@ async function loadCertificates() {
   } finally {
     loading.value = false
   }
-}
-
-// Helper function to format credential data from the Strapi format
-function formatCredentials(credentials) {
-  return credentials.map(credential => {
-    const attrs = credential.attributes || credential
-    
-    const formattedCredential = {
-      id: credential.id,
-      credentialId: attrs.credentialId || attrs.id,
-      name: attrs.name,
-      description: attrs.description,
-      issuanceDate: attrs.issuanceDate,
-      expirationDate: attrs.expirationDate,
-      revoked: attrs.revoked,
-      revocationReason: attrs.revocationReason,
-      image: attrs.image
-    }
-    
-    // Extract achievement data
-    if (attrs.achievement?.data) {
-      formattedCredential.achievement = attrs.achievement.data.attributes || {}
-      formattedCredential.achievement.id = attrs.achievement.data.id
-    } else if (attrs.achievement) {
-      formattedCredential.achievement = attrs.achievement
-    }
-    
-    // Extract issuer data - handle both nested Strapi format and direct object
-    if (attrs.issuer?.data) {
-      formattedCredential.issuer = attrs.issuer.data.attributes || {}
-      formattedCredential.issuer.id = attrs.issuer.data.id
-    } else if (attrs.issuer) {
-      formattedCredential.issuer = attrs.issuer
-      
-      // Make sure we have the name property
-      if (!formattedCredential.issuer.name && attrs.issuer.attributes?.name) {
-        formattedCredential.issuer.name = attrs.issuer.attributes.name
-      }
-    }
-    
-    // Extract recipient data
-    if (attrs.recipient?.data) {
-      formattedCredential.recipient = attrs.recipient.data.attributes || {}
-      formattedCredential.recipient.id = attrs.recipient.data.id
-    } else if (attrs.recipient) {
-      formattedCredential.recipient = attrs.recipient
-    }
-    
-    // Log the formatted credential for debugging
-    console.log('Formatted credential:', {
-      id: formattedCredential.id,
-      name: formattedCredential.name,
-      issuer: formattedCredential.issuer?.name,
-      issuanceDate: formattedCredential.issuanceDate
-    })
-    
-    return formattedCredential
-  })
 }
 
 function handleImportSuccess() {
@@ -129,6 +74,10 @@ function handleRevoke() {
 
 function toggleImportModal() {
   showImportModal.value = !showImportModal.value
+}
+
+function handleView(id) {
+  router.push(`/credentials/${encodeURIComponent(id)}`)
 }
 
 useHead({
@@ -225,6 +174,7 @@ useHead({
             :key="certificate.id"
             :certificate="certificate"
             @export="handleExport"
+            @view="handleView"
           />
         </div>
       </div>
@@ -251,6 +201,7 @@ useHead({
             :certificate="certificate"
             @export="handleExport"
             @revoke="handleRevoke"
+            @view="handleView"
           />
         </div>
       </div>

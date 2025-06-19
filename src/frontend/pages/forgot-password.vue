@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useHead } from '#imports'
-
 const email = ref('')
 const isLoading = ref(false)
 const success = ref(false)
@@ -21,7 +20,7 @@ async function handleSubmit() {
   isLoading.value = true
   success.value = false
   try {
-    const res = await fetch('/api/auth/forgot-password', {
+    const res = await fetch(`/api/auth/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value })
@@ -40,42 +39,83 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <main class="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-    <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-      <h1 class="text-2xl font-bold mb-4 text-center">Forgot Password</h1>
-      <p class="mb-6 text-gray-600 dark:text-gray-400 text-center">
-        Enter your email address and we'll send you a link to reset your password.
-      </p>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <div>
-          <label for="email" class="block text-sm font-medium mb-1">Email</label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600"
-            autocomplete="email"
+  <div class="min-h-screen bg-gradient-to-b from-white to-[#FFE5AE]/20 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <!-- Header -->
+      <div class="text-center">
+        <h2 class="text-4xl font-bold text-text-primary">Reset password</h2>
+        <p class="mt-2 text-text-secondary">We'll send you instructions to reset your password</p>
+      </div>
+
+      <!-- Form -->
+      <div class="mt-8 bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg">
+        <form @submit.prevent="handleSubmit" class="space-y-6">
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-text-primary">
+              Email address
+            </label>
+            <div class="mt-1">
+              <input
+                id="email"
+                v-model="email"
+                type="email"
+                required
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+                placeholder="Enter your email"
+                :disabled="isLoading"
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <!-- Success Message -->
+          <div v-if="success" class="rounded-lg bg-green-50 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <div class="w-5 h-5 i-heroicons-check-circle text-green-400"></div>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-green-800">
+                  If an account exists for this email, a reset link has been sent.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="error" class="rounded-lg bg-red-50 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <div class="w-5 h-5 i-heroicons-x-circle text-red-400"></div>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-red-800">{{ error }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
             :disabled="isLoading"
-          />
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="!isLoading">Send reset link</span>
+            <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          </button>
+        </form>
+
+        <!-- Back to login -->
+        <div class="mt-6 text-center">
+          <p class="text-sm text-text-secondary">
+            Remember your password?
+            <NuxtLink to="/login" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
+              Sign in
+            </NuxtLink>
+          </p>
         </div>
-        <button
-          type="submit"
-          class="w-full py-2 px-4 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50"
-          :disabled="isLoading"
-        >
-          {{ isLoading ? 'Sending...' : 'Send Reset Link' }}
-        </button>
-      </form>
-      <div v-if="success" class="mt-4 text-green-600 text-center">
-        If an account exists for this email, a reset link has been sent.
-      </div>
-      <div v-if="error" class="mt-4 text-red-600 text-center">
-        {{ error }}
-      </div>
-      <div class="mt-6 text-center">
-        <NuxtLink to="/login" class="text-primary-600 hover:underline">Back to Login</NuxtLink>
       </div>
     </div>
-  </main>
+  </div>
 </template> 

@@ -182,6 +182,12 @@ export interface VerificationResult {
   error?: string
   credential?: AchievementCredential
   rawCredential?: any
+  blockchain?: {
+    network: string
+    transactionId: string
+    blockNumber: number
+    timestamp: string
+  }
 }
 
 export interface VerificationCheck {

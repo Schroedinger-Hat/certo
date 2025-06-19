@@ -1,53 +1,89 @@
-<script setup>
-defineProps({
-  badge: {
-    type: Object,
-    required: true
-  },
-  className: {
-    type: String,
-    default: ''
-  }
-})
-
-function getImageUrl(badge) {
-  if (!badge.attributes?.image?.data) return null
-  
-  const runtimeConfig = useRuntimeConfig()
-  const apiUrl = runtimeConfig.public.apiUrl || 'http://localhost:1337'
-  return `${apiUrl}${badge.attributes.image.data.attributes.url}`
+<script setup lang="ts">
+interface Badge {
+  id: number
+  title: string
+  description: string
+  issueDate: string
+  recipient: string
+  issuer: string
+  status: 'active' | 'pending' | 'revoked'
 }
 
-function truncateText(text, maxLength = 100) {
-  if (!text) return ''
-  if (text.length <= maxLength) return text
-  return text.substring(0, maxLength) + '...'
+defineProps<{
+  badge: Badge
+}>()
+
+defineEmits<{
+  (e: 'view', badge: Badge): void
+  (e: 'download', badge: Badge): void
+}>()
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
 }
 </script>
 
 <template>
-  <div 
-    :class="['relative overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700 shadow-md transition-all hover:shadow-lg', className]"
-  >
-    <div class="aspect-square w-full relative">
-      <img
-        v-if="badge.attributes.image?.data"
-        :src="getImageUrl(badge)"
-        :alt="badge.attributes.name"
-        class="w-full h-full object-contain p-4"
-      />
-      <div v-else class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-        <div class="i-lucide-award w-16 h-16 text-gray-400 dark:text-gray-500"></div>
+  <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <!-- Badge Icon -->
+        <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-lg flex items-center justify-center mb-4">
+          <div class="w-6 h-6 i-heroicons-academic-cap text-[#00E5C5]"></div>
+        </div>
+
+        <!-- Badge Info -->
+        <h3 class="text-lg font-medium text-text-primary mb-1">{{ badge.title }}</h3>
+        <p class="text-text-secondary text-sm mb-4">{{ badge.description }}</p>
+
+        <!-- Metadata -->
+        <div class="space-y-2">
+          <div class="flex items-center text-sm text-text-secondary">
+            <div class="w-4 h-4 i-heroicons-calendar mr-2"></div>
+            {{ formatDate(badge.issueDate) }}
+          </div>
+          <div class="flex items-center text-sm text-text-secondary">
+            <div class="w-4 h-4 i-heroicons-user mr-2"></div>
+            {{ badge.recipient }}
+          </div>
+          <div class="flex items-center text-sm text-text-secondary">
+            <div class="w-4 h-4 i-heroicons-academic-cap mr-2"></div>
+            {{ badge.issuer }}
+          </div>
+        </div>
       </div>
+
+      <!-- Status Badge -->
+      <span 
+        class="px-2 py-1 text-xs font-semibold rounded-full"
+        :class="{
+          'bg-green-100 text-green-800': badge.status === 'active',
+          'bg-yellow-100 text-yellow-800': badge.status === 'pending',
+          'bg-red-100 text-red-800': badge.status === 'revoked'
+        }"
+      >
+        {{ badge.status }}
+      </span>
     </div>
-    <div class="p-4">
-      <h3 class="text-lg font-semibold">{{ badge.attributes.name }}</h3>
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        {{ truncateText(badge.attributes.description, 100) }}
-      </p>
-      <div v-if="badge.attributes.issuer?.data" class="mt-2 flex items-center text-xs text-gray-500 dark:text-gray-400">
-        <span>Issued by: {{ badge.attributes.issuer.data.attributes.name }}</span>
-      </div>
+
+    <!-- Actions -->
+    <div class="mt-6 flex items-center justify-end space-x-4">
+      <button 
+        @click="$emit('view', badge)"
+        class="text-[#00E5C5] hover:text-[#00E5C5]/80 text-sm font-medium"
+      >
+        View Details
+      </button>
+      <button 
+        @click="$emit('download', badge)"
+        class="text-[#00E5C5] hover:text-[#00E5C5]/80 text-sm font-medium"
+      >
+        Download
+      </button>
     </div>
   </div>
 </template> 

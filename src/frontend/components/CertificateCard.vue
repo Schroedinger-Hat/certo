@@ -14,7 +14,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['export', 'revoke'])
+const emit = defineEmits(['export', 'revoke', 'view', 'download'])
 
 const isRevoking = ref(false)
 const revocationReason = ref('')
@@ -171,127 +171,69 @@ function copyToClipboard() {
 </script>
 
 <template>
-  <NCard class="relative">
-    <template #header>
-      <div class="flex justify-between items-start gap-2">
-        <div>
-          <h3 class="text-lg font-semibold">{{ achievementName }}</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Issued by {{ issuerName }}
-          </p>
+  <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <!-- Certificate Icon -->
+        <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-lg flex items-center justify-center mb-4">
+          <div class="w-6 h-6 i-heroicons-document-text text-[#00E5C5]"></div>
         </div>
-        <NBadge :variant="revoked ? 'error' : 'success'" class="ml-auto">
-          {{ revoked ? 'Revoked' : 'Valid' }}
-        </NBadge>
-      </div>
-    </template>
-    
-    <div class="flex mt-4 space-y-2 flex-col">
-      <div class="aspect-square max-h-40 overflow-hidden rounded-lg mb-4">
-        <img
-          :src="imageUrl"
-          :alt="achievementName"
-          class="w-full h-full object-contain bg-gray-50 dark:bg-gray-800"
-          loading="lazy"
-        />
-      </div>
-      
-      <p v-if="achievementDescription" class="text-sm text-gray-700 dark:text-gray-300 mb-4">
-        {{ achievementDescription }}
-      </p>
-      
-      <div class="space-y-2">
-        <div class="flex justify-between">
-          <span class="text-sm text-gray-600 dark:text-gray-400">Issued On:</span>
-          <span class="text-sm">{{ formattedIssuanceDate }}</span>
-        </div>
-        
-        <div v-if="expirationDate || expires" class="flex justify-between">
-          <span class="text-sm text-gray-600 dark:text-gray-400">Expires On:</span>
-          <span class="text-sm">{{ formattedExpirationDate }}</span>
-        </div>
-        
-        <div v-if="revoked" class="flex justify-between text-red-600 dark:text-red-400">
-          <span class="text-sm">Revoked:</span>
-          <span class="text-sm">{{ props.certificate.revocationReason || 'Revoked by issuer' }}</span>
+
+        <!-- Certificate Info -->
+        <h3 class="text-lg font-medium text-text-primary mb-1">{{ achievementName }}</h3>
+        <p class="text-text-secondary text-sm mb-4">{{ achievementDescription }}</p>
+
+        <!-- Metadata -->
+        <div class="space-y-2">
+          <div class="flex items-center text-sm text-text-secondary">
+            <div class="w-4 h-4 i-heroicons-calendar mr-2"></div>
+            {{ formattedIssuanceDate }}
+          </div>
+          <div class="flex items-center text-sm text-text-secondary">
+            <div class="w-4 h-4 i-heroicons-user mr-2"></div>
+            {{ issuerName }}
+          </div>
+          <div class="flex items-center text-sm text-text-secondary">
+            <div class="w-4 h-4 i-heroicons-building-office mr-2"></div>
+            {{ recipient?.name || 'Unknown Recipient' }}
+          </div>
         </div>
       </div>
+
+      <!-- Status Badge -->
+      <span 
+        class="px-2 py-1 text-xs font-semibold rounded-full"
+        :class="{
+          'bg-green-100 text-green-800': !revoked,
+          'bg-yellow-100 text-yellow-800': !revoked,
+          'bg-red-100 text-red-800': revoked
+        }"
+      >
+        {{ revoked ? 'Revoked' : 'Valid' }}
+      </span>
     </div>
-    
-    <template #footer>
-      <div class="flex justify-between mt-4">
-        <div class="space-x-2">
-          <NuxtLink :to="`/credentials/${encodeURIComponent(credentialId || id)}`">
-            <NButton
-              size="sm"
-              variant="ghost"
-            >
-              <div class="i-lucide-eye mr-1"></div>
-              View
-            </NButton>
-          </NuxtLink>
-          
-          <NTooltip text="Share Link">
-            <NButton
-              size="sm"
-              variant="ghost"
-              @click="copyToClipboard"
-            >
-              <div class="i-lucide-link mr-1"></div>
-              Share
-            </NButton>
-          </NTooltip>
-        </div>
-        
-        <div class="space-x-2">
-          <NButton
-            size="sm"
-            variant="outline"
-            @click="handleExport"
-            :loading="isExporting"
-          >
-            <div class="i-lucide-download mr-1"></div>
-            Export
-          </NButton>
-          
-          <NPopover v-if="issuer && issuer.id === recipient?.id && !revoked">
-            <template #trigger>
-              <NButton
-                size="sm"
-                variant="outline"
-                class="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/10"
-              >
-                <div class="i-lucide-ban mr-1"></div>
-                Revoke
-              </NButton>
-            </template>
-            
-            <template #content>
-              <div class="p-4 w-72">
-                <h4 class="font-medium mb-2">Revoke Certificate</h4>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  This action cannot be undone. Please provide a reason for revocation.
-                </p>
-                <NFormItem label="Reason">
-                  <NInput v-model="revocationReason" placeholder="Enter revocation reason" />
-                </NFormItem>
-                <div class="flex justify-end mt-3">
-                  <NButton
-                    size="sm"
-                    variant="solid"
-                    class="bg-red-600 hover:bg-red-700 text-white"
-                    :loading="isRevoking"
-                    :disabled="!revocationReason.trim()"
-                    @click="handleRevoke"
-                  >
-                    Confirm Revocation
-                  </NButton>
-                </div>
-              </div>
-            </template>
-          </NPopover>
-        </div>
-      </div>
-    </template>
-  </NCard>
+
+    <!-- Actions -->
+    <div class="mt-6 flex items-center justify-end space-x-4">
+      <NuxtLink
+        :to="`/credentials/${encodeURIComponent(credentialId || id)}`"
+        class="text-[#00E5C5] hover:text-[#00E5C5]/80 text-sm font-medium"
+      >
+        View Details
+      </NuxtLink>
+      <button 
+        @click="$emit('download', certificate)"
+        class="text-[#00E5C5] hover:text-[#00E5C5]/80 text-sm font-medium"
+      >
+        Download
+      </button>
+      <button 
+        v-if="revoked"
+        @click="$emit('revoke', certificate)"
+        class="text-red-500 hover:text-red-600 text-sm font-medium"
+      >
+        Revoke
+      </button>
+    </div>
+  </div>
 </template>

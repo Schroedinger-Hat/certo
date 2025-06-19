@@ -65,69 +65,109 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="flex justify-center items-center min-h-[calc(100vh-12rem)]">
-    <NCard class="w-full max-w-md p-6">
-      <template #header>
-        <div class="text-center mb-6">
-          <h1 class="text-2xl font-bold">Sign In</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-2">
-            Enter your credentials to access your account
-          </p>
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <!-- Header -->
+      <div class="text-center">
+        <h2 class="text-4xl font-bold text-text-primary">Welcome back</h2>
+        <p class="mt-2 text-text-secondary">Sign in to your account</p>
+      </div>
+
+      <!-- Form -->
+      <div class="mt-8 bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg">
+        <!-- Error Message -->
+        <div v-if="authError" class="rounded-lg bg-red-50 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <div class="w-5 h-5 i-heroicons-x-circle text-red-400"></div>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-red-800">{{ authError }}</p>
+            </div>
+          </div>
         </div>
-      </template>
-      
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <NAlert v-if="authError" variant="error" class="mb-4">
-          {{ authError }}
-        </NAlert>
-        
-        <NFormItem label="Email" required>
-          <NInput
-            v-model="email"
-            type="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            required
-          />
-        </NFormItem>
-        
-        <NFormItem label="Password" required>
-          <NInput
-            v-model="password"
-            type="password"
-            placeholder="••••••••"
-            autocomplete="current-password"
-            required
-          />
-        </NFormItem>
-        
-        <div class="flex items-center justify-between">
-          <NCheckbox v-model="rememberMe" label="Remember me" />
-          <NuxtLink to="/forgot-password" class="text-sm text-primary hover:underline">
-            Forgot password?
-          </NuxtLink>
-        </div>
-        
-        <NButton
-          type="submit"
-          size="lg"
-          block
-          :loading="isLoading"
-        >
-          Sign In
-        </NButton>
-      </form>
-      
-      <template #footer>
-        <div class="text-center mt-4">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+
+        <form class="space-y-6" @submit.prevent="handleSubmit">
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-text-primary">
+              Email address
+            </label>
+            <div class="mt-1">
+              <input
+                id="email"
+                v-model="email"
+                name="email"
+                type="email"
+                required
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-text-primary">
+              Password
+            </label>
+            <div class="mt-1">
+              <input
+                id="password"
+                v-model="password"
+                name="password"
+                type="password"
+                required
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+                placeholder="Enter your password"
+              />
+            </div>
+          </div>
+
+          <!-- Remember & Forgot -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                class="h-4 w-4 text-[#00E5C5] focus:ring-[#00E5C5] border-gray-300 rounded"
+              />
+              <label for="remember-me" class="ml-2 block text-sm text-text-secondary">
+                Remember me
+              </label>
+            </div>
+
+            <div class="text-sm">
+              <NuxtLink to="/forgot-password" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
+                Forgot your password?
+              </NuxtLink>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div>
+            <button
+              type="submit"
+              :disabled="isLoading"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span v-if="!isLoading">Sign in</span>
+              <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            </button>
+          </div>
+        </form>
+
+        <!-- Sign up link -->
+        <div class="mt-6 text-center">
+          <p class="text-sm text-text-secondary">
             Don't have an account?
-            <NuxtLink to="/register" class="text-primary hover:underline">
-              Create one
+            <NuxtLink to="/register" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
+              Sign up for free
             </NuxtLink>
           </p>
         </div>
-      </template>
-    </NCard>
+      </div>
+    </div>
   </div>
 </template> 
