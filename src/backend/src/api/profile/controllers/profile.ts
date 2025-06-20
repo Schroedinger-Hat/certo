@@ -104,6 +104,8 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
         return ctx.notFound('Profile not found')
       }
       
+      strapi.log.debug(`[profile.findReceivedCredentials] Found ${profile.receivedCredentials?.length || 0} credentials for profile ${id}`)
+
       return { data: profile.receivedCredentials || [] }
     } catch (err) {
       ctx.badRequest('Error fetching received credentials', { error: err })

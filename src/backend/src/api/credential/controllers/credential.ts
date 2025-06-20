@@ -43,11 +43,6 @@ export default factories.createCoreController('api::credential.credential', ({ s
    */
   async issue(ctx) {
     try {
-      // Explicitly set CORS headers
-      ctx.set('Access-Control-Allow-Origin', '*');
-      ctx.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-      ctx.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,Accept');
-      
       strapi.log.debug('[credential.issue] Request received:', ctx.request.body)
       
       // Temporarily disable auth check
@@ -64,12 +59,19 @@ export default factories.createCoreController('api::credential.credential', ({ s
         return ctx.badRequest('Achievement ID is required')
       }
 
-      // Find the achievement
-      const achievement = await strapi.entityService.findOne(
-        'api::achievement.achievement',
-        achievementId,
-        { populate: { creator: true, image: true } }
-      )
+      // Find the achievement and ensure it's published
+      const achievements = await strapi.entityService.findMany('api::achievement.achievement', {
+        filters: {
+          id: achievementId,
+          publishedAt: { $not: null },
+        },
+        populate: { creator: true, image: true },
+      });
+
+      if (!achievements || achievements.length === 0) {
+        return ctx.notFound('Published achievement not found');
+      }
+      const achievement = achievements[0];
 
       if (!achievement) {
         return ctx.notFound('Achievement not found')
@@ -557,45 +559,49 @@ export default factories.createCoreController('api::credential.credential', ({ s
   },
 
   /**
-   * Batch issue badges to multiple recipients
+   * Batch issue credentials to multiple recipients
    */
   async batchIssue(ctx) {
     try {
-      ctx.set('Access-Control-Allow-Origin', '*')
-      ctx.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS')
-      ctx.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,Accept')
-
       const { data } = ctx.request.body
-      if (!data) return ctx.badRequest('Missing required data')
+      if (!data || !Array.isArray(data.recipients) || data.recipients.length === 0) {
+        return ctx.badRequest('Missing or invalid recipients array')
+      }
+
       const { achievementId, recipients, evidence = [] } = data
-      if (!achievementId) return ctx.badRequest('Achievement ID is required')
-      if (!Array.isArray(recipients) || recipients.length === 0) return ctx.badRequest('At least one recipient is required')
 
-      // Find the achievement once
-      const achievement = await strapi.entityService.findOne(
-        'api::achievement.achievement',
-        achievementId,
-        { populate: { creator: true, image: true } }
-      )
-      if (!achievement) return ctx.notFound('Achievement not found')
+      if (!achievementId) {
+        return ctx.badRequest('Achievement ID is required')
+      }
 
-      // Process each recipient
-      const results = await Promise.all(recipients.map(async (recipient) => {
+      // Find the achievement
+      const achievement = await strapi.entityService.findOne('api::achievement.achievement', achievementId, {
+        populate: { creator: true }
+      })
+
+      if (!achievement) {
+        return ctx.notFound('Achievement not found')
+      }
+
+      const results = []
+      for (const recipientData of recipients) {
         try {
-          if (!recipient.email || !recipient.name) throw new Error('Recipient name and email are required')
+          const recipient = { ...recipientData }
           const credential = await strapi.service('api::credential.credential').issue(
             achievement,
             recipient,
             evidence
           )
-          return { recipient, success: true, credential }
+          results.push({ success: true, recipient: recipientData.email, data: credential })
         } catch (error) {
-          return { recipient, success: false, error: error.message || 'Failed to issue badge' }
+          strapi.log.error(`[credential.batchIssue] Error issuing to ${recipientData.email}:`, error)
+          results.push({ success: false, recipient: recipientData.email, error: error.message })
         }
-      }))
+      }
+
       return { results }
     } catch (error) {
-      strapi.log.error('[credential.batchIssue] Error:', error)
+      strapi.log.error('[credential.batchIssue] General error:', error)
       return ctx.badRequest(error.message || 'Failed to batch issue credentials')
     }
   }

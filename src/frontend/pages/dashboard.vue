@@ -33,14 +33,6 @@ const error = ref<string | null>(null)
 const receivedCertificates = ref<Certificate[]>([])
 const issuedCertificates = ref<Certificate[]>([])
 
-const recentReceivedCertificates = computed(() => {
-  return receivedCertificates.value.slice(0, 3)
-})
-
-const recentIssuedCertificates = computed(() => {
-  return issuedCertificates.value.slice(0, 3)
-})
-
 onMounted(async () => {
   if (!authStore.isAuthenticated) return
   
@@ -91,13 +83,6 @@ onMounted(async () => {
       <div class="mb-12">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-semibold">Received Certificates</h2>
-          <NuxtLink 
-            v-if="receivedCertificates.length > 3"
-            to="/certificates/received" 
-            class="text-[#00E5C5] hover:text-[#00E5C5]/80"
-          >
-            View All
-          </NuxtLink>
         </div>
         <div v-if="receivedCertificates.length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
           <div class="i-heroicons-inbox w-12 h-12 mx-auto text-gray-400 mb-3"></div>
@@ -106,9 +91,10 @@ onMounted(async () => {
         </div>
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <CertificateCard 
-            v-for="cert in recentReceivedCertificates" 
+            v-for="cert in receivedCertificates" 
             :key="cert.id" 
-            :certificate="cert" 
+            :certificate="cert"
+            :show-recipient="false"
           />
         </div>
       </div>
@@ -123,13 +109,6 @@ onMounted(async () => {
               class="px-4 py-2 bg-[#00E5C5] text-white rounded-full hover:bg-[#00E5C5]/90 transition-colors"
             >
               Issue New
-            </NuxtLink>
-            <NuxtLink 
-              v-if="issuedCertificates.length > 3"
-              to="/certificates/issued" 
-              class="text-[#00E5C5] hover:text-[#00E5C5]/80"
-            >
-              View All
             </NuxtLink>
           </div>
         </div>
@@ -147,7 +126,7 @@ onMounted(async () => {
         </div>
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <CertificateCard 
-            v-for="cert in recentIssuedCertificates" 
+            v-for="cert in issuedCertificates" 
             :key="cert.id" 
             :certificate="cert" 
           />

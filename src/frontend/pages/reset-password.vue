@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useHead } from '#imports'
+import { useHead, useRuntimeConfig } from '#imports'
 
 const password = ref('')
 const confirmPassword = ref('')
@@ -11,6 +11,8 @@ const error = ref('')
 const code = ref('')
 const router = useRouter()
 const route = useRoute()
+const config = useRuntimeConfig()
+const apiUrl = config.public.apiUrl
 
 useHead({
   title: 'Reset Password | Certo',
@@ -43,7 +45,7 @@ async function handleSubmit() {
   success.value = false
 
   try {
-    const res = await fetch('/api/auth/reset-password', {
+    const res = await fetch(`${apiUrl}/api/auth/reset-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

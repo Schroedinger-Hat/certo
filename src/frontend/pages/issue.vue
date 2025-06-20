@@ -175,6 +175,51 @@
                 />
               </div>
 
+              <!-- Success & Error Messages -->
+              <div class="space-y-4">
+                <!-- Success Message -->
+                <div v-if="isSuccess" class="rounded-lg bg-green-50 p-4">
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <div class="w-5 h-5 i-heroicons-check-circle text-green-400"></div>
+                    </div>
+                    <div class="ml-3">
+                      <p class="text-sm font-medium text-green-800">
+                        Certificates issued successfully!
+                      </p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                      <div class="-mx-1.5 -my-1.5">
+                        <button @click="isSuccess = false" type="button" class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
+                          <span class="sr-only">Dismiss</span>
+                          <div class="w-5 h-5 i-heroicons-x-mark"></div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Error Message -->
+                <div v-if="submissionError" class="rounded-lg bg-red-50 p-4">
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <div class="w-5 h-5 i-heroicons-x-circle text-red-400"></div>
+                    </div>
+                    <div class="ml-3">
+                      <p class="text-sm font-medium text-red-800">{{ submissionError }}</p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                      <div class="-mx-1.5 -my-1.5">
+                        <button @click="submissionError = null" type="button" class="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600">
+                          <span class="sr-only">Dismiss</span>
+                          <div class="w-5 h-5 i-heroicons-x-mark"></div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Submit Button -->
               <div>
                 <button
@@ -204,16 +249,6 @@
                   @error="(e) => console.error('Image failed to load:', (e.target as HTMLImageElement)?.src)"
                   @load="() => console.log('Image loaded successfully')"
                 />
-              </div>
-              <!-- Debug info -->
-              <div v-if="isDev" class="text-xs text-gray-500 space-y-1 p-2 bg-gray-50 rounded">
-                <p class="font-medium">Debug Info:</p>
-                <p>URL: {{ getImageUrl(selectedTemplate) }}</p>
-                <p>Template ID: {{ selectedTemplate.id }}</p>
-                <details>
-                  <summary>Raw Image Data</summary>
-                  <pre>{{ JSON.stringify(selectedTemplate.image || selectedTemplate.attributes?.image, null, 2) }}</pre>
-                </details>
               </div>
 
               <div class="space-y-2">
@@ -252,7 +287,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useApiClient, type Badge, type Recipient } from '~/composables/useApiClient'
+import { useApiClient, type Badge, type Recipient } from '../composables/useApiClient'
 import { useAuthStore } from '~/stores/auth'
 import BadgeIssuanceForm from '~/components/BadgeIssuanceForm.vue'
 
@@ -302,6 +337,7 @@ const issueDate = ref(new Date().toISOString().split('T')[0])
 const isLoading = ref(false)
 const isSuccess = ref(false)
 const error = ref<string | null>(null)
+const submissionError = ref<string | null>(null)
 const isLoadingTemplates = ref(false)
 const csvUploaded = ref(false)
 const isDev = computed(() => process.env.NODE_ENV === 'development')
@@ -348,15 +384,32 @@ async function loadTemplates() {
     console.log('Received response:', response)
 
     if (response?.data) {
-      templates.value = response.data.map((badge: Badge) => {
-        console.log('Processing badge:', badge)
+      templates.value = response.data.map((badge: any) => {
+        console.log('Processing badge with new structure:', badge)
         return {
           id: String(badge.id),
-          title: badge.attributes?.name || '',
-          description: badge.attributes?.description || '',
-          image: badge.attributes?.image,
+          title: badge.name || '',
+          description: badge.description || '',
+          image: {
+            data: {
+              attributes: {
+                url: badge.image?.url,
+              },
+            },
+          },
           type: 'badge',
-          attributes: badge.attributes
+          attributes: {
+            name: badge.name || '',
+            description: badge.description || '',
+            image: {
+              data: {
+                attributes: {
+                  url: badge.image?.url,
+                },
+              },
+            },
+            creator: badge.creator,
+          },
         }
       })
       console.log('Processed templates:', templates.value)
@@ -450,44 +503,44 @@ function removeRecipient(index: number) {
 }
 
 function handleFileUpload(event: Event) {
-  const input = event.target as HTMLInputElement
-  if (!input.files?.length) return
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
 
-  const file = input.files[0]
-  const reader = new FileReader()
+  const file = input.files[0];
+  const reader = new FileReader();
   reader.onload = () => {
     try {
-      const content = reader.result as string
-      const rows = content.split('\n')
-      const parsedRecipients: Recipient[] = []
+      const content = reader.result as string;
+      const rows = content.split(/\r?\n/).slice(1); // Skip header row
+      const parsedRecipients: Recipient[] = rows
+        .map(row => row.split(','))
+        .filter(([name, email]) => name && name.trim() && email && email.trim())
+        .map(([name, email, organization]) => ({
+          name: name.trim(),
+          email: email.trim(),
+          organization: organization?.trim() || '',
+        }));
 
-      for (let i = 1; i < rows.length; i++) {
-        const [name, email, organization] = rows[i].split(',')
-        if (name && email) {
-          parsedRecipients.push({
-            name: name.trim(),
-            email: email.trim(),
-            organization: organization?.trim()
-          })
-        }
+      if (parsedRecipients.length === 0) {
+        throw new Error('CSV file is empty or invalid. Please check the file and try again.');
       }
 
-      recipients.value = parsedRecipients
-      csvUploaded.value = true
-      error.value = null
+      recipients.value = parsedRecipients;
+      csvUploaded.value = true;
+      error.value = null;
     } catch (err) {
-      console.error('Error parsing CSV:', err)
-      error.value = 'Failed to parse CSV file'
-      recipients.value = []
-      csvUploaded.value = false
+      console.error('Error parsing CSV:', err);
+      error.value = err instanceof Error ? err.message : 'Failed to parse CSV file';
+      recipients.value = [{ name: '', email: '' }];
+      csvUploaded.value = false;
     }
-  }
+  };
   reader.onerror = () => {
-    console.error('Error reading file:', reader.error)
-    error.value = 'Failed to read CSV file'
-    csvUploaded.value = false
-  }
-  reader.readAsText(file)
+    console.error('Error reading file:', reader.error);
+    error.value = 'Failed to read CSV file';
+    csvUploaded.value = false;
+  };
+  reader.readAsText(file);
 }
 
 function clearCsvRecipients() {
@@ -507,7 +560,8 @@ async function handleIssue() {
   })
 
   isLoading.value = true
-  error.value = null
+  submissionError.value = null
+  isSuccess.value = false
 
   try {
     await apiClient.batchIssueBadges(
@@ -520,9 +574,9 @@ async function handleIssue() {
   } catch (err) {
     console.error('Error issuing badges:', err)
     if (err instanceof Error) {
-      error.value = err.message
+      submissionError.value = err.message
     } else {
-      error.value = 'Failed to issue credentials'
+      submissionError.value = 'Failed to issue credentials'
     }
     isSuccess.value = false
   } finally {
@@ -532,9 +586,11 @@ async function handleIssue() {
 
 function clearForm() {
   selectedTemplate.value = null
-  recipients.value = []
+  recipients.value = [{ name: '', email: '' }]
+  csvUploaded.value = false
   isSuccess.value = false
   error.value = null
+  submissionError.value = null
 }
 
 function formatDate(date: string) {

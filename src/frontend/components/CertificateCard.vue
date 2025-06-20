@@ -11,11 +11,16 @@ const props = defineProps({
   certificate: {
     type: Object,
     required: true
+  },
+  showRecipient: {
+    type: Boolean,
+    default: true
   }
 })
 
 const emit = defineEmits(['export', 'revoke', 'view', 'download'])
 
+const isMenuOpen = ref(false)
 const isRevoking = ref(false)
 const revocationReason = ref('')
 const isExporting = ref(false)
@@ -168,6 +173,24 @@ function copyToClipboard() {
     alert('Failed to copy to clipboard')
   }
 }
+
+async function handleDownload() {
+  if (!process.client || !imageUrl.value) return
+
+  try {
+    const a = document.createElement('a')
+    a.href = imageUrl.value
+    // Suggest a filename for the download
+    a.download = `${achievementName.replace(/\s+/g, '-')}-certificate.png`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    emit('download')
+  } catch (error) {
+    console.error('Error downloading certificate image:', error)
+    alert('Failed to download image.')
+  }
+}
 </script>
 
 <template>
@@ -193,47 +216,63 @@ function copyToClipboard() {
             <div class="w-4 h-4 i-heroicons-user mr-2"></div>
             {{ issuerName }}
           </div>
-          <div class="flex items-center text-sm text-text-secondary">
+          <div v-if="showRecipient" class="flex items-center text-sm text-text-secondary">
             <div class="w-4 h-4 i-heroicons-building-office mr-2"></div>
             {{ recipient?.name || 'Unknown Recipient' }}
           </div>
         </div>
       </div>
 
-      <!-- Status Badge -->
-      <span 
-        class="px-2 py-1 text-xs font-semibold rounded-full"
-        :class="{
-          'bg-green-100 text-green-800': !revoked,
-          'bg-yellow-100 text-yellow-800': !revoked,
-          'bg-red-100 text-red-800': revoked
-        }"
-      >
-        {{ revoked ? 'Revoked' : 'Valid' }}
-      </span>
+      <!-- Dropdown Menu for Actions -->
+      <div class="relative">
+        <button 
+          @click.stop="isMenuOpen = !isMenuOpen" 
+          class="p-2 rounded-full hover:bg-gray-100"
+        >
+          <div class="w-5 h-5 i-heroicons-ellipsis-vertical text-gray-500"></div>
+        </button>
+        
+        <!-- Dropdown Content -->
+        <transition name="fade">
+          <div 
+            v-if="isMenuOpen" 
+            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
+          >
+            <a 
+              :href="getCredentialUrl()" 
+              target="_blank"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              View Certificate
+            </a>
+            <button 
+              @click="handleDownload"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Download
+            </button>
+            <button 
+              @click="copyToClipboard"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Copy Verification Link
+            </button>
+            <button 
+              @click="handleExport" 
+              :disabled="isExporting"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+            >
+              <span v-if="isExporting">Exporting...</span>
+              <span v-else>Export to JSON</span>
+            </button>
+          </div>
+        </transition>
+      </div>
     </div>
 
-    <!-- Actions -->
-    <div class="mt-6 flex items-center justify-end space-x-4">
-      <NuxtLink
-        :to="`/credentials/${encodeURIComponent(credentialId || id)}`"
-        class="text-[#00E5C5] hover:text-[#00E5C5]/80 text-sm font-medium"
-      >
-        View Details
-      </NuxtLink>
-      <button 
-        @click="$emit('download', certificate)"
-        class="text-[#00E5C5] hover:text-[#00E5C5]/80 text-sm font-medium"
-      >
-        Download
-      </button>
-      <button 
-        v-if="revoked"
-        @click="$emit('revoke', certificate)"
-        class="text-red-500 hover:text-red-600 text-sm font-medium"
-      >
-        Revoke
-      </button>
+    <!-- Image Preview -->
+    <div class="mt-4 aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+      <img :src="imageUrl" alt="Certificate Image" class="w-full h-full object-cover">
     </div>
   </div>
 </template>

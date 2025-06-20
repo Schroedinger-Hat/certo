@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useHead } from '#imports'
+import { useHead, useRuntimeConfig } from '#imports'
 const email = ref('')
 const isLoading = ref(false)
 const success = ref(false)
 const error = ref('')
 const router = useRouter()
+const config = useRuntimeConfig()
+const apiUrl = config.public.apiUrl
 
 useHead({
   title: 'Forgot Password | Certo',
@@ -20,7 +22,7 @@ async function handleSubmit() {
   isLoading.value = true
   success.value = false
   try {
-    const res = await fetch(`/api/auth/forgot-password`, {
+    const res = await fetch(`${apiUrl}/api/auth/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value })

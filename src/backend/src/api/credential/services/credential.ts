@@ -18,7 +18,8 @@ export default ({ strapi }) => ({
         // Find existing recipient by ID
         recipientEntity = await strapi.entityService.findOne(
           'api::profile.profile',
-          recipient.id
+          recipient.id,
+          { populate: { receivedCredentials: true } }
         )
       } else if (recipient.email) {
         // Find or create by email
@@ -26,6 +27,7 @@ export default ({ strapi }) => ({
           'api::profile.profile',
           {
             filters: { email: recipient.email },
+            populate: { receivedCredentials: true }
           }
         )
 
@@ -39,6 +41,7 @@ export default ({ strapi }) => ({
               email: recipient.email,
               profileType: 'Recipient',
               publishedAt: new Date(),
+              receivedCredentials: []
             }
           })
         }
@@ -51,6 +54,9 @@ export default ({ strapi }) => ({
       // Find or create user associated with the profile
       await this.findOrCreateUser(recipientEntity)
 
+      // The existing received credentials
+      const existingCredentials = recipientEntity.receivedCredentials || [];
+
       // Generate a unique credential ID
       const credentialId = `urn:uuid:${this.generateUUID()}`
 
@@ -58,7 +64,7 @@ export default ({ strapi }) => ({
       const proof = await this.generateProof(credentialId)
 
       // Create the credential
-      const credential = await strapi.entityService.create('api::credential.credential', {
+      const credentialDraft = await strapi.entityService.create('api::credential.credential', {
         data: {
           credentialId,
           name: achievement.name,
@@ -69,8 +75,25 @@ export default ({ strapi }) => ({
           recipient: recipientEntity.id,
           issuanceDate: new Date(),
           revoked: false,
-          publishedAt: new Date(),
           proof: [proof]
+        }
+      })
+      strapi.log.debug(`[credential.issue] Created DRAFT credential: ${JSON.stringify(credentialDraft, null, 2)}`);
+
+      // Publish the newly created credential
+      const publishedCredential = await strapi.entityService.update('api::credential.credential', credentialDraft.id, {
+        data: {
+          publishedAt: new Date(),
+        },
+      });
+      strapi.log.debug(`[credential.issue] Published credential: ${JSON.stringify(publishedCredential, null, 2)}`);
+      
+      // Update the profile with the newly created credential
+      await strapi.entityService.update('api::profile.profile', recipientEntity.id, {
+        data: {
+          receivedCredentials: {
+            connect: [{ id: credentialDraft.id }]
+          }
         }
       })
 
@@ -82,7 +105,7 @@ export default ({ strapi }) => ({
               data: {
                 name: item.name || 'Evidence',
                 description: item.description || '',
-                credential: credential.id,
+                credential: credentialDraft.id,
                 publishedAt: new Date(),
               }
             })
@@ -93,7 +116,7 @@ export default ({ strapi }) => ({
       // Return the full credential with populated relations
       const populatedCredential = await strapi.entityService.findOne(
         'api::credential.credential',
-        credential.id,
+        credentialDraft.id,
         {
           populate: [
             'achievement',
@@ -107,7 +130,7 @@ export default ({ strapi }) => ({
 
       // Convert to Open Badge format
       const openBadgeService = strapi.service('api::credential.open-badge')
-      const serializedCredential = await openBadgeService.serializeCredential(credential.id)
+      const serializedCredential = await openBadgeService.serializeCredential(credentialDraft.id)
 
       // Send notification email to recipient
       let emailSent = false
@@ -127,7 +150,7 @@ export default ({ strapi }) => ({
             subject: `You've received a new credential: ${achievement.name}`,
             text: `Congratulations! You have been awarded the "${achievement.name}" credential.
 
-View your credential at: ${frontendUrl}/credentials/${credential.credentialId}
+View your credential at: ${frontendUrl}/credentials/${credentialDraft.credentialId}
 
 ${user ? `
 A user account has been created for you to manage your credentials.
@@ -141,7 +164,7 @@ Thank you,
 The Certo Team`,
             html: `<h1>Congratulations!</h1>
                   <p>You have been awarded the "${achievement.name}" credential.</p>
-                  <p><a href="${frontendUrl}/credentials/${credential.credentialId}">View your credential</a></p>
+                  <p><a href="${frontendUrl}/credentials/${credentialDraft.credentialId}">View your credential</a></p>
                   
                   ${user ? `
                   <h2>Your Account Information</h2>
