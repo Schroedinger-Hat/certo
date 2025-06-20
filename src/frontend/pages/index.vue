@@ -8,19 +8,19 @@ useHead({
 
 const features = [
   {
-    title: 'Certificate Builder',
-    description: 'Create beautiful certificates with our easy-to-use builder. Choose from templates or start from scratch.',
-    icon: 'i-heroicons-document'
+    title: 'Secure Verification',
+    description: 'Verify the authenticity of any credential using our powerful verification engine.',
+    icon: 'i-heroicons-shield-check'
   },
   {
-    title: 'Multiple Formats',
-    description: 'Export your certificates in various formats including PDF, JPG, and PNG.',
-    icon: 'i-heroicons-arrow-down-on-square'
+    title: 'Badge Issuance',
+    description: 'Create and issue badges to recognize achievements, skills and credentials.',
+    icon: 'i-heroicons-identification'
   },
   {
-    title: 'Automatic Emails',
-    description: 'Send certificates directly to recipients with automated email delivery.',
-    icon: 'i-heroicons-envelope'
+    title: 'Credential Management',
+    description: 'Manage your digital credentials in one place, with easy export and sharing options.',
+    icon: 'i-heroicons-briefcase'
   }
 ]
 
@@ -66,7 +66,7 @@ const exportFeatures = [
         & send to anyone
       </h1>
       <p class="text-text-secondary text-xl md:text-2xl mb-12 max-w-2xl mx-auto">
-        Powerful features like certificates builder, export in different formats, automatic emails.
+        Issue, verify and manage digital credentials using the Open Badges standard. Secure, transparent and verifiable
       </p>
       <NuxtLink 
         to="/register" 
