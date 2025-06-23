@@ -6,12 +6,13 @@ import type {
   VerificationResult,
 } from '../types/openbadges'
 
-let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337'
+let API_URL = '' // fallback, will be set by Nuxt plugin
 // let API_URL = 'https://bold-approval-5bde4fbd5d.strapiapp.com'
 
 // This will be updated when the module is initialized in the browser
 export function updateApiUrl(url: string) {
   if (url) API_URL = url
+  apiClient.setBaseUrl(url)
   console.log('API URL set to:', API_URL)
 }
 
@@ -22,7 +23,7 @@ export class ApiClient {
   private baseUrl: string
   private token: string | null
 
-  constructor(baseUrl = API_URL) {
+  constructor(baseUrl = '') {
     this.baseUrl = baseUrl
     this.token = null
     
@@ -99,6 +100,9 @@ export class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
+    if (!this.baseUrl) {
+      throw new Error('API baseUrl is not set. Make sure the Nuxt plugin initializes the API client before use.')
+    }
     const url = `${this.baseUrl}${endpoint}`
     const headers = this.getHeaders()
 
@@ -118,6 +122,7 @@ export class ApiClient {
     console.log(`Making ${options.method || 'GET'} request to: ${url}`)
 
     try {
+      console.log('API URL:', this.baseUrl)
       const response = await fetch(url, config)
       console.log(`Response status for ${url}: ${response.status}`)
 
@@ -735,6 +740,16 @@ export class ApiClient {
     } catch (error) {
       console.error('Error fetching available badges:', error)
       return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
+    }
+  }
+
+  /**
+   * Set the base URL for the API client
+   */
+  public setBaseUrl(url: string) {
+    if (url) {
+      this.baseUrl = url
+      console.log('ApiClient baseUrl set to:', url)
     }
   }
 }

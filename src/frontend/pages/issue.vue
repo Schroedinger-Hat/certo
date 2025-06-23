@@ -485,7 +485,6 @@ function getImageUrl(template: Template): string {
   // Ensure we have an API URL
   if (!apiUrl) {
     console.warn('No API URL configured, using default')
-    return url.startsWith('/') ? `http://localhost:1337${url}` : `http://localhost:1337/${url}`
   }
   
   // Handle relative URLs

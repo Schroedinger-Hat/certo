@@ -65,8 +65,10 @@ interface Recipient {
 
 export function useApiClient() {
   const config = useRuntimeConfig()
-  const apiUrl = config.public.apiUrl || 'http://localhost:1337'
+  const apiUrl = config.public.apiUrl
   const authStore = useAuthStore()
+
+  console.log('API URL:', apiUrl)
 
   async function getHeaders(): Promise<HeadersInit> {
     const token = authStore.token

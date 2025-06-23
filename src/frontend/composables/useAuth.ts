@@ -15,7 +15,9 @@ const state = ref<AuthState>({
 
 export function useAuth() {
   const config = useRuntimeConfig()
-  const apiUrl = config.public.apiUrl || 'http://localhost:1337'
+  const apiUrl = config.public.apiUrl
+
+  console.log('API URL:', apiUrl)
 
   async function login(identifier: string, password: string): Promise<void> {
     try {

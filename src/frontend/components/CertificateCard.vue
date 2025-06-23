@@ -68,7 +68,7 @@ function formatDate(dateString) {
 // Get the certificate image URL from the API
 const imageUrl = computed(() => {
   const runtimeConfig = useRuntimeConfig()
-  const apiUrl = runtimeConfig.public.apiUrl || 'http://localhost:1337'
+  const apiUrl = runtimeConfig.public.apiUrl
   
   // Try different possible image structures
   if (props.certificate.imageUrl) {

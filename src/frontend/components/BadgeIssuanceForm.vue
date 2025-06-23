@@ -148,7 +148,7 @@ const batchResults = ref<BatchResult[]>([])
 
 // Helper function to get badge image URL from various data structures
 function getBadgeImageUrl(badge: Badge): string | undefined {
-  const apiUrl = useRuntimeConfig().public.apiUrl || 'http://localhost:1337'
+  const apiUrl = useRuntimeConfig().public.apiUrl
   
   // Handle Strapi nested format: data.attributes structure
   if (badge.attributes?.image?.data?.attributes?.url) {

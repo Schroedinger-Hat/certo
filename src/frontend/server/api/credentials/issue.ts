@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     // Get API URL from runtime config
     const config = useRuntimeConfig()
-    const apiUrl = config.public.apiUrl || 'http://localhost:1337'
+    const apiUrl = config.public.apiUrl
     
     // Get authorization header
     const authorization = getHeader(event, 'authorization')
