@@ -70,6 +70,7 @@ export default factories.createCoreController('api::achievement.achievement', ({
       const { id } = ctx.params
       
       const achievement = await strapi.entityService.findOne('api::achievement.achievement', id, {
+        status: 'published',
         populate: ['credentials', 'credentials.recipient', 'image', 'creator']
       }) as Achievement
       

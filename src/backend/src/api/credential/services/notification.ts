@@ -39,7 +39,7 @@ export default ({ strapi }) => ({
             recipientData = await strapi.entityService.findOne(
               'api::profile.profile',
               credential.recipient,
-              { populate: [] }
+              { status: 'published', populate: [] }
             )
           } catch (err) {
             console.error('Error fetching recipient profile:', err)

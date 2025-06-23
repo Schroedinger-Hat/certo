@@ -184,6 +184,7 @@ export default ({ strapi }) => ({
     try {
       // Fetch the credential with all its relations
       const credential = await strapi.entityService.findOne('api::credential.credential', credentialId, {
+        status: 'published',
         populate: [
           'achievement', 
           'achievement.image', 

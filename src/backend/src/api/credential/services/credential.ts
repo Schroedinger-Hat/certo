@@ -21,7 +21,7 @@ export default ({ strapi }) => ({
         recipientEntity = await strapi.entityService.findOne(
           'api::profile.profile',
           recipient.id,
-          { publicationState: 'published' }
+          { status: 'published' }
         )
       } else if (recipient.email) {
         // Find or create by email
@@ -29,7 +29,7 @@ export default ({ strapi }) => ({
           'api::profile.profile',
           {
             filters: { email: recipient.email },
-            publicationState: 'published',
+            status: 'published',
           }
         )
 
@@ -112,7 +112,7 @@ export default ({ strapi }) => ({
         'api::credential.credential',
         credential.id,
         {
-          publicationState: 'published',
+          status: 'published',
           populate: [
             'achievement',
             'issuer',
@@ -268,6 +268,7 @@ export default ({ strapi }) => ({
       // Try to find a system issuer
       const existingIssuers = await strapi.entityService.findMany('api::profile.profile', {
         filters: { name: 'System Issuer' },
+        status: 'published',
       })
       
       if (existingIssuers && existingIssuers.length > 0) {

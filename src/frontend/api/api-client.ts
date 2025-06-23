@@ -6,8 +6,8 @@ import type {
   VerificationResult,
 } from '../types/openbadges'
 
-// let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337'
-let API_URL = 'https://bold-approval-5bde4fbd5d.strapiapp.com/'
+let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337'
+// let API_URL = 'https://bold-approval-5bde4fbd5d.strapiapp.com'
 
 // This will be updated when the module is initialized in the browser
 export function updateApiUrl(url: string) {

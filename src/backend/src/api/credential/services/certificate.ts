@@ -17,6 +17,7 @@ export default ({ strapi }) => ({
         'api::credential.credential',
         credentialId,
         {
+          status: 'published',
           populate: [
             'achievement',
             'achievement.image',

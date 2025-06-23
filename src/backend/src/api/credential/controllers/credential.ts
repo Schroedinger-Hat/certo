@@ -61,9 +61,9 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
       // Find the achievement and ensure it's published
       const achievements = await strapi.entityService.findMany('api::achievement.achievement', {
+        status: 'published',
         filters: {
           id: achievementId,
-          publishedAt: { $not: null },
         },
         populate: { creator: true, image: true },
       });
@@ -127,6 +127,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
         
         // Find the credential by credentialId field
         const credentials = await strapi.entityService.findMany('api::credential.credential', {
+          status: 'published',
           filters: { credentialId: id },
           populate: [
             'achievement', 
@@ -282,6 +283,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
       // Find the credential
       const credential = await strapi.entityService.findOne('api::credential.credential', id, {
+        status: 'published',
         populate: ['achievement', 'issuer', 'recipient', 'evidence'],
       })
 
@@ -348,6 +350,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
         'api::achievement.achievement',
         id,
         {
+          status: 'published',
           populate: {
             issuer: true,
             image: true,
@@ -469,6 +472,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
           console.log('Looking for profile with email:', userEmail);
           
           const profiles = await strapi.entityService.findMany('api::profile.profile', {
+            status: 'published',
             filters: { email: userEmail },
           })
 
@@ -485,6 +489,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
           // Use entityService directly instead of calling super.find
           const credentials = await strapi.entityService.findMany('api::credential.credential', {
+            status: 'published',
             filters: {
               $or: [
                 { recipient: { id: profileId } },
@@ -576,6 +581,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
       // Find the achievement
       const achievement = await strapi.entityService.findOne('api::achievement.achievement', achievementId, {
+        status: 'published',
         populate: { creator: true }
       })
 
