@@ -54,6 +54,7 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
       // Find profile by email
       const profiles = await strapi.entityService.findMany('api::profile.profile', {
         filters: { email: userEmail },
+        publicationState: 'published',
         limit: 1
       });
       
@@ -97,6 +98,7 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
       const { id } = ctx.params
       
       const profile = await strapi.entityService.findOne('api::profile.profile', id, {
+        status: 'published',
         populate: ['receivedCredentials', 'receivedCredentials.achievement', 'receivedCredentials.issuer']
       }) as ProfileWithCredentials
       
@@ -121,6 +123,7 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
 
       // Find the profile with its public keys
       const profile = await strapi.entityService.findOne('api::profile.profile', id, {
+        status: 'published',
         populate: ['publicKey']
       }) as ProfileWithPublicKeys
 
@@ -152,6 +155,7 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
 
       // Find the profile with its public keys
       const profile = await strapi.entityService.findOne('api::profile.profile', id, {
+        status: 'published',
         populate: ['publicKey']
       }) as ProfileWithPublicKeys
 

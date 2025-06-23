@@ -2,6 +2,8 @@
  * Credential service
  */
 
+import { generateCredentialIssuanceEmail } from '../templates/credential-issuance'
+
 export default ({ strapi }) => ({
   /**
    * Issue a new credential
@@ -19,7 +21,7 @@ export default ({ strapi }) => ({
         recipientEntity = await strapi.entityService.findOne(
           'api::profile.profile',
           recipient.id,
-          { populate: { receivedCredentials: true } }
+          { publicationState: 'published' }
         )
       } else if (recipient.email) {
         // Find or create by email
@@ -27,7 +29,7 @@ export default ({ strapi }) => ({
           'api::profile.profile',
           {
             filters: { email: recipient.email },
-            populate: { receivedCredentials: true }
+            publicationState: 'published',
           }
         )
 
@@ -41,7 +43,6 @@ export default ({ strapi }) => ({
               email: recipient.email,
               profileType: 'Recipient',
               publishedAt: new Date(),
-              receivedCredentials: []
             }
           })
         }
@@ -54,9 +55,6 @@ export default ({ strapi }) => ({
       // Find or create user associated with the profile
       await this.findOrCreateUser(recipientEntity)
 
-      // The existing received credentials
-      const existingCredentials = recipientEntity.receivedCredentials || [];
-
       // Generate a unique credential ID
       const credentialId = `urn:uuid:${this.generateUUID()}`
 
@@ -64,7 +62,7 @@ export default ({ strapi }) => ({
       const proof = await this.generateProof(credentialId)
 
       // Create the credential
-      const credentialDraft = await strapi.entityService.create('api::credential.credential', {
+      const credential = await strapi.entityService.create('api::credential.credential', {
         data: {
           credentialId,
           name: achievement.name,
@@ -75,27 +73,23 @@ export default ({ strapi }) => ({
           recipient: recipientEntity.id,
           issuanceDate: new Date(),
           revoked: false,
+          publishedAt: new Date(),
           proof: [proof]
         }
       })
-      strapi.log.debug(`[credential.issue] Created DRAFT credential: ${JSON.stringify(credentialDraft, null, 2)}`);
 
-      // Publish the newly created credential
-      const publishedCredential = await strapi.entityService.update('api::credential.credential', credentialDraft.id, {
-        data: {
-          publishedAt: new Date(),
-        },
-      });
-      strapi.log.debug(`[credential.issue] Published credential: ${JSON.stringify(publishedCredential, null, 2)}`);
-      
-      // Update the profile with the newly created credential
-      await strapi.entityService.update('api::profile.profile', recipientEntity.id, {
-        data: {
-          receivedCredentials: {
-            connect: [{ id: credentialDraft.id }]
-          }
-        }
-      })
+      // Explicitly connect the credential to the recipient's profile.
+      // This ensures the bidirectional relationship is updated.
+      if (recipientEntity && recipientEntity.id && credential && credential.id) {
+        await strapi.entityService.update('api::profile.profile', recipientEntity.id, {
+          data: {
+            receivedCredentials: {
+              connect: [{ id: credential.id }],
+            },
+            publishedAt: new Date(),
+          },
+        })
+      }
 
       // Add evidence if provided
       if (evidence && evidence.length > 0) {
@@ -105,7 +99,7 @@ export default ({ strapi }) => ({
               data: {
                 name: item.name || 'Evidence',
                 description: item.description || '',
-                credential: credentialDraft.id,
+                credential: credential.id,
                 publishedAt: new Date(),
               }
             })
@@ -116,8 +110,9 @@ export default ({ strapi }) => ({
       // Return the full credential with populated relations
       const populatedCredential = await strapi.entityService.findOne(
         'api::credential.credential',
-        credentialDraft.id,
+        credential.id,
         {
+          publicationState: 'published',
           populate: [
             'achievement',
             'issuer',
@@ -130,7 +125,7 @@ export default ({ strapi }) => ({
 
       // Convert to Open Badge format
       const openBadgeService = strapi.service('api::credential.open-badge')
-      const serializedCredential = await openBadgeService.serializeCredential(credentialDraft.id)
+      const serializedCredential = await openBadgeService.serializeCredential(credential.id)
 
       // Send notification email to recipient
       let emailSent = false
@@ -144,40 +139,13 @@ export default ({ strapi }) => ({
           })
 
           const frontendUrl = strapi.config.get('frontend.url', 'http://localhost:3000')
-          const backendUrl = strapi.config.get('server.url', 'http://localhost:1337')
           
-          const emailTemplate = {
-            subject: `You've received a new credential: ${achievement.name}`,
-            text: `Congratulations! You have been awarded the "${achievement.name}" credential.
-
-View your credential at: ${frontendUrl}/credentials/${credentialDraft.credentialId}
-
-${user ? `
-A user account has been created for you to manage your credentials.
-Username: ${user.username}
-Email: ${user.email}
-
-To set your password, please visit: ${frontendUrl}/forgot-password
-` : ''}
-
-Thank you,
-The Certo Team`,
-            html: `<h1>Congratulations!</h1>
-                  <p>You have been awarded the "${achievement.name}" credential.</p>
-                  <p><a href="${frontendUrl}/credentials/${credentialDraft.credentialId}">View your credential</a></p>
-                  
-                  ${user ? `
-                  <h2>Your Account Information</h2>
-                  <p>A user account has been created for you to manage your credentials.</p>
-                  <p><strong>Username:</strong> ${user.username}<br />
-                  <strong>Email:</strong> ${user.email}</p>
-                  
-                  <p>To set your password, please <a href="${frontendUrl}/forgot-password">click here</a> and enter your email address.</p>
-                  ` : ''}
-                  
-                  <p>Thank you,<br />
-                  The Certo Team</p>`
-          }
+          const emailTemplate = generateCredentialIssuanceEmail({
+            achievement,
+            credential,
+            frontendUrl,
+            user,
+          })
 
           await strapi.plugins['email'].services.email.send({
             to: recipientEntity.email,

@@ -583,8 +583,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
         return ctx.notFound('Achievement not found')
       }
 
-      const results = []
-      for (const recipientData of recipients) {
+      const issuePromises = recipients.map(async (recipientData) => {
         try {
           const recipient = { ...recipientData }
           const credential = await strapi.service('api::credential.credential').issue(
@@ -592,12 +591,14 @@ export default factories.createCoreController('api::credential.credential', ({ s
             recipient,
             evidence
           )
-          results.push({ success: true, recipient: recipientData.email, data: credential })
+          return { success: true, recipient: recipientData.email, data: credential }
         } catch (error) {
           strapi.log.error(`[credential.batchIssue] Error issuing to ${recipientData.email}:`, error)
-          results.push({ success: false, recipient: recipientData.email, error: error.message })
+          return { success: false, recipient: recipientData.email, error: error.message }
         }
-      }
+      })
+
+      const results = await Promise.all(issuePromises)
 
       return { results }
     } catch (error) {
