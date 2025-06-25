@@ -3,6 +3,23 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { apiClient } from '~/api/api-client'
 import CertificateCard from '~/components/CertificateCard.vue'
+import { useHead } from '#imports'
+
+useHead({
+  title: 'Dashboard | Certo',
+  meta: [
+    { name: 'description', content: 'Your Certo dashboard: manage your issued and received digital credentials.' },
+    { property: 'og:title', content: 'Dashboard | Certo' },
+    { property: 'og:description', content: 'Your Certo dashboard: manage your issued and received digital credentials.' },
+    { property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/dashboard' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/dashboard' }
+  ]
+})
 
 definePageMeta({
   middleware: ['auth']

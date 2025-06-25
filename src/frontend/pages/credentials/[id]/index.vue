@@ -215,6 +215,36 @@ useHead({
     { 
       name: 'description', 
       content: computed(() => credential.value?.description || 'View and verify credential details')
+    },
+    {
+      property: 'og:title',
+      content: computed(() => credential.value?.name ? `${credential.value.name} | Certo` : 'Credential Details | Certo')
+    },
+    {
+      property: 'og:description',
+      content: computed(() => credential.value?.description || 'View and verify credential details')
+    },
+    {
+      property: 'og:image',
+      content: computed(() => displayImageUrl.value || 'https://certo.schroedinger-hat.org/og-default.png')
+    },
+    {
+      name: 'twitter:card',
+      content: 'summary_large_image'
+    },
+    {
+      name: 'twitter:image',
+      content: computed(() => displayImageUrl.value || 'https://certo.schroedinger-hat.org/og-default.png')
+    },
+    {
+      property: 'og:url',
+      content: computed(() => shareableUrl.value)
+    }
+  ],
+  link: [
+    {
+      rel: 'canonical',
+      href: computed(() => shareableUrl.value)
     }
   ]
 })

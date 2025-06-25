@@ -12,6 +12,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/sitemap": "^7.4.2",
     "@pinia/nuxt": "^0.5.1",
     "@una-ui/nuxt": "^0.58.0",
     "date-fns": "^2.30.0",
@@ -21,6 +22,7 @@
     "lucide-vue-next": "^0.323.0",
     "nuqs": "^1.16.0",
     "nuxt": "^3.10.0",
+    "nuxt-gtag": "^3.0.3",
     "papaparse": "^5.5.3",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",

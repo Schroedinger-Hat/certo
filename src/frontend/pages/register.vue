@@ -1,10 +1,27 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useHead } from '#imports'
 
 definePageMeta({
   title: 'Register - Certo',
   middleware: ['route-guard']
+})
+
+useHead({
+  title: 'Register | Certo',
+  meta: [
+    { name: 'description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
+    { property: 'og:title', content: 'Register | Certo' },
+    { property: 'og:description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
+    { property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/register' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/register' }
+  ]
 })
 
 // Don't import useAuthStore directly

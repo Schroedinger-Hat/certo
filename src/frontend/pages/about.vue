@@ -214,6 +214,24 @@
 </template>
 
 <script setup lang="ts">
+import { useHead } from '#imports'
+
+useHead({
+  title: 'About | Certo',
+  meta: [
+    { name: 'description', content: 'Learn about Certo, our mission, and our open-source community.' },
+    { property: 'og:title', content: 'About | Certo' },
+    { property: 'og:description', content: 'Learn about Certo, our mission, and our open-source community.' },
+    { property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/about' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/about' }
+  ]
+})
+
 const handleSupportClick = () => {
   const subject = encodeURIComponent('Interested in Supporting Certo')
   const body = encodeURIComponent(

@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-06-12',
   devtools: { enabled: true },
@@ -6,7 +8,20 @@ export default defineNuxtConfig({
     '@una-ui/nuxt',
     '@pinia/nuxt',
     '@unocss/nuxt',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    ['nuxt-gtag', {
+      id: 'G-XXXXXXXXXX', // TODO: Replace with your real GA4 ID
+      config: {
+        anonymize_ip: true,
+        send_page_view: true
+      },
+      debug: false
+    }],
+    ['@nuxtjs/sitemap', {
+      hostname: 'https://certo.schroedinger-hat.org',
+      gzip: true,
+      trailingSlash: true
+    }],
   ],
   unocss: {
     // UnoCSS configuration
@@ -30,15 +45,22 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'Certo - Digital Credential Platform',
+      titleTemplate: '%s | Certo',
       meta: [
-        { name: 'description', content: 'Issue, manage, and verify digital credentials and badges using the Open Badges standard' }
+        { name: 'description', content: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.' },
+        { property: 'og:site_name', content: 'Certo' },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@schroedinger_hat' },
+        { name: 'theme-color', content: '#00E5C5' }
       ],
       link: [
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap'
-        }
+        },
+        { rel: 'icon', type: 'image/png', href: '/favicon.ico' },
+        { rel: 'canonical', href: 'https://certo.schroedinger-hat.org' }
       ]
     }
   },
