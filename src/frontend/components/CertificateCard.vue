@@ -165,9 +165,10 @@ function copyToClipboard() {
   if (!process.client) return
   
   try {
-    navigator.clipboard.writeText(getVerificationUrl())
+    const relativeUrl = `/credentials/${encodeURIComponent(credentialId || id)}`
+    navigator.clipboard.writeText(relativeUrl)
     // Use the Una UI toast/notification instead of alert
-    alert('Verification URL copied to clipboard')
+    alert('Credential link copied to clipboard')
   } catch (error) {
     console.error('Error copying to clipboard:', error)
     alert('Failed to copy to clipboard')

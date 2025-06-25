@@ -89,7 +89,7 @@
           <ul class="space-y-2">
             <li>
               <a 
-                href="https://www.schroedinger-hat.org/docs/certo" 
+                href="https://github.com/schroedinger-hat/certo" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 class="text-text-secondary hover:text-text-primary transition-colors"
