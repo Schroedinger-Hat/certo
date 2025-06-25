@@ -160,16 +160,16 @@
           <p>Certo © {{ new Date().getFullYear() }}. Made with ❤️ by Schroedinger Hat. All rights reserved.</p>
           <div class="flex space-x-6">
             <a 
-              href="/privacy" 
+              href="/privacy-policy" 
               class="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
               Privacy Policy
             </a>
             <a 
-              href="/terms" 
+              href="/terms-and-conditions" 
               class="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
-              Terms of Service
+              Terms and Conditions
             </a>
           </div>
         </div>

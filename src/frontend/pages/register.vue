@@ -179,9 +179,9 @@ async function handleSubmit() {
             />
             <label for="terms" class="ml-2 block text-sm text-text-secondary">
               I agree to the
-              <a href="#" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Terms of Service</a>
+              <NuxtLink to="/terms-and-conditions" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Terms and Conditions</NuxtLink>
               and
-              <a href="#" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Privacy Policy</a>
+              <NuxtLink to="/privacy-policy" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Privacy Policy</NuxtLink>
             </label>
           </div>
 
