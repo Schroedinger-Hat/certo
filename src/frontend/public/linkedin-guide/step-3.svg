@@ -1,0 +1,14 @@
+<svg width="400" height="260" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="400" height="260" fill="#fff" />
+  <text x="30" y="35" font-size="18" fill="#334155" font-family="sans-serif">Add license or certification</text>
+  <text x="30" y="65" font-size="14" fill="#64748B" font-family="sans-serif">Name</text>
+  <rect x="30" y="70" width="340" height="24" rx="4" fill="#F3F4F6" />
+  <text x="30" y="105" font-size="14" fill="#64748B" font-family="sans-serif">Issuing Organization</text>
+  <rect x="30" y="110" width="340" height="24" rx="4" fill="#F3F4F6" />
+  <text x="30" y="145" font-size="14" fill="#64748B" font-family="sans-serif">Issue Date</text>
+  <rect x="30" y="150" width="160" height="24" rx="4" fill="#F3F4F6" />
+  <text x="210" y="145" font-size="14" fill="#64748B" font-family="sans-serif">Credential ID</text>
+  <rect x="210" y="150" width="160" height="24" rx="4" fill="#F3F4F6" />
+  <text x="30" y="185" font-size="14" fill="#64748B" font-family="sans-serif">Credential URL</text>
+  <rect x="30" y="190" width="340" height="24" rx="4" fill="#F3F4F6" stroke="#3B82F6" stroke-width="2" />
+</svg> 

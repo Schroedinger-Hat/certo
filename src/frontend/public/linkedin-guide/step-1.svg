@@ -1,0 +1,8 @@
+<svg width="400" height="180" viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="400" height="50" fill="#F3F4F6" />
+  <rect x="0" y="50" width="400" height="130" fill="#fff" />
+  <circle cx="350" cy="25" r="18" fill="#CBD5E1" stroke="#64748B" stroke-width="2" />
+  <rect x="332" y="7" width="36" height="36" fill="none" stroke="#EF4444" stroke-width="3" rx="8" />
+  <text x="320" y="60" font-size="16" fill="#EF4444" font-family="sans-serif">Profile</text>
+  <text x="20" y="30" font-size="20" fill="#334155" font-family="sans-serif">LinkedIn</text>
+</svg> 

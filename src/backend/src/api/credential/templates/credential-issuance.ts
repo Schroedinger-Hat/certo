@@ -27,6 +27,8 @@ export const generateCredentialIssuanceEmail = ({ achievement, credential, front
 
 View your credential at: ${frontendUrl}/credentials/${credential.credentialId}
 
+Follow our LinkedIn guide to add this credential to your LinkedIn profile: ${frontendUrl}/linkedin
+
 ${user ? `
 A user account has been created for you to manage your credentials.
 Username: ${user.username}
@@ -75,6 +77,11 @@ The Certo Team`
                   </td>
                 </tr>
               </table>
+
+              <div style="margin: 24px 0; padding: 16px; background: #f3f4f6; border-radius: 6px; text-align: center;">
+                <strong>Want to add this credential to your LinkedIn profile?</strong><br />
+                <a href="https://certo.schroedinger-hat.org/linkedin" style="color: #0077b5; text-decoration: underline;">Follow our LinkedIn guide</a>
+              </div>
 
               ${user ? `
                 <hr style="border: 0; height: 1px; background-color: #e2e8f0; margin: 0;" />

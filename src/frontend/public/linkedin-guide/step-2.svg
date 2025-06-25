@@ -1,0 +1,10 @@
+<svg width="400" height="220" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="400" height="220" fill="#fff" />
+  <rect x="0" y="0" width="80" height="220" fill="#F3F4F6" />
+  <rect x="100" y="30" width="180" height="30" rx="6" fill="#3B82F6" />
+  <text x="110" y="50" font-size="16" fill="#fff" font-family="sans-serif">Add profile section</text>
+  <rect x="100" y="70" width="200" height="80" rx="8" fill="#E0E7FF" stroke="#3B82F6" stroke-width="2" />
+  <rect x="110" y="90" width="180" height="28" rx="4" fill="#D1FAE5" />
+  <text x="120" y="110" font-size="15" fill="#059669" font-family="sans-serif">Add licenses &amp; certifications</text>
+  <text x="20" y="40" font-size="18" fill="#334155" font-family="sans-serif">Profile</text>
+</svg> 

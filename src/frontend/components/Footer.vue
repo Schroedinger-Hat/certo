@@ -80,6 +80,14 @@
                 Issue Credentials
               </NuxtLink>
             </li>
+            <li>
+              <NuxtLink 
+                to="/linkedin" 
+                class="text-text-secondary hover:text-text-primary transition-colors"
+              >
+                LinkedIn Guide
+              </NuxtLink>
+            </li>
           </ul>
         </div>
 
@@ -170,6 +178,12 @@
               class="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
               Terms and Conditions
+            </a>
+            <a 
+              href="/linkedin" 
+              class="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              LinkedIn Guide
             </a>
           </div>
         </div>
