@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 defineOptions({
   name: 'CertificateCard'
 })
@@ -6,6 +6,7 @@ defineOptions({
 import { ref, computed } from 'vue'
 import { apiClient } from '~/api/api-client'
 import { useRuntimeConfig } from '#app'
+import { useSimpleToast } from '~/composables/useSimpleToast'
 
 const props = defineProps({
   certificate: {
@@ -49,7 +50,7 @@ const formattedIssuanceDate = formatDate(issuanceDate || issuedOn)
 const formattedExpirationDate = expirationDate || expires ? formatDate(expirationDate || expires) : 'No expiration'
 
 // Helper function to format dates
-function formatDate(dateString) {
+function formatDate(dateString: string) {
   if (!dateString) return 'Unknown'
   
   try {
@@ -161,17 +162,18 @@ function getVerificationUrl() {
   return `${baseUrl}/verify?id=${encodeURIComponent(credentialId || id)}`
 }
 
+const toast = useSimpleToast()
+
 function copyToClipboard() {
   if (!process.client) return
-  
   try {
-    const relativeUrl = `/credentials/${encodeURIComponent(credentialId || id)}`
-    navigator.clipboard.writeText(relativeUrl)
-    // Use the Una UI toast/notification instead of alert
-    alert('Credential link copied to clipboard')
+    const fullUrl = `${window.location.origin}/credentials/${encodeURIComponent(credentialId || id)}`
+    navigator.clipboard.writeText(fullUrl)
+    toast.show('Credential link copied!', 'The credential link has been copied to your clipboard.', 'success')
+    isMenuOpen.value = false
   } catch (error) {
     console.error('Error copying to clipboard:', error)
-    alert('Failed to copy to clipboard')
+    toast.show('Failed to copy', 'Could not copy the credential link to clipboard.', 'error')
   }
 }
 

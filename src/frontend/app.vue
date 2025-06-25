@@ -4,11 +4,13 @@
       <NuxtLoadingIndicator />
       <NuxtPage />
     </NuxtLayout>
+    <SimpleToast />
   </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '~/stores/auth'
+import SimpleToast from '~/components/SimpleToast.vue'
 
 const authStore = useAuthStore()
 </script>

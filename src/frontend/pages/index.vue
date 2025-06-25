@@ -110,7 +110,7 @@ const exportFeatures = [
       <!-- Content -->
       <div class="relative p-6 md:p-8 lg:p-12">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <UCard
+          <NCard
             v-for="feature in features"
             :key="feature.title"
             variant="subtle"
@@ -121,7 +121,7 @@ const exportFeatures = [
             </div>
             <h3 class="text-xl font-bold mb-2">{{ feature.title }}</h3>
             <p class="text-text-secondary">{{ feature.description }}</p>
-          </UCard>
+          </NCard>
         </div>
       </div>
     </div>
