@@ -1,5 +1,6 @@
-import type { Handler } from '@netlify/functions'
+import React from 'react'
 import satori from 'satori'
+import type { Handler } from '@netlify/functions'
 
 // Real API call to fetch credential data
 async function fetchCredential(id: string) {
@@ -17,7 +18,7 @@ async function fetchCredential(id: string) {
   }
 }
 
-export const handler: Handler = async (event) => {
+export const handler: Handler = async (event, context) => {
   const id = event.queryStringParameters?.id || 'demo'
   let credential
   try {

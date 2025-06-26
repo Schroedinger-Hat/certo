@@ -275,9 +275,7 @@ async function handleDownload() {
 
     <!-- Image Preview -->
     <div class="mt-4 aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-      <object :data="imageUrl" type="image/svg+xml" class="w-full h-full">
-        <img :src="imageUrl" alt="Certificate Image" class="w-full h-full object-cover">
-      </object>
+      <img :src="imageUrl" alt="Certificate Image" class="w-full h-full object-cover">
     </div>
   </div>
 </template>
