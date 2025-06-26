@@ -140,13 +140,13 @@ const navLinks = [
                     v-if="showUserMenu"
                     class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
                   >
-                    <NuxtLink
+                    <!-- <NuxtLink
                       to="/profile"
                       class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50"
                       @click="showUserMenu = false"
                     >
                       Profile Settings
-                    </NuxtLink>
+                    </NuxtLink> -->
                     <button
                       @click="handleLogout"
                       class="block w-full text-left px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50"
@@ -200,12 +200,12 @@ const navLinks = [
           </NuxtLink>
           <div class="pt-4 space-y-2">
             <template v-if="isAuthenticated && userName">
-              <NuxtLink 
+              <!-- <NuxtLink 
                 to="/profile"
                 class="block w-full py-2 text-text-primary hover:text-text-secondary transition-colors"
               >
                 Profile Settings
-              </NuxtLink>
+              </NuxtLink> -->
               <button
                 @click="handleLogout"
                 class="block w-full py-2 text-text-primary hover:text-text-secondary transition-colors"

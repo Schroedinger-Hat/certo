@@ -81,7 +81,16 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
       
       const profile = await strapi.entityService.findOne('api::profile.profile', id, {
         status: 'published',
-        populate: ['issuedCredentials', 'issuedCredentials.achievement', 'issuedCredentials.recipient']
+        populate: {
+          issuedCredentials: {
+            populate: {
+              achievement: {
+                populate: ['image']
+              },
+              recipient: true
+            }
+          }
+        }
       }) as ProfileWithCredentials
       
       if (!profile) {
