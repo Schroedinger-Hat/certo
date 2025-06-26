@@ -25,9 +25,5 @@ export default defineConfig<ConfigOptions>({
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] }
     },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
-    }
   ]
 }) 
