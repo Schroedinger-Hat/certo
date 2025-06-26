@@ -97,7 +97,7 @@ const exportFeatures = [
         <a href="https://schroedinger-hat.org" target="_blank" rel="noopener noreferrer">
           <img src="/schroedinger-hat.png" alt="Schroedinger Hat logo" class="h-12 w-auto grayscale" />
         </a>
-        <a href="https://osday.it" target="_blank" rel="noopener noreferrer">
+        <a href="https://osday.dev" target="_blank" rel="noopener noreferrer">
           <img src="/osday.png" alt="OSDay logo" class="h-12 w-auto grayscale" />
         </a>
       </div>
