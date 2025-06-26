@@ -34,7 +34,7 @@ export const generateCertificateSvg = (data: CertificateData): string => {
 
   // Badge image with fallback
   const badgeImage = badgeImageUrl
-    ? `<image href="${badgeImageUrl}" x="350" y="100" width="100" height="100" />`
+    ? `<image href="${badgeImageUrl}" x="350" y="120" width="100" height="100" />`
     : `<circle cx="400" cy="160" r="50" fill="#ffd700" /><text x="400" y="170" text-anchor="middle" font-size="40" font-weight="bold" fill="#333">🏆</text>`
 
   // Generate the SVG
@@ -60,28 +60,28 @@ export const generateCertificateSvg = (data: CertificateData): string => {
   ${badgeImage}
   
   <!-- Main Text -->
-  <text x="400" y="210" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">This is to certify that</text>
+  <text x="400" y="250" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">This is to certify that</text>
   
   <!-- Recipient Name -->
-  <text x="400" y="260" font-family="'Georgia', serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#333">${escapeXml(recipientName)}</text>
+  <text x="400" y="300" font-family="'Georgia', serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#333">${escapeXml(recipientName)}</text>
   
   <!-- Achievement Description -->
-  <text x="400" y="310" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">has successfully completed</text>
+  <text x="400" y="350" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">has successfully completed</text>
   
   <!-- Achievement Name -->
-  <text x="400" y="360" font-family="'Georgia', serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#333">${escapeXml(achievementName)}</text>
+  <text x="400" y="380" font-family="'Georgia', serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#333">${escapeXml(achievementName)}</text>
   
   <!-- Issuer Info -->
-  <text x="400" y="430" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">Issued by</text>
-  <text x="400" y="460" font-family="'Georgia', serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">${escapeXml(issuerName)}</text>
+  <text x="400" y="420" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">Issued by</text>
+  <text x="400" y="440" font-family="'Georgia', serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">${escapeXml(issuerName)}</text>
   
   <!-- Date -->
-  <text x="400" y="510" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">on ${formattedDate}</text>
+  <text x="400" y="490" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">on ${formattedDate}</text>
   
   <!-- Signature Line -->
-  <line x1="250" y1="460" x2="550" y2="460" stroke="#333" stroke-width="1" />
-  <text x="400" y="500" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">Authorized Signature</text>
-  <text x="400" y="560" font-size="14" fill="#888" text-anchor="middle">Credential ID: ${escapeXml(credentialId)}</text>
+  <line x1="250" y1="430" x2="550" y2="430" stroke="#333" stroke-width="1" />
+  <text x="400" y="480" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">Authorized Signature</text>
+  <text x="400" y="540" font-size="14" fill="#888" text-anchor="middle">Credential ID: ${escapeXml(credentialId)}</text>
 </svg>`
 }
 
