@@ -28,6 +28,7 @@ export default [
         'http://localhost:1337',
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
+        'http://localhost:1337',
         'https://bold-approval-5bde4fbd5d.strapiapp.com',
         'https://certo.netlify.app',
         'https://certo.schroedinger-hat.org',
