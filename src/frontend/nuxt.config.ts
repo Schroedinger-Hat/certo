@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/test-utils/module',
     ['nuxt-gtag', {
-      id: 'G-XXXXXXXXXX', // TODO: Replace with your real GA4 ID
+      id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
       config: {
         anonymize_ip: true,
         send_page_view: true
