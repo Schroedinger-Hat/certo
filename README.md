@@ -139,4 +139,4 @@ This project is licensed under the GNU Affero General Public License v3.0 - see 
 - [Strapi](https://strapi.io/)
 - [Nuxt 3](https://nuxt.com/)
 - [Una UI](https://una-ui.vercel.app/)
-- [Schrödinger Hat](https://www.schrodinger-hat.it/) 
+- [Schrödinger Hat](https://www.schrodinger-hat.it/)

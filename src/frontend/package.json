@@ -9,11 +9,15 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:e2e": "npx playwright test"
   },
   "dependencies": {
     "@nuxtjs/sitemap": "^7.4.2",
     "@pinia/nuxt": "^0.5.1",
+    "@playwright/test": "^1.53.1",
     "@una-ui/nuxt": "^0.58.0",
     "date-fns": "^2.30.0",
     "jose": "^5.2.0",
@@ -37,13 +41,17 @@
     "@iconify-json/simple-icons": "^1.2.39",
     "@iconify-json/tabler": "^1.2.19",
     "@nuxt/devtools": "latest",
+    "@nuxt/test-utils": "^3.19.1",
     "@nuxtjs/tailwindcss": "^6.11.1",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.11.15",
+    "@vue/test-utils": "^2.4.6",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.20.1",
+    "happy-dom": "^17.6.3",
+    "playwright-core": "^1.53.1",
     "postcss": "^8.4.33",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.2"
+    "vitest": "^1.6.1"
   }
 }

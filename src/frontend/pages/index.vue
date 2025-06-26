@@ -46,7 +46,6 @@ const badgeStandard = {
   title: 'Open Badges 3.0',
   features: [
     'Verifiable digital credentials',
-    'Blockchain-compatible format',
     'Portable across platforms',
     'Cryptographically secure'
   ]

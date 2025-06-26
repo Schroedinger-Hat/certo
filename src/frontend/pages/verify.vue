@@ -17,14 +17,13 @@
         <h2 class="text-2xl font-bold text-text-primary text-center mb-8">Why Verify with Certo?</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Blockchain Verification -->
           <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg">
             <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-full flex items-center justify-center mb-4">
               <div class="w-6 h-6 i-heroicons-cube-transparent text-[#00E5C5]"></div>
             </div>
-            <h3 class="text-lg font-medium text-text-primary mb-2">Blockchain Verification</h3>
+            <h3 class="text-lg font-medium text-text-primary mb-2">Open Badges 3.0</h3>
             <p class="text-text-secondary">
-              Every certificate is securely stored on the blockchain, ensuring tamper-proof verification
+              Open Badges 3.0 is a standard for digital credentials. It is a open standard for digital credentials that is not tied to any specific platform or organization.
             </p>
           </div>
 
@@ -151,27 +150,27 @@ function formatDate(date: string) {
 const faqs = ref([
   {
     question: 'How does certificate verification work?',
-    answer: 'Our verification system checks the certificate\'s digital signature against blockchain records to confirm its authenticity. This process ensures that the certificate hasn\'t been tampered with and was issued by a legitimate authority.',
+    answer: 'Our verification system checks the certificate\'s digital signature and metadata according to the Open Badges 3.0 standard. This ensures the certificate is authentic, untampered, and issued by a legitimate authority.',
     isOpen: false
   },
   {
     question: 'What types of certificates can I verify?',
-    answer: 'You can verify any digital certificate issued through Certo, including Open Badges and Verifiable Credentials. We support various formats to ensure compatibility with different certification standards.',
+    answer: 'You can verify any digital certificate issued through Certo, including Open Badges 3.0 and other compatible verifiable credentials. We support various formats to ensure compatibility with different certification standards.',
     isOpen: false
   },
   {
     question: 'Is the verification process secure?',
-    answer: 'Yes, our verification process is completely secure. We use blockchain technology to ensure that each verification is tamper-proof and transparent. All data is encrypted and processed securely.',
+    answer: 'Yes, our verification process is completely secure. We use the Open Badges 3.0 standard, which ensures each credential is tamper-evident and verifiable. All data is processed securely and transparently.',
     isOpen: false
   },
   {
     question: 'How long does verification take?',
-    answer: 'Verification is instant in most cases. Once you submit a certificate for verification, our system immediately checks its authenticity against blockchain records and provides results within seconds.',
+    answer: 'Verification is instant in most cases. Once you submit a certificate for verification, our system immediately checks its authenticity and validity using the Open Badges 3.0 protocol and provides results within seconds.',
     isOpen: false
   },
   {
     question: 'What information is shown in the verification results?',
-    answer: 'Verification results include the certificate\'s status, issuer details, issue date, expiration date (if applicable), and blockchain verification proof. You can also view the full certificate details if available.',
+    answer: 'Verification results include the certificate\'s status, issuer details, issue date, expiration date (if applicable), and Open Badges 3.0 verification proof. You can also view the full certificate details if available.',
     isOpen: false
   }
 ])

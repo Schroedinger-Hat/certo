@@ -9,7 +9,7 @@
             <h1 class="text-4xl font-bold text-gray-900 mb-8">The Project</h1>
             <div class="space-y-6">
               <p class="text-lg text-gray-600 leading-relaxed">
-                Certo is an innovative open-source platform designed to democratize the issuance and verification of digital credentials. By leveraging blockchain technology, we ensure that every certificate issued through our platform is tamper-proof, verifiable, and accessible globally.
+                Certo is an innovative open-source platform designed to democratize the issuance and verification of digital credentials. By leveraging Open Badges 3.0 standard, we ensure that every certificate issued through our platform is tamper-proof, verifiable, and accessible globally.
               </p>
               <p class="text-lg text-gray-600 leading-relaxed">
                 Our mission is to provide a transparent, secure, and user-friendly solution for educational institutions, professional organizations, and businesses to issue and manage digital credentials that truly represent achievement and expertise in the digital age.
@@ -21,10 +21,6 @@
           <div class="bg-gradient-to-br from-[#FFE5AE]/20 to-[#00E5C5]/20 rounded-2xl p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Key Features</h2>
             <ul class="space-y-4">
-              <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-check-circle flex-shrink-0"></div>
-                <span class="text-lg text-gray-700">Blockchain-verified credentials</span>
-              </li>
               <li class="flex items-center gap-4">
                 <div class="w-6 h-6 text-[#00E5C5] i-lucide-check-circle flex-shrink-0"></div>
                 <span class="text-lg text-gray-700">Easy-to-use interface</span>
@@ -119,10 +115,6 @@
               <li class="flex items-center gap-3">
                 <div class="i-lucide-check w-5 h-5 text-[#00E5C5]"></div>
                 <span>Basic templates</span>
-              </li>
-              <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]"></div>
-                <span>Blockchain verification</span>
               </li>
               <li class="flex items-center gap-3">
                 <div class="i-lucide-check w-5 h-5 text-[#00E5C5]"></div>

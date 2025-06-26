@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@unocss/nuxt',
     '@nuxtjs/color-mode',
+    '@nuxt/test-utils/module',
     ['nuxt-gtag', {
       id: 'G-XXXXXXXXXX', // TODO: Replace with your real GA4 ID
       config: {

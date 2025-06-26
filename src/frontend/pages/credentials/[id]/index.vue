@@ -1,20 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useRuntimeConfig } from '#app'
 import { apiClient } from '~/api/api-client'
 import type { 
   AchievementCredential, 
   VerificationResult, 
-  VerificationCheck,
-  Image,
-  Achievement,
-  Issuer,
   Evidence
 } from '~/types/openbadges'
 
 const route = useRoute()
-const runtimeConfig = useRuntimeConfig()
 const credentialId = ref('')
 const credential = ref<AchievementCredential | null>(null)
 const loading = ref(false)
@@ -22,7 +16,6 @@ const error = ref<string | null>(null)
 const verificationResult = ref<VerificationResult | null>(null)
 const currentImageIndex = ref(0)
 const imageLoadError = ref(false)
-const showBlockchainDetails = ref(false)
 
 // Format dates with proper localization
 const formattedIssuanceDate = computed(() => {
@@ -35,12 +28,6 @@ const formattedExpirationDate = computed(() => {
   const date = credential.value?.expirationDate
   if (!date) return 'No expiration'
   return formatDate(date)
-})
-
-const formattedBlockchainTimestamp = computed(() => {
-  const timestamp = verificationResult.value?.blockchain?.timestamp
-  if (!timestamp) return 'Unknown'
-  return formatDate(timestamp)
 })
 
 // Get all possible image URLs
@@ -529,49 +516,6 @@ useHead({
             <div v-if="item.narrative" class="mt-2 text-sm">
               {{ item.narrative }}
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Blockchain Details -->
-      <div 
-        v-if="verificationResult?.blockchain"
-        class="mb-8 p-6 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold">Blockchain Details</h2>
-          <button 
-            @click="showBlockchainDetails = !showBlockchainDetails"
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          >
-            <div 
-              :class="{
-                'i-lucide-chevron-up': showBlockchainDetails,
-                'i-lucide-chevron-down': !showBlockchainDetails
-              }"
-              class="w-5 h-5"
-            ></div>
-          </button>
-        </div>
-
-        <div v-show="showBlockchainDetails" class="space-y-4">
-          <div>
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Network</div>
-            <div class="mt-1">{{ verificationResult.blockchain.network }}</div>
-          </div>
-          <div>
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Transaction ID</div>
-            <div class="mt-1 font-mono text-sm break-all">
-              {{ verificationResult.blockchain.transactionId }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Block Number</div>
-            <div class="mt-1">{{ verificationResult.blockchain.blockNumber }}</div>
-          </div>
-          <div>
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Timestamp</div>
-            <div class="mt-1">{{ formattedBlockchainTimestamp }}</div>
           </div>
         </div>
       </div>

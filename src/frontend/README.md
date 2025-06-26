@@ -15,7 +15,7 @@ This is the Nuxt 3 (Vue 3 + Una UI) implementation of the Certo frontend for man
 
 ### Prerequisites
 
-- Node.js 18.x or later
+- Node.js 20.x or later
 - NPM or Yarn
 - A running Certo backend (Strapi) instance
 
@@ -44,6 +44,38 @@ npm run build
 # Preview production build
 npm run preview
 ```
+
+
+## Testing
+
+### Unit Tests
+
+Unit tests are colocated in `__tests__` folders next to their respective components for clarity and maintainability.
+
+Run all unit tests using Vitest:
+
+```bash
+npm run test:unit
+```
+
+Run unit tests in watch mode:
+
+```bash
+npm run test:unit:watch
+```
+
+### End-to-End (E2E) Tests
+
+Run all E2E tests using Playwright:
+
+```bash
+npm run test:e2e
+```
+
+- Unit tests use the Nuxt runtime environment via @nuxt/test-utils and @vue/test-utils.
+- E2E tests use Playwright with Nuxt integration for full browser-based testing.
+
+See [Nuxt Testing Docs](https://nuxt.com/docs/getting-started/testing) for more details. 
 
 ## Project Structure
 

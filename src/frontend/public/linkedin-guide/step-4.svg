@@ -3,7 +3,7 @@
   <text x="30" y="35" font-size="18" fill="#334155" font-family="sans-serif">Licenses &amp; Certifications</text>
   <rect x="30" y="50" width="340" height="50" rx="10" fill="#F3F4F6" stroke="#3B82F6" stroke-width="2" />
   <circle cx="55" cy="75" r="15" fill="#00E5C5" />
-  <text x="80" y="80" font-size="16" fill="#334155" font-family="sans-serif">Certo Blockchain Credential</text>
+  <text x="80" y="80" font-size="16" fill="#334155" font-family="sans-serif">Certo Credential</text>
   <text x="80" y="100" font-size="12" fill="#64748B" font-family="sans-serif">Verified</text>
   <rect x="320" y="65" width="24" height="24" rx="6" fill="#D1FAE5" />
   <text x="326" y="83" font-size="18" fill="#059669" font-family="sans-serif">&#10003;</text>

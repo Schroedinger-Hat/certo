@@ -42,7 +42,7 @@
           <div>
             <h2 class="text-2xl font-bold text-gray-900 mb-4">Step 3: Fill in Certificate Details</h2>
             <ul class="list-disc pl-6 text-lg text-gray-600 leading-relaxed space-y-2">
-              <li><span class="font-semibold">Name:</span> Enter the name of your certificate (e.g., "Certo Blockchain Credential")</li>
+              <li><span class="font-semibold">Name:</span> Enter the name of your certificate</li>
               <li><span class="font-semibold">Issuing Organization:</span> Enter "Certo"</li>
               <li><span class="font-semibold">Issue Date:</span> Enter the date on your certificate</li>
               <li><span class="font-semibold">Credential ID:</span> (Optional) Enter the unique ID from your Certo certificate</li>
