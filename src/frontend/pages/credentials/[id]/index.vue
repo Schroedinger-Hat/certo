@@ -242,7 +242,7 @@ useHead({
     <!-- Loading State -->
     <div 
       v-if="loading" 
-      class="max-w-lg mx-auto p-8 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
+      class="max-w-lg mx-auto p-8 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"
     >
       <div class="flex flex-col items-center justify-center">
         <div class="i-lucide-loader-2 w-12 h-12 animate-spin text-primary-500 mb-4"></div>
@@ -253,12 +253,12 @@ useHead({
     <!-- Invalid Credential ID -->
     <div 
       v-else-if="!credentialId" 
-      class="max-w-lg mx-auto p-8 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
+      class="max-w-lg mx-auto p-8 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"
     >
       <div class="text-center">
         <div class="i-lucide-alert-triangle w-16 h-16 mx-auto text-amber-500 mb-4"></div>
         <h2 class="text-2xl font-semibold mb-3">Invalid Credential ID</h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
+        <p class="text-gray-600 mb-6">
           No credential ID was provided or the ID is invalid.
         </p>
         <NuxtLink 
@@ -274,12 +274,12 @@ useHead({
     <!-- Error State -->
     <div 
       v-else-if="error" 
-      class="max-w-lg mx-auto p-8 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
+      class="max-w-lg mx-auto p-8 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"
     >
       <div class="text-center">
         <div class="i-lucide-x-circle w-16 h-16 mx-auto text-red-500 mb-4"></div>
         <h2 class="text-2xl font-semibold mb-3">Error Loading Credential</h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">{{ error }}</p>
+        <p class="text-gray-600 mb-6">{{ error }}</p>
         <button 
           @click="fetchCredentialDetails" 
           class="inline-flex items-center px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition-colors"
@@ -294,7 +294,7 @@ useHead({
     <div v-else-if="credential" class="max-w-4xl mx-auto">
       <!-- Verification Status -->
       <div 
-        class="mb-8 p-6 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
+        class="mb-8 p-6 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"
         :class="{
           'border-green-500': verificationResult?.verified,
           'border-red-500': verificationResult && !verificationResult.verified
@@ -305,8 +305,8 @@ useHead({
             <div 
               class="w-12 h-12 rounded-full flex items-center justify-center mr-4"
               :class="{
-                'bg-green-100 dark:bg-green-900': verificationResult?.verified,
-                'bg-red-100 dark:bg-red-900': verificationResult && !verificationResult.verified
+                'bg-green-100': verificationResult?.verified,
+                'bg-red-100': verificationResult && !verificationResult.verified
               }"
             >
               <div 
@@ -322,14 +322,14 @@ useHead({
               <h3 class="text-xl font-semibold mb-1">
                 {{ verificationResult?.verified ? 'Credential Verified' : 'Verification Failed' }}
               </h3>
-              <p class="text-gray-600 dark:text-gray-400">
+              <p class="text-gray-600">
                 {{ verificationResult?.error || 'All verification checks passed successfully.' }}
               </p>
             </div>
           </div>
           <button 
             @click="fetchCredentialDetails" 
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             title="Refresh verification"
           >
             <div class="i-lucide-refresh-cw w-5 h-5"></div>
@@ -343,7 +343,7 @@ useHead({
             <div 
               v-for="check in verificationResult.checks" 
               :key="check.check"
-              class="flex items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50"
+              class="flex items-center p-3 rounded-lg bg-gray-50"
             >
               <div 
                 class="w-6 h-6 mr-3"
@@ -357,7 +357,7 @@ useHead({
                 <div class="font-medium">{{ check.check }}</div>
                 <div 
                   v-if="check.message"
-                  class="text-sm text-gray-600 dark:text-gray-400"
+                  class="text-sm"
                 >
                   {{ check.message }}
                 </div>
@@ -368,11 +368,11 @@ useHead({
       </div>
 
       <!-- Main Credential Card -->
-      <div class="mb-8 overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl">
+      <div class="mb-8 overflow-hidden rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl">
         <!-- Credential Image -->
         <div 
           v-if="displayImageUrl && !imageLoadError" 
-          class="relative aspect-video bg-gray-100 dark:bg-gray-900"
+          class="relative aspect-video bg-gray-100"
         >
           <img 
             :src="displayImageUrl" 
@@ -383,14 +383,14 @@ useHead({
           <div class="absolute bottom-4 right-4 flex gap-2">
             <button 
               @click="downloadCredential"
-              class="p-2 rounded-lg bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 shadow-lg transition-colors"
+              class="p-2 rounded-lg bg-white/90 hover:bg-white shadow-lg transition-colors"
               title="Download image"
             >
               <div class="i-lucide-download w-5 h-5"></div>
             </button>
             <button 
               @click="shareCredential"
-              class="p-2 rounded-lg bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 shadow-lg transition-colors"
+              class="p-2 rounded-lg bg-white/90 hover:bg-white shadow-lg transition-colors"
               title="Share credential"
             >
               <div class="i-lucide-share w-5 h-5"></div>
@@ -402,7 +402,7 @@ useHead({
         <div class="p-6">
           <h1 class="text-3xl font-bold mb-4">{{ credential.name || 'Unnamed Credential' }}</h1>
           
-          <div class="prose dark:prose-invert max-w-none mb-6">
+          <div class="prose max-w-none mb-6">
             <p>{{ credential.description }}</p>
           </div>
 
@@ -411,18 +411,18 @@ useHead({
             <!-- Dates -->
             <div class="space-y-4">
               <div>
-                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Issued On</div>
+                <div class="text-sm font-medium text-gray-500">Issued On</div>
                 <div class="mt-1">{{ formattedIssuanceDate }}</div>
               </div>
               <div>
-                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Expires On</div>
+                <div class="text-sm font-medium text-gray-500">Expires On</div>
                 <div class="mt-1">{{ formattedExpirationDate }}</div>
               </div>
             </div>
 
             <!-- Issuer -->
             <div v-if="credential.issuer" class="space-y-2">
-              <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Issued By</div>
+              <div class="text-sm font-medium text-gray-500">Issued By</div>
               <div class="flex items-center">
                 <img 
                   v-if="typeof credential.issuer.image === 'string'"
@@ -451,11 +451,11 @@ useHead({
       <!-- Achievement Details -->
       <div 
         v-if="credential.credentialSubject?.achievement"
-        class="mb-8 p-6 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
+        class="mb-8 p-6 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"
       >
         <h2 class="text-2xl font-semibold mb-4">Achievement Details</h2>
         
-        <div class="prose dark:prose-invert max-w-none">
+        <div class="prose max-w-none">
           <h3>{{ credential.credentialSubject.achievement.name }}</h3>
           <p>{{ credential.credentialSubject.achievement.description }}</p>
           
@@ -475,10 +475,10 @@ useHead({
               <div 
                 v-for="alignment in credential.credentialSubject.achievement.alignments"
                 :key="alignment.targetUrl"
-                class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50"
+                class="p-4 rounded-lg bg-gray-50"
               >
                 <h5 class="font-medium">{{ alignment.targetName }}</h5>
-                <p v-if="alignment.targetDescription" class="text-sm text-gray-600 dark:text-gray-400">
+                <p v-if="alignment.targetDescription" class="text-sm">
                   {{ alignment.targetDescription }}
                 </p>
                 <div class="mt-2">
@@ -500,17 +500,17 @@ useHead({
       <!-- Evidence -->
       <div 
         v-if="credential.evidence?.length"
-        class="mb-8 p-6 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-xl"
+        class="mb-8 p-6 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"
       >
         <h2 class="text-2xl font-semibold mb-4">Evidence</h2>
         <div class="space-y-4">
           <div 
             v-for="item in (credential.evidence as Evidence[])"
             :key="item.id"
-            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50"
+            class="p-4 rounded-lg bg-gray-50"
           >
             <h3 class="font-medium mb-2">{{ item.name }}</h3>
-            <p v-if="item.description" class="text-gray-600 dark:text-gray-400">
+            <p v-if="item.description" class="text-gray-600">
               {{ item.description }}
             </p>
             <div v-if="item.narrative" class="mt-2 text-sm">

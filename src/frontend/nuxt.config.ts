@@ -24,6 +24,10 @@ export default defineNuxtConfig({
       trailingSlash: true
     }],
   ],
+  colorMode: {
+    preference: 'light',
+    fallback: 'light',
+  },
   unocss: {
     // UnoCSS configuration
     preflight: true,

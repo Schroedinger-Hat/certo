@@ -29,7 +29,8 @@ export default [
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
         'https://bold-approval-5bde4fbd5d.strapiapp.com',
-        'https://certo.netlify.app'
+        'https://certo.netlify.app',
+        'https://certo.schroedinger-hat.org',
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],

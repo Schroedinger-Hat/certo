@@ -94,17 +94,17 @@ useHead({
 
     <!-- Auth check -->
     <template v-if="!isAuthenticated">
-      <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-6 rounded-lg text-center">
+      <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-lg text-center">
         <div class="i-lucide-alert-triangle w-12 h-12 mx-auto text-yellow-500 mb-3"></div>
         <h2 class="text-xl font-semibold mb-2">Authentication Required</h2>
-        <p class="mb-4 text-gray-600 dark:text-gray-400">
+        <p class="mb-4 text-gray-600">
           You need to be logged in to view your credentials.
         </p>
         <div class="flex justify-center gap-4">
           <NuxtLink to="/login" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md">
             Log In
           </NuxtLink>
-          <NuxtLink to="/register" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md">
+          <NuxtLink to="/register" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md">
             Register
           </NuxtLink>
         </div>
@@ -157,10 +157,10 @@ useHead({
       
       <!-- Received credentials -->
       <div v-else-if="activeTab === 'received'">
-        <div v-if="receivedCertificates.length === 0" class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <div class="i-lucide-inbox w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-3"></div>
+        <div v-if="receivedCertificates.length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
+          <div class="i-lucide-inbox w-12 h-12 mx-auto text-gray-400 mb-3"></div>
           <h3 class="text-lg font-medium mb-2">No Credentials Yet</h3>
-          <p class="text-gray-600 dark:text-gray-400 mb-4">
+          <p class="text-gray-600 mb-4">
             You haven't received any credentials yet.
           </p>
           <NButton @click="toggleImportModal" variant="outline">
@@ -181,10 +181,10 @@ useHead({
       
       <!-- Issued credentials -->
       <div v-else-if="activeTab === 'issued'">
-        <div v-if="issuedCertificates.length === 0" class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <div class="i-lucide-award w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-3"></div>
+        <div v-if="issuedCertificates.length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
+          <div class="i-lucide-award w-12 h-12 mx-auto text-gray-400 mb-3"></div>
           <h3 class="text-lg font-medium mb-2">No Issued Credentials</h3>
-          <p class="text-gray-600 dark:text-gray-400 mb-4">
+          <p class="text-gray-600 mb-4">
             You haven't issued any credentials yet.
           </p>
           <NuxtLink to="/issue">

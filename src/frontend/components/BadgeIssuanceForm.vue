@@ -397,17 +397,17 @@ function handleFileUpload(event: Event) {
         <h2 class="text-xl font-semibold mb-4">Step 1: Select Badge</h2>
         
         <!-- Badge Preview (when selected) -->
-        <div v-if="selectedBadge" class="mb-6 p-6 border border-primary-200 bg-primary-50 dark:bg-primary-900/10 dark:border-primary-800 rounded-lg">
+        <div v-if="selectedBadge" class="mb-6 p-6 border border-primary-200 bg-primary-50 rounded-lg">
           <div class="flex flex-col sm:flex-row gap-6">
             <!-- Badge Image -->
-            <div class="w-32 h-32 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-2 flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center">
               <img 
                 v-if="getBadgeImageUrl(selectedBadge)" 
                 :src="getBadgeImageUrl(selectedBadge)" 
                 :alt="selectedBadge.attributes?.name || selectedBadge.name || 'Selected Badge'"
                 class="max-w-full max-h-full object-contain"
               />
-              <div v-else class="i-lucide-award text-primary-400 dark:text-primary-500 w-16 h-16"></div>
+              <div v-else class="i-lucide-award text-primary-400 w-16 h-16"></div>
             </div>
             
             <!-- Badge Details -->
@@ -415,7 +415,7 @@ function handleFileUpload(event: Event) {
               <h3 class="text-lg font-semibold">
                 {{ selectedBadge.attributes?.name || selectedBadge.name || 'Selected Badge' }}
               </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              <p class="text-sm text-gray-600 mt-2">
                 {{ selectedBadge.attributes?.description || selectedBadge.description || 'No description available' }}
               </p>
               
@@ -465,7 +465,7 @@ function handleFileUpload(event: Event) {
                     <span 
                       v-for="tag in (selectedBadge.attributes?.tags || selectedBadge.tags || [])" 
                       :key="tag"
-                      class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs"
+                      class="px-2 py-1 bg-gray-100 rounded text-xs"
                     >
                       {{ tag }}
                     </span>
@@ -490,13 +490,13 @@ function handleFileUpload(event: Event) {
           <div
             v-for="badge in badges"
             :key="badge.id"
-            class="border rounded-lg p-4 cursor-pointer transition-all hover:border-primary-200 hover:bg-primary-50/50 dark:hover:bg-primary-900/5"
+            class="border rounded-lg p-4 cursor-pointer transition-all hover:border-primary-200 hover:bg-primary-50/5"
             @click="selectBadge(badge)"
           >
             <!-- Badge Card -->
             <div class="flex flex-col items-center">
               <!-- Image -->
-              <div class="w-24 h-24 mb-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-2 flex items-center justify-center">
+              <div class="w-24 h-24 mb-3 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center">
                 <img 
                   v-if="getBadgeImageUrl(badge)" 
                   :src="getBadgeImageUrl(badge)" 
@@ -504,7 +504,7 @@ function handleFileUpload(event: Event) {
                   class="max-w-full max-h-full object-contain"
                   loading="lazy"
                 />
-                <div v-else class="i-lucide-award text-primary-400 dark:text-primary-500 w-12 h-12"></div>
+                <div v-else class="i-lucide-award text-primary-400 w-12 h-12"></div>
               </div>
               
               <!-- Badge Info -->
@@ -523,7 +523,7 @@ function handleFileUpload(event: Event) {
                     <span 
                       v-for="skill in (badge.attributes?.skills || badge.skills || []).slice(0, 2)" 
                       :key="skill.skillName"
-                      class="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/10 rounded-full text-xs"
+                      class="px-2 py-0.5 bg-primary-50 rounded-full text-xs"
                     >
                       {{ skill.skillName }}
                     </span>
@@ -574,7 +574,7 @@ function handleFileUpload(event: Event) {
       <!-- Step 3: Evidence (Optional) -->
       <div class="mb-8">
         <h2 class="text-xl font-semibold mb-4">Step 3: Evidence (Optional)</h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
+        <p class="text-gray-600 mb-4">
           Add evidence to support this credential issuance.
         </p>
         
@@ -582,7 +582,7 @@ function handleFileUpload(event: Event) {
           <div 
             v-for="(evidence, index) in evidenceEntries" 
             :key="index"
-            class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+            class="p-4 border border-gray-200 rounded-lg"
           >
             <div class="flex justify-between items-center mb-3">
               <h3 class="font-medium">Evidence #{{ index + 1 }}</h3>
@@ -652,7 +652,7 @@ function handleFileUpload(event: Event) {
       <!-- Batch Issuance Section -->
       <div class="mt-12 border-t pt-10">
         <h2 class="text-xl font-semibold mb-4">Batch Issue via CSV</h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
+        <p class="text-gray-600 mb-4">
           Import a CSV file of recipients to issue this badge to multiple people at once.<br>
           <NButton size="xs" variant="outline" class="mt-2" @click="handleFileUpload">
             Upload CSV File
@@ -663,7 +663,7 @@ function handleFileUpload(event: Event) {
         <div v-if="batchResults.length > 0" class="mt-6 overflow-x-auto">
           <table class="min-w-full text-sm border rounded-lg">
             <thead>
-              <tr class="bg-primary-50 dark:bg-primary-900/10">
+              <tr class="bg-primary-50">
                 <th class="px-4 py-2 text-left">Name</th>
                 <th class="px-4 py-2 text-left">Email</th>
                 <th class="px-4 py-2 text-left">Status</th>

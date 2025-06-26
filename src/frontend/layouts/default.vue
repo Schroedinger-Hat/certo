@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '~/stores/auth'
 import Footer from '~/components/Footer.vue'
 
-// Don't import useAuthStore directly in the component
-// const authStore = useAuthStore() // This would cause the error
 const router = useRouter()
-const isDark = ref(false)
-const isMenuOpen = ref(false)
 const showUserMenu = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
 const isStoreReady = ref(false)
 const authStore = ref<ReturnType<typeof useAuthStore> | null>(null)
 const userName = ref('')
 const isAuthenticated = ref(false)
-const isOpen = ref(false)
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
 
@@ -38,13 +33,6 @@ const updateScroll = () => {
 
 // Safely initialize the auth store
 onMounted(() => {
-  // Check if dark mode was previously set
-  const isDarkMode = localStorage.getItem('darkMode') === 'true'
-  if (isDarkMode) {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
-  }
-  
   // Add click event listener for click-outside detection
   document.addEventListener('click', handleClickOutside)
   
@@ -85,17 +73,6 @@ const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as HTMLElement
   if (userMenuRef.value && !userMenuRef.value.contains(target)) {
     showUserMenu.value = false
-  }
-}
-
-const toggleDark = () => {
-  isDark.value = !isDark.value
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-    localStorage.setItem('darkMode', 'true')
-  } else {
-    document.documentElement.classList.remove('dark')
-    localStorage.setItem('darkMode', 'false')
   }
 }
 

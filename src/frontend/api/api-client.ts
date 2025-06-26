@@ -7,7 +7,6 @@ import type {
 } from '../types/openbadges'
 
 let API_URL = '' // fallback, will be set by Nuxt plugin
-// let API_URL = 'https://bold-approval-5bde4fbd5d.strapiapp.com'
 
 // This will be updated when the module is initialized in the browser
 export function updateApiUrl(url: string) {
