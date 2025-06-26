@@ -7,9 +7,9 @@ useHead({
   title: 'Login | Certo',
   meta: [
     { name: 'description', content: 'Sign in to your Certo account to access your credentials and dashboard.' },
-    { property: 'og:title', content: 'Login | Certo' },
-    { property: 'og:description', content: 'Sign in to your Certo account to access your credentials and dashboard.' },
-    { property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { name: 'og:title', property: 'og:title', content: 'Login | Certo' },
+    { name: 'og:description', property: 'og:description', content: 'Sign in to your Certo account to access your credentials and dashboard.' },
+    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
     { property: 'og:url', content: 'https://certo.schroedinger-hat.org/login' }

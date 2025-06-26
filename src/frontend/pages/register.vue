@@ -12,9 +12,9 @@ useHead({
   title: 'Register | Certo',
   meta: [
     { name: 'description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
-    { property: 'og:title', content: 'Register | Certo' },
-    { property: 'og:description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
-    { property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { name: 'og:title', property: 'og:title', content: 'Register | Certo' },
+    { name: 'og:description', property: 'og:description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
+    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
     { property: 'og:url', content: 'https://certo.schroedinger-hat.org/register' }

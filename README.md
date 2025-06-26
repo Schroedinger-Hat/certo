@@ -2,6 +2,8 @@
 
 Certo is a digital certificate platform for issuing, managing, and verifying badges and credentials based on the [Open Badges 3.0](https://www.imsglobal.org/spec/ob/v3p0/) specification.
 
+![Certo Open Graph Image](./src/frontend/public/og-default.png)
+
 ## Features
 
 - Issue digital certificates for workshops, courses, events, and projects

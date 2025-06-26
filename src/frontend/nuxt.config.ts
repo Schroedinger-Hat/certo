@@ -53,11 +53,11 @@ export default defineNuxtConfig({
       titleTemplate: '%s | Certo',
       meta: [
         { name: 'description', content: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.' },
-        { property: 'og:site_name', content: 'Certo' },
-        { property: 'og:type', content: 'website' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@schroedinger_hat' },
-        { name: 'theme-color', content: '#00E5C5' }
+        { name: 'og:site_name', property: 'og:site_name', content: 'Certo' },
+        { name: 'og:type', property: 'og:type', content: 'website' },
+        { name: 'twitter:card', property: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', property: 'twitter:site', content: '@schroedinger_hat' },
+        { name: 'theme-color', property: 'theme-color', content: '#00E5C5' }
       ],
       link: [
         {

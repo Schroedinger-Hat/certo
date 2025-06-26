@@ -204,14 +204,17 @@ useHead({
       content: computed(() => credential.value?.description || 'View and verify credential details')
     },
     {
+      name: 'og:title',
       property: 'og:title',
       content: computed(() => credential.value?.name ? `${credential.value.name} | Certo` : 'Credential Details | Certo')
     },
     {
+      name: 'og:description',
       property: 'og:description',
       content: computed(() => credential.value?.description || 'View and verify credential details')
     },
     {
+      name: 'og:image',
       property: 'og:image',
       content: computed(() => displayImageUrl.value || 'https://certo.schroedinger-hat.org/og-default.png')
     },

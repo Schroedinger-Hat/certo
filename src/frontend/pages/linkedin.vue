@@ -87,9 +87,9 @@ useHead({
   title: 'LinkedIn Guide | Certo',
   meta: [
     { name: 'description', content: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.' },
-    { property: 'og:title', content: 'LinkedIn Guide | Certo' },
-    { property: 'og:description', content: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.' },
-    { property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
+    { name: 'og:title', property: 'og:title', content: 'LinkedIn Guide | Certo' },
+    { name: 'og:description', property: 'og:description', content: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.' },
+    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
     { property: 'og:url', content: 'https://certo.schroedinger-hat.org/linkedin' }
