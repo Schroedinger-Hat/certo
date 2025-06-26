@@ -58,8 +58,21 @@ export default ({ strapi }) => ({
       // Generate a unique credential ID
       const credentialId = `urn:uuid:${this.generateUUID()}`
 
-      // Generate cryptographic proof
-      const proof = await this.generateProof(credentialId)
+      // Prepare the credential payload for signing (excluding proof)
+      const credentialPayload = {
+        credentialId,
+        name: achievement.name,
+        description: achievement.description,
+        type: ['VerifiableCredential', 'OpenBadgeCredential'],
+        achievement: achievement.id,
+        issuer: achievement.creator?.id || await this.getDefaultIssuerId(),
+        recipient: recipientEntity.id,
+        issuanceDate: new Date(),
+        revoked: false,
+        publishedAt: new Date()
+      }
+      // Generate cryptographic proof (JWS)
+      const proof = await this.generateProof(credentialId, achievement.creator?.id || await this.getDefaultIssuerId(), credentialPayload)
 
       // Create the credential
       const credential = await strapi.entityService.create('api::credential.credential', {
@@ -294,37 +307,34 @@ export default ({ strapi }) => ({
   /**
    * Generate cryptographic proof for a credential
    * @param {string} credentialId - The ID of the credential
+   * @param {string} issuerId - The ID of the issuer profile
    */
-  async generateProof(credentialId) {
+  async generateProof(credentialId, issuerId, credentialPayload) {
     try {
-      // Get the server base URL
       const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
-
-      // In a production environment, you would:
-      // 1. Use a real key pair for signing
-      // 2. Implement actual cryptographic signature logic
-      // 3. Store private keys securely
-      
-      // This is a simplified implementation for demonstration purposes
-      const proofId = this.generateUUID()
-      
-      // Create a proof object that follows the W3C Verifiable Credentials data model
+      const payload = { ...credentialPayload }
+      delete payload.proof
+      const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8
+      if (!pkcs8) throw new Error('ED25519_PRIVATE_KEY_PKCS8 env var not set')
+      const { importPKCS8, SignJWT } = await import('jose')
+      console.log(pkcs8)
+      const privateKey = await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA')
+      const jws = await new SignJWT(payload)
+        .setProtectedHeader({ alg: 'EdDSA' })
+        .sign(privateKey)
       const proof = {
-        type: "Ed25519Signature2020", // A common signature type for Verifiable Credentials
-        created: new Date(),
-        verificationMethod: `${baseUrl}/keys/ed25519-${proofId}`,
+        type: "Ed25519Signature2020",
+        created: new Date().toISOString(),
+        verificationMethod: `${baseUrl}/api/profiles/${issuerId}/keys`,
         proofPurpose: "assertionMethod",
-        proofValue: this.generateProofValue(credentialId)
+        jws
       }
-      
       return proof
     } catch (error) {
       console.error('Error generating proof:', error)
-      
-      // Fallback to a basic proof if there's an error
       return {
         type: "Ed25519Signature2020",
-        created: new Date(),
+        created: new Date().toISOString(),
         verificationMethod: `http://example.org/keys/1`,
         proofPurpose: "assertionMethod",
         proofValue: "z" + this.generateUUID().replace(/-/g, '')

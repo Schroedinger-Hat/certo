@@ -79,7 +79,7 @@ export const generateCertificateSvg = (data: CertificateData): string => {
   <text x="400" y="490" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">on ${formattedDate}</text>
   
   <!-- Signature Line -->
-  <line x1="250" y1="430" x2="550" y2="430" stroke="#333" stroke-width="1" />
+  <line x1="250" y1="450" x2="550" y2="450" stroke="#333" stroke-width="1" />
   <text x="400" y="480" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">Authorized Signature</text>
   <text x="400" y="540" font-size="14" fill="#888" text-anchor="middle">Credential ID: ${escapeXml(credentialId)}</text>
 </svg>`

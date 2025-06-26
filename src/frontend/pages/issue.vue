@@ -124,7 +124,7 @@
                         <p class="pl-1">or drag and drop</p>
                       </div>
                       <p class="text-xs text-text-secondary mt-2">
-                        Download our <a href="#" class="text-[#00E5C5] hover:text-[#00E5C5]/80">CSV template</a>
+                        Download our <a href="/recipients-template.csv" download class="text-[#00E5C5] hover:text-[#00E5C5]/80">CSV template</a>
                       </p>
                     </div>
                   </div>

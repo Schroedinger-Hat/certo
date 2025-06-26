@@ -104,9 +104,10 @@ const badgeImageUrl = computed(() => {
 async function handleExport() {
   isExporting.value = true
   try {
-    const exportData = await apiClient.exportCertificate(id)
-    if (process.client) {
-      // Create a download link for the exported certificate
+    const exportResponse = await apiClient.exportCertificate(id)
+    const exportData = exportResponse?.data
+    if (process.client && exportData) {
+      // Create a download link for the exported credential data only
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -117,7 +118,6 @@ async function handleExport() {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
     }
-    
     emit('export')
   } catch (error) {
     console.error('Error exporting certificate:', error)

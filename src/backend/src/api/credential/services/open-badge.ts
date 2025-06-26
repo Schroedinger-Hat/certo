@@ -2,46 +2,12 @@
  * Open Badges service
  */
 
-// Define a type for the OpenBadgeCredential
-interface OpenBadgeCredential {
-  '@context': string[]
-  id: string
-  type: string[]
-  issuer: {
-    id: string
-    type: string[]
-    name: string
-    url?: string
-    image?: {
-      id: string
-      type: string
-    }
-  }
-  issuanceDate: string
-  name: string
-  description: string
-  credentialSubject: {
-    id?: string
-    type: string[]
-    achievement: {
-      id: string
-      type: string[]
-      name: string
-      description: string
-      criteria?: {
-        narrative?: string
-        id?: string
-      }
-      image?: {
-        id: string
-        type: string
-      }
-      alignments?: any[]
-      evidence?: any[]
-    }
-  }
-  expirationDate?: string
-  proof?: any[]
+// Helper to load Ed25519 private key from env
+async function getEd25519PrivateKey() {
+  const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8 // base64-encoded PKCS8 string
+  if (!pkcs8) throw new Error('ED25519_PRIVATE_KEY_PKCS8 env var not set')
+  const { importPKCS8 } = await import('jose')
+  return await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA')
 }
 
 export default ({ strapi }) => ({
@@ -106,6 +72,7 @@ export default ({ strapi }) => ({
           issuer: typeof credential.issuer === 'string' ? { id: credential.issuer } : credential.issuer,
           credentialSubject: credential.credentialSubject,
           issuanceDate: credential.issuanceDate,
+          validFrom: credential.issuanceDate,
           expirationDate: credential.expirationDate
         }
       };
@@ -207,53 +174,49 @@ export default ({ strapi }) => ({
       const baseUrl = strapi.config.get('server.url') || 'http://localhost:1337'
       
       // Build the Open Badge Verifiable Credential
-      const obCredential: OpenBadgeCredential = {
+      const obCredential: any = {
         '@context': [
-          'https://www.w3.org/2018/credentials/v1',
-          'https://purl.imsglobal.org/spec/ob/v3p0/context.json'
+          'https://www.w3.org/ns/credentials/v2',
+          'https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json'
         ],
         id: credential.credentialId,
-        type: credential.type || ['VerifiableCredential', 'OpenBadgeCredential'],
-        issuer: credential.issuer ? {
+        type: ['VerifiableCredential', 'OpenBadgeCredential'],
+        issuer: {
           id: `${baseUrl}/api/profiles/${credential.issuer.id}`,
           type: ['Profile'],
           name: credential.issuer.name,
-          url: credential.issuer.url,
-          image: credential.issuer.image ? {
-            id: `${baseUrl}${credential.issuer.image.url}`,
-            type: 'Image'
-          } : undefined
-        } : {
-          id: `${baseUrl}/api/profiles/system`,
-          type: ['Profile'],
-          name: 'System Issuer'
+          url: credential.issuer.url
         },
         issuanceDate: credential.issuanceDate,
+        validFrom: credential.issuanceDate,
         name: credential.name || credential.achievement.name,
         description: credential.description || credential.achievement.description,
         credentialSubject: {
-          id: credential.recipient ? `${baseUrl}/api/profiles/${credential.recipient.id}` : undefined,
-          type: ['Profile'],
+          id: credential.recipient?.email ? `mailto:${credential.recipient.email}` : undefined,
+          type: ['AchievementSubject'],
           achievement: {
             id: `${baseUrl}/api/achievements/${credential.achievement.id}`,
             type: ['Achievement'],
             name: credential.achievement.name,
             description: credential.achievement.description,
-            criteria: credential.achievement.criteria ? {
-              narrative: credential.achievement.criteria.narrative,
-              id: credential.achievement.criteria.url
-            } : undefined,
             image: credential.achievement.image ? {
-              id: `${baseUrl}${credential.achievement.image.url}`,
+              id: credential.achievement.image.url.startsWith('http')
+                ? credential.achievement.image.url
+                : `${baseUrl}${credential.achievement.image.url}`,
               type: 'Image'
             } : undefined,
-            alignments: credential.achievement.alignment?.map(align => ({
-              targetName: align.targetName,
-              targetUrl: align.targetUrl,
-              targetDescription: align.targetDescription,
-              targetFramework: align.targetFramework,
-              targetCode: align.targetCode
-            })) || []
+            criteria: credential.achievement.criteria
+              ? { narrative: credential.achievement.criteria.narrative }
+              : { narrative: 'Criteria not specified' },
+            ...(credential.achievement.alignment && credential.achievement.alignment.length > 0
+              ? { alignments: credential.achievement.alignment.map(align => ({
+                  targetName: align.targetName,
+                  targetUrl: align.targetUrl,
+                  targetDescription: align.targetDescription,
+                  targetFramework: align.targetFramework,
+                  targetCode: align.targetCode
+                })) }
+              : {})
           }
         }
       }
@@ -276,16 +239,40 @@ export default ({ strapi }) => ({
         obCredential.expirationDate = credential.expirationDate
       }
       
-      // Add proof if available
+      // Add proof if available (use only the first proof object if array)
       if (credential.proof && credential.proof.length > 0) {
-        obCredential.proof = credential.proof.map(p => ({
+        const p = credential.proof[0]
+        obCredential.proof = {
           type: p.type,
           created: p.created,
           verificationMethod: p.verificationMethod,
           proofPurpose: p.proofPurpose,
-          proofValue: p.proofValue,
           jws: p.jws
-        }))
+        }
+      }
+      
+      // Add JWS proof if not present
+      if (!obCredential.proof) {
+        // Remove undefined/null url from issuer
+        if (!obCredential.issuer.url) delete obCredential.issuer.url
+        // Prepare payload for signing (full credential minus proof)
+        const credentialPayload = { ...obCredential }
+        delete credentialPayload.proof
+        const privateKey = await getEd25519PrivateKey()
+        const { SignJWT } = await import('jose')
+        const jws = await new SignJWT(credentialPayload)
+          .setProtectedHeader({ alg: 'EdDSA' })
+          .sign(privateKey)
+        obCredential.proof = {
+          type: 'Ed25519Signature2020',
+          created: new Date().toISOString(),
+          verificationMethod: `${baseUrl}/api/profiles/${credential.issuer.id}/keys`,
+          proofPurpose: 'assertionMethod',
+          jws
+        }
+      } else {
+        // Remove undefined/null url from issuer
+        if (!obCredential.issuer.url) delete obCredential.issuer.url
       }
       
       return obCredential
@@ -410,6 +397,7 @@ export default ({ strapi }) => ({
         name: vcData.name,
         description: vcData.description,
         issuanceDate: vcData.issuanceDate ? new Date(vcData.issuanceDate) : new Date(),
+        validFrom: vcData.issuanceDate ? new Date(vcData.issuanceDate) : new Date(),
         expirationDate: vcData.expirationDate ? new Date(vcData.expirationDate) : null,
         achievement: achievementId,
         issuer: issuerId,

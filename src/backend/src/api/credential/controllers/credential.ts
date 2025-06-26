@@ -294,6 +294,11 @@ export default factories.createCoreController('api::credential.credential', ({ s
       // Use the OpenBadge service to serialize the credential
       const openBadgeCredential = await strapi.service('api::credential.open-badge').serializeCredential(id)
 
+      // Ensure proof is a single object, not an array (defensive, should be handled in service)
+      if (Array.isArray(openBadgeCredential.proof)) {
+        openBadgeCredential.proof = openBadgeCredential.proof[0]
+      }
+
       return {
         data: openBadgeCredential,
         meta: {

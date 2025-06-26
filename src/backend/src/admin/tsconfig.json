@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es2020",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "useDefineForClassFields": true,

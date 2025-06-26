@@ -21,6 +21,7 @@
     "@strapi/provider-email-sendmail": "^5.15.0",
     "@strapi/strapi": "5.15.0",
     "better-sqlite3": "11.3.0",
+    "jose": "^6.0.11",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
