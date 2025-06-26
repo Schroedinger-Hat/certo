@@ -66,44 +66,39 @@ function formatDate(dateString: string) {
   }
 }
 
-// Get the certificate image URL from the API
-const imageUrl = computed(() => {
+// Get the achievement image URL (badge) as the primary image for the card
+const badgeImageUrl = computed(() => {
   const runtimeConfig = useRuntimeConfig()
   const apiUrl = runtimeConfig.public.apiUrl
-  
-  // Try different possible image structures
-  if (props.certificate.imageUrl) {
-    return props.certificate.imageUrl.startsWith('http') 
-      ? props.certificate.imageUrl 
-      : `${apiUrl}${props.certificate.imageUrl}`
-  }
-  
-  if (image?.url) {
-    return image.url.startsWith('http') 
-      ? image.url 
-      : `${apiUrl}${image.url}`
-  }
-  
+
+  // Prefer achievement image
   if (achievement?.image?.url) {
     return achievement.image.url.startsWith('http') 
       ? achievement.image.url 
       : `${apiUrl}${achievement.image.url}`
   }
-  
+  // Fallbacks
+  if (image?.url) {
+    return image.url.startsWith('http') 
+      ? image.url 
+      : `${apiUrl}${image.url}`
+  }
+  if (props.certificate.imageUrl) {
+    return props.certificate.imageUrl.startsWith('http') 
+      ? props.certificate.imageUrl 
+      : `${apiUrl}${props.certificate.imageUrl}`
+  }
   if (achievement?.image?.data?.attributes?.url) {
     return `${apiUrl}${achievement.image.data.attributes.url}`
   }
-  
   if (props.certificate.attributes?.image?.data?.attributes?.url) {
     return `${apiUrl}${props.certificate.attributes.image.data.attributes.url}`
   }
-  
   if (props.certificate.attributes?.achievement?.data?.attributes?.image?.data?.attributes?.url) {
     return `${apiUrl}${props.certificate.attributes.achievement.data.attributes.image.data.attributes.url}`
   }
-  
-  // Fallback to credential certificate endpoint
-  return `${apiUrl}/api/credentials/${id}/certificate`
+  // Fallback to placeholder
+  return '/placeholder-badge.png'
 })
 
 async function handleExport() {
@@ -178,11 +173,11 @@ function copyToClipboard() {
 }
 
 async function handleDownload() {
-  if (!process.client || !imageUrl.value) return
+  if (!process.client || !badgeImageUrl.value) return
 
   try {
     const a = document.createElement('a')
-    a.href = imageUrl.value
+    a.href = badgeImageUrl.value
     // Suggest a filename for the download
     a.download = `${achievementName.replace(/\s+/g, '-')}-certificate.png`
     document.body.appendChild(a)
@@ -192,6 +187,12 @@ async function handleDownload() {
   } catch (error) {
     console.error('Error downloading certificate image:', error)
     alert('Failed to download image.')
+  }
+}
+
+function openCertificateInNewTab() {
+  if (typeof window !== 'undefined') {
+    window.open(apiClient.getCertificateUrl(id), '_blank')
   }
 }
 </script>
@@ -252,7 +253,13 @@ async function handleDownload() {
               @click="handleDownload"
               class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              Download
+              Download Badge
+            </button>
+            <button 
+              @click="openCertificateInNewTab"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Download Certificate
             </button>
             <button 
               @click="copyToClipboard"
@@ -273,9 +280,9 @@ async function handleDownload() {
       </div>
     </div>
 
-    <!-- Image Preview -->
+    <!-- Badge Image Preview (Achievement Image) -->
     <div class="mt-4 aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-      <img :src="imageUrl" alt="Certificate Image" class="w-full h-full object-cover">
+      <img :src="badgeImageUrl" alt="Credential Badge Image" class="w-full h-full object-contain">
     </div>
   </div>
 </template>

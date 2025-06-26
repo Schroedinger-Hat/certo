@@ -3,8 +3,6 @@
  */
 
 import { generateCertificateSvg } from '../../../utils/certificate-template'
-import fs from 'fs'
-import path from 'path'
 
 export default ({ strapi }) => ({
   /**
@@ -40,23 +38,14 @@ export default ({ strapi }) => ({
       const issuerName = credential.issuer?.name || 'Issuer'
       const issueDate = credential.issuanceDate
       
-      // Determine badge image as data URI
-      let badgeImageDataUri = null
+      // Determine badge image URL
+      const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
+      let badgeImageUrl = null
+      
       if (credential.achievement?.image?.url) {
-        // Get the absolute path to the image file
-        const uploadPath = path.join(strapi.dirs.static.public, credential.achievement.image.url)
-        try {
-          const ext = path.extname(uploadPath).toLowerCase()
-          const mimeType = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ''
-          if (mimeType) {
-            const imageBuffer = fs.readFileSync(uploadPath)
-            const base64 = imageBuffer.toString('base64')
-            badgeImageDataUri = `data:${mimeType};base64,${base64}`
-          }
-        } catch (e) {
-          // If reading fails, fallback to null
-          badgeImageDataUri = null
-        }
+        badgeImageUrl = credential.achievement.image.url.startsWith('http')
+          ? credential.achievement.image.url
+          : `${baseUrl}${credential.achievement.image.url}`
       }
       
       // Generate the certificate SVG
@@ -66,7 +55,7 @@ export default ({ strapi }) => ({
         issuerName,
         issueDate,
         credentialId: credential.credentialId,
-        badgeImageUrl: badgeImageDataUri
+        badgeImageUrl
       })
     } catch (error) {
       console.error('Error generating certificate:', error)
