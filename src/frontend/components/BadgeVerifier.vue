@@ -22,6 +22,8 @@ const isVerified = ref(null)
 const verificationChecks = ref(null)
 const jsonInput = ref('')
 const verifyMode = ref('id') // 'id' or 'json'
+const fileError = ref(null)
+const uploadedFileName = ref('')
 
 // Auto-verify on mount if autoVerify is true and initialIdentifier is provided
 onMounted(() => {
@@ -34,6 +36,38 @@ onMounted(() => {
 watch(() => props.initialIdentifier, (newVal) => {
   identifier.value = newVal
 })
+
+function setVerifyMode(mode) {
+  verifyMode.value = mode
+  error.value = null
+  fileError.value = null
+  isVerified.value = null
+  badge.value = null
+  rawCredential.value = null
+  verificationChecks.value = null
+  jsonInput.value = ''
+  uploadedFileName.value = ''
+}
+
+async function handleFileUpload(event) {
+  fileError.value = null
+  const file = event.target.files && event.target.files[0]
+  if (!file) return
+  uploadedFileName.value = file.name
+  if (file.type !== 'application/json') {
+    fileError.value = 'Please upload a valid JSON file.'
+    return
+  }
+  try {
+    const text = await file.text()
+    jsonInput.value = text
+    // Try to parse for preview
+    JSON.parse(text)
+  } catch (e) {
+    fileError.value = 'Invalid JSON file.'
+    jsonInput.value = ''
+  }
+}
 
 function handleVerify() {
   if (verifyMode.value === 'id') {
@@ -147,10 +181,28 @@ function handleShare() {
       <p class="mt-2 text-text-secondary">Verify the authenticity of a certificate or badge</p>
     </div>
 
+    <!-- Verification Mode Tabs -->
+    <div class="flex justify-center mb-6 gap-4">
+      <button
+        type="button"
+        :class="['px-4 py-2 rounded-full text-sm font-medium transition-colors', verifyMode === 'id' ? 'bg-[#00E5C5] text-white' : 'bg-gray-100 text-text-secondary hover:text-text-primary']"
+        @click="setVerifyMode('id')"
+      >
+        By Certificate ID
+      </button>
+      <button
+        type="button"
+        :class="['px-4 py-2 rounded-full text-sm font-medium transition-colors', verifyMode === 'json' ? 'bg-[#00E5C5] text-white' : 'bg-gray-100 text-text-secondary hover:text-text-primary']"
+        @click="setVerifyMode('json')"
+      >
+        By JSON File
+      </button>
+    </div>
+
     <!-- Verification Form -->
     <form @submit.prevent="handleVerify" class="space-y-6">
       <!-- Certificate ID Input -->
-      <div>
+      <div v-if="verifyMode === 'id'">
         <label for="certificateId" class="block text-sm font-medium text-text-primary">
           Certificate ID or Hash
         </label>
@@ -166,33 +218,36 @@ function handleShare() {
         </div>
       </div>
 
-      <!-- File Upload -->
-      <div class="text-center">
-        <p class="text-text-secondary mb-4">Or</p>
+      <!-- File Upload & Preview -->
+      <div v-if="verifyMode === 'json'">
+        <label for="file-upload" class="block text-sm font-medium text-text-primary mb-2">
+          Certificate JSON File
+        </label>
         <div class="flex flex-col items-center justify-center px-6 py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#00E5C5] transition-colors">
           <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-full flex items-center justify-center mb-4">
             <div class="w-6 h-6 i-heroicons-cloud-arrow-up text-[#00E5C5]"></div>
           </div>
-          <div class="text-sm text-text-secondary">
-            <label 
-              for="file-upload" 
-              class="relative cursor-pointer rounded-md font-medium text-[#00E5C5] hover:text-[#00E5C5]/80 focus-within:outline-none"
-            >
-              <span>Upload a file</span>
-              <input 
-                id="file-upload" 
-                name="file-upload" 
-                type="file" 
-                class="sr-only"
-                @change="handleFileUpload"
-                accept=".json,.pdf"
-              />
-            </label>
-            <p class="pl-1">or drag and drop</p>
-          </div>
+          <label class="relative cursor-pointer rounded-md font-medium text-[#00E5C5] hover:text-[#00E5C5]/80 focus-within:outline-none">
+            <span>Upload a file</span>
+            <input
+              id="file-upload"
+              name="file-upload"
+              type="file"
+              class="sr-only"
+              @change="handleFileUpload"
+              accept=".json"
+            />
+          </label>
+          <p class="pl-1">or drag and drop</p>
           <p class="text-xs text-text-secondary mt-2">
             Supports JSON files containing Open Badges or Verifiable Credentials
           </p>
+          <div v-if="uploadedFileName" class="mt-2 text-xs text-text-secondary">Selected: {{ uploadedFileName }}</div>
+          <div v-if="fileError" class="mt-2 text-xs text-red-600">{{ fileError }}</div>
+        </div>
+        <!-- Preview -->
+        <div v-if="jsonInput && !fileError" class="mt-4 bg-gray-50 rounded-lg p-4 text-xs font-mono overflow-x-auto">
+          <pre>{{ JSON.stringify(JSON.parse(jsonInput), null, 2) }}</pre>
         </div>
       </div>
 
@@ -200,7 +255,7 @@ function handleShare() {
       <div>
         <button
           type="submit"
-          :disabled="loading"
+          :disabled="loading || (verifyMode === 'id' ? !identifier : !jsonInput || fileError)"
           class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span v-if="!loading">Verify Certificate</span>
@@ -224,7 +279,7 @@ function handleShare() {
 
     <template v-else-if="isVerified !== null">
       <div class="mt-8">
-        <div 
+        <div
           class="p-6 rounded-lg"
           :class="{
             'bg-green-50': isVerified,
@@ -233,14 +288,14 @@ function handleShare() {
         >
           <!-- Result Header -->
           <div class="flex items-center">
-            <div 
+            <div
               class="w-12 h-12 rounded-full flex items-center justify-center"
               :class="{
                 'bg-green-100': isVerified,
                 'bg-red-100': !isVerified
               }"
             >
-              <div 
+              <div
                 class="w-6 h-6"
                 :class="{
                   'i-heroicons-check-circle text-green-600': isVerified,
@@ -249,7 +304,7 @@ function handleShare() {
               ></div>
             </div>
             <div class="ml-4">
-              <h3 
+              <h3
                 class="text-lg font-medium"
                 :class="{
                   'text-green-800': isVerified,
@@ -258,7 +313,7 @@ function handleShare() {
               >
                 {{ isVerified ? 'Certificate Verified' : 'Verification Failed' }}
               </h3>
-              <p 
+              <p
                 class="text-sm"
                 :class="{
                   'text-green-600': isVerified,
