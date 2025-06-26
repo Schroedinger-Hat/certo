@@ -79,7 +79,7 @@ const exportFeatures = [
         Issue, verify and manage digital credentials using the Open Badges standard. Secure, transparent and verifiable
       </p>
       <NuxtLink 
-        to="/register" 
+        to="/get-started" 
         class="inline-flex items-center px-8 py-4 rounded-full bg-secondary text-text-primary hover:bg-opacity-90 transition-all text-lg font-medium"
       >
         Get Started
@@ -90,25 +90,16 @@ const exportFeatures = [
     <!-- Trusted By Section -->
     <div class="text-center mb-16">
       <h2 class="text-text-secondary text-xl mb-12">Trusted by</h2>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-60">
-        <div class="h-8 w-32">
-          <div class="i-simple-icons-slack w-full h-full"></div>
-        </div>
-        <div class="h-8 w-32">
-          <div class="i-simple-icons-netflix w-full h-full"></div>
-        </div>
-        <div class="h-8 w-32">
-          <div class="i-simple-icons-fitbit w-full h-full"></div>
-        </div>
-        <div class="h-8 w-32">
-          <div class="i-simple-icons-google w-full h-full"></div>
-        </div>
-        <div class="h-8 w-32">
-          <div class="i-simple-icons-airbnb w-full h-full"></div>
-        </div>
-        <div class="h-8 w-32">
-          <div class="i-simple-icons-uber w-full h-full"></div>
-        </div>
+      <div class="flex justify-center gap-16 items-center opacity-70">
+        <a href="https://strapi.io" target="_blank" rel="noopener noreferrer">
+          <img src="/strapi.png" alt="Strapi logo" class="h-12 w-auto grayscale" />
+        </a>
+        <a href="https://schroedinger-hat.org" target="_blank" rel="noopener noreferrer">
+          <img src="/schroedinger-hat.png" alt="Schroedinger Hat logo" class="h-12 w-auto grayscale" />
+        </a>
+        <a href="https://osday.it" target="_blank" rel="noopener noreferrer">
+          <img src="/osday.png" alt="OSDay logo" class="h-12 w-auto grayscale" />
+        </a>
       </div>
     </div>
 

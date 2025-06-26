@@ -122,7 +122,7 @@
               </li>
             </ul>
             <NuxtLink
-              to="/register"
+              to="/get-started"
               class="block w-full py-3 px-4 text-center rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-colors"
             >
               Get Started

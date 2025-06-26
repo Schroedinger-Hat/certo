@@ -5,11 +5,9 @@
         <!-- Logo Column -->
         <div class="md:col-span-2">
           <div class="flex items-center gap-3">
-            <div class="flex flex-col">
-              <span class="text-2xl font-bold tracking-tight">Certo</span>
-              <span class="text-sm text-text-secondary">Open Source Certifier</span>
-            </div>
+            <img src="/certo-logo-text.png" alt="Certo logo" class="h-14 w-auto" />
           </div>
+          <span class="text-sm ml-2 text-text-secondary">Open Source Certifier</span>
           <p class="mt-4 text-text-secondary max-w-sm">
             Create, manage and issue digital certificates with ease. Open source and built for everyone.
           </p>

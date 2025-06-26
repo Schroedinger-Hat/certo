@@ -108,7 +108,7 @@ const navLinks = [
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
           <NuxtLink to="/" class="flex items-center gap-2">
-            <span class="text-2xl font-bold">Certo</span>
+            <img src="/certo-logo-text.png" alt="Certo logo" class="h-10 w-auto" />
           </NuxtLink>
 
           <!-- Desktop Navigation -->
@@ -164,7 +164,7 @@ const navLinks = [
                   Sign in
                 </NuxtLink>
                 <NuxtLink 
-                  to="/register"
+                  to="/get-started"
                   class="px-4 py-2 bg-[#00E5C5] text-white rounded-full font-medium hover:bg-[#00E5C5]/90 transition-colors"
                 >
                   Get Started
@@ -221,7 +221,7 @@ const navLinks = [
                 Sign in
               </NuxtLink>
               <NuxtLink 
-                to="/register"
+                to="/get-started"
                 class="block w-full py-2 text-center bg-[#00E5C5] text-white rounded-full hover:bg-[#00E5C5]/90 transition-colors"
               >
                 Get Started
