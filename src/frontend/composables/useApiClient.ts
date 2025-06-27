@@ -63,7 +63,7 @@ interface Recipient {
   organization?: string
 }
 
-export function useApiClient() {
+export default () => {
   const config = useRuntimeConfig()
   const apiUrl = config.public.apiUrl
   const authStore = useAuthStore()
