@@ -226,7 +226,8 @@ async function loadBadges() {
         }
       } as Badge
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error loading badges:', error)
     badgeError.value = 'Failed to load badges'
     badges.value = []

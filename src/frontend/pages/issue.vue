@@ -120,7 +120,8 @@ async function loadTemplates() {
           },
         }
       })
-    } else {
+    }
+    else {
       console.warn('No data in response:', response)
       error.value = 'No templates available'
     }
@@ -155,7 +156,7 @@ function selectTemplate(template: Template) {
 function getImageUrl(template: Template): string {
   const config = useRuntimeConfig()
   const apiUrl = config.public.apiUrl
-  
+
   let url: string | undefined
 
   // Check all possible image URL paths

@@ -6,7 +6,6 @@ export default defineNuxtPlugin({
   name: 'auth-init',
   enforce: 'default', // Run after pinia-init.client.ts
   setup(nuxtApp) {
-    
     let authInitialized = false
 
     // Function to safely initialize auth
@@ -19,7 +18,8 @@ export default defineNuxtPlugin({
         // Initialize auth state
         await authStore.init()
         authInitialized = true
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Error initializing auth store:', error)
       }
     }

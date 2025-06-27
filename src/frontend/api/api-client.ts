@@ -79,9 +79,10 @@ export class ApiClient {
     }
 
     if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    } else {
-      console.warn('No authentication token available for request');
+      headers.Authorization = `Bearer ${token}`
+    }
+    else {
+      console.warn('No authentication token available for request')
     }
 
     return headers
@@ -288,7 +289,7 @@ export class ApiClient {
   /**
    * Issue a badge to a recipient
    */
-  async issueBadge(badgeId: number | string, recipient: { id?: number; name: string; email: string }, evidence: any[] = []) {
+  async issueBadge(badgeId: number | string, recipient: { id?: number, name: string, email: string }, evidence: any[] = []) {
     if (!badgeId) {
       throw new Error('Badge ID is required')
     }
@@ -315,10 +316,10 @@ export class ApiClient {
           evidence,
         }
       }
-      
+
       // Use our server proxy endpoint which will forward to backend
       const result = await this.post<any>('/api/credentials/issue', payload)
-      
+
       // Add notification information for UI feedback
       if (result && !result.notification) {
         result.notification = {
@@ -402,7 +403,7 @@ export class ApiClient {
       if (Array.isArray(profileResponse.data) && profileResponse.data.length > 0) {
         profileId = profileResponse.data[0].id
       }
-      
+
       // Then get credentials issued by that profile
       const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/issued-credentials`)
 
@@ -436,7 +437,7 @@ export class ApiClient {
       if (Array.isArray(profileResponse.data) && profileResponse.data.length > 0) {
         profileId = profileResponse.data[0].id
       }
-      
+
       // Then get credentials received by that profile
       const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/received-credentials`)
 
@@ -651,7 +652,7 @@ export class ApiClient {
     else if (credential.image?.url) {
       formatted.imageUrl = credential.image.url
     }
-    
+
     return formatted
   }
 

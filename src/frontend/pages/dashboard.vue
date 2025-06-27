@@ -64,7 +64,8 @@ onMounted(async () => {
 
     receivedCertificates.value = receivedResponse.data || []
     issuedCertificates.value = issuedResponse.data || []
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error fetching dashboard data:', err)
     error.value = 'Failed to load dashboard data. Please try again.'
   }

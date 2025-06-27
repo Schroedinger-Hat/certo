@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
         message: 'Invalid request: achievementId is required'
       })
     }
-    
+
     // Forward request to backend
     const response = await fetch(`${apiUrl}/api/credentials/issue`, {
       method: 'POST',
@@ -44,13 +44,13 @@ export default defineEventHandler(async (event) => {
       // Important: Don't include credentials (cookies) in the request to Strapi
       credentials: 'omit'
     })
-    
+
     // Handle error responses
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({
         error: { message: `Request failed with status ${response.status}` }
       }))
-      
+
       throw createError({
         statusCode: response.status,
         statusMessage: response.statusText,
@@ -61,7 +61,8 @@ export default defineEventHandler(async (event) => {
     // Return successful response
     const result = await response.json()
     return result
-  } catch (error: any) {
+  }
+  catch (error: any) {
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.statusMessage || 'Internal Server Error',

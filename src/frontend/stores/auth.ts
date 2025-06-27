@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (isInitialized) {
       return
     }
-    
+
     isLoading.value = true
 
     try {
@@ -66,7 +66,7 @@ export const useAuthStore = defineStore('auth', () => {
         const savedToken = localStorage.getItem('token')
         if (savedToken) {
           token.value = savedToken
-          
+
           // Set token in API client
           apiClient.setToken(savedToken)
 
@@ -83,7 +83,8 @@ export const useAuthStore = defineStore('auth', () => {
                   ? profileResponse.data[0]
                   : profileResponse.data
               }
-            } catch (validationError) {
+            }
+            catch (validationError) {
               console.error('Token validation failed:', validationError)
               // Token is invalid, logout
               logout()
@@ -109,7 +110,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const response = await authClient.login({ identifier, password })
-      
+
       // Save user data
       user.value = response.user
       token.value = response.jwt
@@ -146,11 +147,12 @@ export const useAuthStore = defineStore('auth', () => {
           sameSite: 'strict'
         })
       }
-      
+
       // Test token is working
       try {
         const debugResponse = await apiClient.debugAuth()
-      } catch (authErr) {
+      }
+      catch (authErr) {
         console.error('Auth debug test failed:', authErr)
       }
 
@@ -172,7 +174,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const response = await authClient.register({ username, email, password })
-      
+
       // Save user data
       user.value = response.user
       token.value = response.jwt
@@ -232,7 +234,7 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
     profile.value = null
   }
-  
+
   return {
     user,
     token,

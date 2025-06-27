@@ -46,7 +46,8 @@ async function loadCertificates() {
     // The API client already formats the credentials
     receivedCertificates.value = receivedResponse.data || []
     issuedCertificates.value = issuedResponse.data || []
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error loading certificates:', err)
     error.value = 'Failed to load certificates. Please try again later.'
   }

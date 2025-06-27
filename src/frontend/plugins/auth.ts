@@ -9,4 +9,4 @@ export default defineNuxtPlugin((nuxtApp) => {
     isAuthenticated: false,
     user: null,
   })
-}) 
+})

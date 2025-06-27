@@ -46,7 +46,7 @@ onMounted(() => {
         const { useAuthStore } = module
         authStore.value = useAuthStore()
         isStoreReady.value = true
-      }).catch(err => {
+      }).catch((err) => {
         console.error('Error importing auth store:', err)
       })
     }
