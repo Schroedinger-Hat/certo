@@ -24,3 +24,7 @@ logs
 .env
 .env.*
 !.env.example
+
+
+# Editors
+.zed

@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-vi.stubGlobal('defineNuxtRouteMiddleware', (fn: any) => fn)
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import routeGuard from '../route-guard'
+
+vi.stubGlobal('defineNuxtRouteMiddleware', (fn: any) => fn)
 
 const mockNavigateTo = vi.fn()
 vi.stubGlobal('navigateTo', mockNavigateTo)
@@ -30,7 +31,8 @@ describe('route-guard middleware', () => {
     if (originalProcessServer === undefined) {
       // @ts-ignore
       delete globalThis.process.server
-    } else {
+    }
+    else {
       // @ts-ignore
       globalThis.process.server = originalProcessServer
     }
@@ -41,4 +43,4 @@ describe('route-guard middleware', () => {
     routeGuard(createMockTo('/about'))
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
-}) 
+})

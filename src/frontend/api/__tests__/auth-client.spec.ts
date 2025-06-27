@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mockApiClient: any = {
   post: vi.fn(),
@@ -6,6 +6,7 @@ const mockApiClient: any = {
   setToken: vi.fn(),
   clearToken: vi.fn(),
   baseUrl: 'http://test.local'
+
 }
 
 globalThis.localStorage = {
@@ -14,7 +15,7 @@ globalThis.localStorage = {
   removeItem: vi.fn()
 } as any
 
-describe('AuthClient', () => {
+describe('authClient', () => {
   let AuthClient: any
   let authClient: any
   let originalProcessClient: any
@@ -23,7 +24,6 @@ describe('AuthClient', () => {
     vi.resetAllMocks()
     // Mock process.client to true
     originalProcessClient = globalThis.process?.client
-    // @ts-ignore
     globalThis.process = { ...(globalThis.process || {}), client: true }
     vi.doMock('../api-client', () => ({ apiClient: mockApiClient }))
     vi.doMock('./api-client', () => ({ apiClient: mockApiClient }))
@@ -37,10 +37,10 @@ describe('AuthClient', () => {
     vi.resetModules()
     // Restore process.client
     if (originalProcessClient === undefined) {
-      // @ts-ignore
+      // @ts-expect-error
       delete globalThis.process.client
-    } else {
-      // @ts-ignore
+    }
+    else {
       globalThis.process.client = originalProcessClient
     }
   })
@@ -73,7 +73,7 @@ describe('AuthClient', () => {
   })
 
   it('isAuthenticated returns true if token and user exist', () => {
-    ;(localStorage.getItem as any) = vi.fn((key) => (key === 'token' ? 'token' : key === 'user' ? '{}' : null))
+    ;(localStorage.getItem as any) = vi.fn(key => (key === 'token' ? 'token' : key === 'user' ? '{}' : null))
     expect(authClient.isAuthenticated()).toBe(true)
   })
 
@@ -81,4 +81,4 @@ describe('AuthClient', () => {
     ;(localStorage.getItem as any) = vi.fn(() => null)
     expect(authClient.isAuthenticated()).toBe(false)
   })
-}) 
+})

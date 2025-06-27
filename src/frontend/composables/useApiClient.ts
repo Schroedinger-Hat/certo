@@ -33,7 +33,7 @@ interface BadgeAttributes {
   creator?: StrapiCreator
   criteria?: string
   criteriaUrl?: string
-  skills?: Array<{ name: string; level: string }>
+  skills?: Array<{ name: string, level: string }>
   tags?: string[]
   type?: string
   createdAt?: string
@@ -100,7 +100,8 @@ export function useApiClient() {
 
       const data = await response.json()
       return data
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error in getAvailableBadges:', error)
       throw error
     }
@@ -132,7 +133,8 @@ export function useApiClient() {
         })
         throw new Error(`Failed to issue badge: ${response.status} ${response.statusText}`)
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error in issueBadge:', error)
       throw error
     }
@@ -163,7 +165,8 @@ export function useApiClient() {
         })
         throw new Error(`Failed to issue badges: ${response.status} ${response.statusText}`)
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error in batchIssueBadges:', error)
       throw error
     }
@@ -177,4 +180,4 @@ export function useApiClient() {
 }
 
 // Export types for use in other files
-export type { Badge, BadgeAttributes, StrapiImage, StrapiCreator, Recipient } 
+export type { Badge, BadgeAttributes, Recipient, StrapiCreator, StrapiImage }

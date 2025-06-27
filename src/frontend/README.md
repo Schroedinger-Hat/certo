@@ -45,7 +45,6 @@ npm run build
 npm run preview
 ```
 
-
 ## Testing
 
 ### Unit Tests
@@ -75,7 +74,7 @@ npm run test:e2e
 - Unit tests use the Nuxt runtime environment via @nuxt/test-utils and @vue/test-utils.
 - E2E tests use Playwright with Nuxt integration for full browser-based testing.
 
-See [Nuxt Testing Docs](https://nuxt.com/docs/getting-started/testing) for more details. 
+See [Nuxt Testing Docs](https://nuxt.com/docs/getting-started/testing) for more details.
 
 ## Project Structure
 
@@ -85,7 +84,7 @@ See [Nuxt Testing Docs](https://nuxt.com/docs/getting-started/testing) for more 
   - `BadgeVerifier.vue`: Component for verifying badge credentials
   - `BadgeIssuanceForm.vue`: Form for issuing badges
   - `ImportCertificate.vue`: Component for importing certificates
-  
+
 - **/pages**: Nuxt pages/routes
   - `/`: Home page
   - `/login`: User login
@@ -115,7 +114,7 @@ See [Nuxt Testing Docs](https://nuxt.com/docs/getting-started/testing) for more 
 
 ```vue
 <template>
-  <BadgeVerifier initialIdentifier="credential-id-here" />
+  <BadgeVerifier initial-identifier="credential-id-here" />
 </template>
 ```
 
@@ -123,10 +122,10 @@ See [Nuxt Testing Docs](https://nuxt.com/docs/getting-started/testing) for more 
 
 ```vue
 <template>
-  <CertificateCard 
-    :certificate="certificate" 
-    @export="handleExport" 
-    @revoke="handleRevoke" 
+  <CertificateCard
+    :certificate="certificate"
+    @export="handleExport"
+    @revoke="handleRevoke"
   />
 </template>
 ```

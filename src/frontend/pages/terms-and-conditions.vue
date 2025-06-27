@@ -1,8 +1,12 @@
 <template>
   <div class="min-h-screen py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-4xl font-bold mb-4">Terms and Conditions</h1>
-      <p class="text-gray-500 mb-8">Last updated: 2025-06-25</p>
+      <h1 class="text-4xl font-bold mb-4">
+        Terms and Conditions
+      </h1>
+      <p class="text-gray-500 mb-8">
+        Last updated: 2025-06-25
+      </p>
       <div class="prose prose-lg max-w-none">
         <h2>1. Acceptance of Terms</h2>
         <p>
@@ -53,4 +57,4 @@
       </div>
     </div>
   </div>
-</template> 
+</template>

@@ -6,16 +6,16 @@
 // Base types from Verifiable Credentials Data Model 2.0
 export interface VerifiableCredential {
   '@context': string[] | string
-  id: string
-  type: string[]
-  issuer: Issuer
-  issuanceDate: string
-  expirationDate?: string
-  credentialSubject: CredentialSubject
-  evidence?: Evidence[] | Evidence
-  proof?: Proof | Proof[]
-  refreshService?: RefreshService
-  termsOfUse?: TermsOfUse[] | TermsOfUse
+  'id': string
+  'type': string[]
+  'issuer': Issuer
+  'issuanceDate': string
+  'expirationDate'?: string
+  'credentialSubject': CredentialSubject
+  'evidence'?: Evidence[] | Evidence
+  'proof'?: Proof | Proof[]
+  'refreshService'?: RefreshService
+  'termsOfUse'?: TermsOfUse[] | TermsOfUse
   [key: string]: any
 }
 
@@ -188,4 +188,4 @@ export interface VerificationCheck {
   check: string
   result: 'success' | 'warning' | 'error'
   message?: string
-} 
+}

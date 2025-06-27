@@ -1,3 +1,10 @@
+<script setup>
+import SimpleToast from '~/components/SimpleToast.vue'
+import { useAuthStore } from '~/stores/auth'
+
+const authStore = useAuthStore()
+</script>
+
 <template>
   <div>
     <NuxtLayout>
@@ -7,13 +14,6 @@
     <SimpleToast />
   </div>
 </template>
-
-<script setup>
-import { useAuthStore } from '~/stores/auth'
-import SimpleToast from '~/components/SimpleToast.vue'
-
-const authStore = useAuthStore()
-</script>
 
 <style>
 html, body {

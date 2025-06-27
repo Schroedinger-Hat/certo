@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { apiClient } from '~/api/api-client'
 import { useRuntimeConfig } from '#app'
+import { computed, onMounted, ref } from 'vue'
+import { apiClient } from '~/api/api-client'
 
 interface StrapiImage {
   data?: {
@@ -149,25 +149,25 @@ const batchResults = ref<BatchResult[]>([])
 // Helper function to get badge image URL from various data structures
 function getBadgeImageUrl(badge: Badge): string | undefined {
   const apiUrl = useRuntimeConfig().public.apiUrl
-  
+
   // Handle Strapi nested format: data.attributes structure
   if (badge.attributes?.image?.data?.attributes?.url) {
     return `${apiUrl}${badge.attributes.image.data.attributes.url}`
   }
-  
+
   // Handle direct image object with data structure
   if (badge.image?.data?.attributes?.url) {
     return `${apiUrl}${badge.image.data.attributes.url}`
   }
-  
+
   return undefined
 }
 
 // Computed property to format badge data
 const formattedBadges = computed(() => {
-  return badges.value.map(badge => {
+  return badges.value.map((badge) => {
     const attrs = badge.attributes || {}
-    
+
     return {
       id: badge.id,
       name: attrs.name || badge.name,
@@ -186,19 +186,19 @@ onMounted(async () => {
 async function loadBadges() {
   isLoadingBadges.value = true
   badgeError.value = undefined
-  
+
   try {
     const response = await apiClient.getAvailableBadges()
-    
+
     if (!response) {
       console.error('Invalid badge response format - no response')
       badgeError.value = 'Failed to load badges'
       badges.value = []
       return
     }
-    
+
     // Process badges for display
-    badges.value = response.data.map(badge => {
+    badges.value = response.data.map((badge) => {
       const data = badge.attributes || badge
       return {
         id: String(badge.id), // Convert to string to match Badge interface
@@ -226,11 +226,13 @@ async function loadBadges() {
         }
       } as Badge
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error loading badges:', error)
     badgeError.value = 'Failed to load badges'
     badges.value = []
-  } finally {
+  }
+  finally {
     isLoadingBadges.value = false
   }
 }
@@ -252,15 +254,15 @@ async function handleSubmit() {
     issuanceError.value = 'Please select a badge to issue'
     return
   }
-  
+
   if (!recipientName.value || !recipientEmail.value) {
     issuanceError.value = 'Please fill in all recipient details'
     return
   }
-  
+
   issuingBadge.value = true
   issuanceError.value = undefined
-  
+
   try {
     const recipient = {
       name: recipientName.value,
@@ -274,15 +276,17 @@ async function handleSubmit() {
     )
 
     issuanceSuccess.value = true
-    
+
     // Reset form
     recipientName.value = ''
     recipientEmail.value = ''
     evidenceEntries.value = [{ name: '', description: '', url: '' }]
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error issuing badge:', error)
     issuanceError.value = error instanceof Error ? error.message : 'Failed to issue badge'
-  } finally {
+  }
+  finally {
     issuingBadge.value = false
   }
 }
@@ -292,41 +296,42 @@ async function handleBatchSubmit(recipients: Recipient[]) {
     batchError.value = 'Please select a badge and provide recipients'
     return
   }
-  
+
   batchIssuing.value = true
   batchError.value = undefined
   batchResults.value = []
-  
+
   try {
     await apiClient.batchIssueBadges(selectedBadge.value.id, recipients)
     batchSuccess.value = true
-    
+
     // Reset form
     csvFile.value = null
     csvResults.value = []
-    
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error in batch issuance:', error)
     batchError.value = error instanceof Error ? error.message : 'Failed to issue badges'
-  } finally {
+  }
+  finally {
     batchIssuing.value = false
   }
 }
 
 function handleFileUpload(event: Event) {
   const input = event.target as HTMLInputElement
-  if (!input.files?.length) return
-  
+  if (!input.files?.length) { return }
+
   const file = input.files[0]
   csvFile.value = file
-  
+
   const reader = new FileReader()
   reader.onload = () => {
     try {
       const content = reader.result as string
       const rows = content.split('\n')
       const parsedRecipients: Recipient[] = []
-      
+
       // Skip header row
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i].split(',')
@@ -334,7 +339,7 @@ function handleFileUpload(event: Event) {
           const name = row[0]?.trim()
           const email = row[1]?.trim()
           const organization = row[2]?.trim()
-          
+
           if (name && email) {
             parsedRecipients.push({
               name,
@@ -344,9 +349,10 @@ function handleFileUpload(event: Event) {
           }
         }
       }
-      
+
       handleBatchSubmit(parsedRecipients)
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error parsing CSV:', error)
       batchError.value = 'Failed to parse CSV file'
     }
@@ -360,52 +366,62 @@ function handleFileUpload(event: Event) {
     <NAlert v-if="badgeError" variant="error" class="mb-6">
       {{ badgeError }}
     </NAlert>
-    
+
     <div v-if="isLoadingBadges" class="flex justify-center py-12">
-      <div class="i-lucide-loader animate-spin w-8 h-8"></div>
+      <div class="i-lucide-loader animate-spin w-8 h-8" />
     </div>
-    
+
     <NAlert v-if="issuanceSuccess" variant="success" class="mb-6">
       <div>
-        <p class="font-medium">Badge issued successfully!</p>
+        <p class="font-medium">
+          Badge issued successfully!
+        </p>
         <template v-if="emailSent === true">
-          <p class="text-sm mt-1">✓ Notification email sent to {{ recipientEmail }}</p>
+          <p class="text-sm mt-1">
+            ✓ Notification email sent to {{ recipientEmail }}
+          </p>
         </template>
         <template v-else-if="emailSent === false">
           <p class="text-sm mt-1 text-amber-600">
             ⚠️ Notification email could not be sent to the recipient.
           </p>
-          <p v-if="emailError" class="text-xs mt-1 text-amber-700">{{ emailError }}</p>
+          <p v-if="emailError" class="text-xs mt-1 text-amber-700">
+            {{ emailError }}
+          </p>
         </template>
         <template v-else>
-          <p class="text-sm mt-1">Recipient will be notified.</p>
+          <p class="text-sm mt-1">
+            Recipient will be notified.
+          </p>
         </template>
       </div>
     </NAlert>
-    
+
     <NAlert v-if="issuanceError" variant="error" class="mb-6">
       {{ issuanceError }}
     </NAlert>
-    
+
     <form @submit.prevent="handleSubmit">
       <!-- Step 1: Select Badge -->
       <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-4">Step 1: Select Badge</h2>
-        
+        <h2 class="text-xl font-semibold mb-4">
+          Step 1: Select Badge
+        </h2>
+
         <!-- Badge Preview (when selected) -->
         <div v-if="selectedBadge" class="mb-6 p-6 border border-primary-200 bg-primary-50 rounded-lg">
           <div class="flex flex-col sm:flex-row gap-6">
             <!-- Badge Image -->
             <div class="w-32 h-32 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center">
-              <img 
-                v-if="getBadgeImageUrl(selectedBadge)" 
-                :src="getBadgeImageUrl(selectedBadge)" 
+              <img
+                v-if="getBadgeImageUrl(selectedBadge)"
+                :src="getBadgeImageUrl(selectedBadge)"
                 :alt="selectedBadge.attributes?.name || selectedBadge.name || 'Selected Badge'"
                 class="max-w-full max-h-full object-contain"
-              />
-              <div v-else class="i-lucide-award text-primary-400 w-16 h-16"></div>
+              >
+              <div v-else class="i-lucide-award text-primary-400 w-16 h-16" />
             </div>
-            
+
             <!-- Badge Details -->
             <div class="flex-1">
               <h3 class="text-lg font-semibold">
@@ -414,7 +430,7 @@ function handleFileUpload(event: Event) {
               <p class="text-sm text-gray-600 mt-2">
                 {{ selectedBadge.attributes?.description || selectedBadge.description || 'No description available' }}
               </p>
-              
+
               <!-- Badge Metadata -->
               <div class="mt-4 space-y-2">
                 <!-- Type -->
@@ -422,18 +438,20 @@ function handleFileUpload(event: Event) {
                   <span class="text-gray-500 w-24">Type:</span>
                   <span>{{ selectedBadge.attributes?.achievementType || selectedBadge.achievementType || 'Achievement' }}</span>
                 </div>
-                
+
                 <!-- Issuer -->
                 <div class="flex items-center text-sm">
                   <span class="text-gray-500 w-24">Issuer:</span>
                   <span>{{ selectedBadge.attributes?.creator?.data?.attributes?.name || selectedBadge.creator?.data?.attributes?.name || 'Unknown Issuer' }}</span>
                 </div>
-                
+
                 <!-- Criteria -->
                 <div v-if="selectedBadge.attributes?.criteria?.narrative || selectedBadge.criteria?.narrative" class="text-sm">
                   <span class="text-gray-500">Criteria:</span>
-                  <p class="mt-1 pl-4">{{ selectedBadge.attributes?.criteria?.narrative || selectedBadge.criteria?.narrative }}</p>
-                  <a 
+                  <p class="mt-1 pl-4">
+                    {{ selectedBadge.attributes?.criteria?.narrative || selectedBadge.criteria?.narrative }}
+                  </p>
+                  <a
                     v-if="selectedBadge.attributes?.criteria?.url || selectedBadge.criteria?.url"
                     :href="selectedBadge.attributes?.criteria?.url || selectedBadge.criteria?.url"
                     target="_blank"
@@ -442,7 +460,7 @@ function handleFileUpload(event: Event) {
                     View Detailed Criteria
                   </a>
                 </div>
-                
+
                 <!-- Skills -->
                 <div v-if="(selectedBadge.attributes?.skills || selectedBadge.skills || []).length > 0" class="text-sm">
                   <span class="text-gray-500">Skills:</span>
@@ -453,13 +471,13 @@ function handleFileUpload(event: Event) {
                     </li>
                   </ul>
                 </div>
-                
+
                 <!-- Tags -->
                 <div v-if="(selectedBadge.attributes?.tags || selectedBadge.tags || []).length > 0" class="text-sm">
                   <span class="text-gray-500">Tags:</span>
                   <div class="mt-1 flex flex-wrap gap-2">
-                    <span 
-                      v-for="tag in (selectedBadge.attributes?.tags || selectedBadge.tags || [])" 
+                    <span
+                      v-for="tag in (selectedBadge.attributes?.tags || selectedBadge.tags || [])"
                       :key="tag"
                       class="px-2 py-1 bg-gray-100 rounded text-xs"
                     >
@@ -468,11 +486,11 @@ function handleFileUpload(event: Event) {
                   </div>
                 </div>
               </div>
-              
-              <NButton 
-                class="mt-4" 
-                size="sm" 
-                variant="outline" 
+
+              <NButton
+                class="mt-4"
+                size="sm"
+                variant="outline"
                 @click="selectedBadge = null"
               >
                 Change Selection
@@ -480,7 +498,7 @@ function handleFileUpload(event: Event) {
             </div>
           </div>
         </div>
-        
+
         <!-- Badge Selection Grid -->
         <div v-else-if="!selectedBadge" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div
@@ -493,37 +511,39 @@ function handleFileUpload(event: Event) {
             <div class="flex flex-col items-center">
               <!-- Image -->
               <div class="w-24 h-24 mb-3 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center">
-                <img 
-                  v-if="getBadgeImageUrl(badge)" 
-                  :src="getBadgeImageUrl(badge)" 
+                <img
+                  v-if="getBadgeImageUrl(badge)"
+                  :src="getBadgeImageUrl(badge)"
                   :alt="badge.attributes?.name || badge.name || 'Badge'"
                   class="max-w-full max-h-full object-contain"
                   loading="lazy"
-                />
-                <div v-else class="i-lucide-award text-primary-400 w-12 h-12"></div>
+                >
+                <div v-else class="i-lucide-award text-primary-400 w-12 h-12" />
               </div>
-              
+
               <!-- Badge Info -->
               <div class="text-center">
-                <h3 class="font-medium">{{ badge.attributes?.name || badge.name || 'Unnamed Badge' }}</h3>
+                <h3 class="font-medium">
+                  {{ badge.attributes?.name || badge.name || 'Unnamed Badge' }}
+                </h3>
                 <p class="text-xs text-gray-500 mt-1">
                   {{ badge.attributes?.creator?.data?.attributes?.name || badge.creator?.data?.attributes?.name || 'Unknown Issuer' }}
                 </p>
                 <p class="text-xs text-gray-600 mt-2 line-clamp-2">
                   {{ badge.attributes?.description || badge.description }}
                 </p>
-                
+
                 <!-- Skills Preview -->
                 <div v-if="(badge.attributes?.skills || badge.skills || []).length > 0" class="mt-2">
                   <div class="flex flex-wrap gap-1 justify-center">
-                    <span 
-                      v-for="skill in (badge.attributes?.skills || badge.skills || []).slice(0, 2)" 
+                    <span
+                      v-for="skill in (badge.attributes?.skills || badge.skills || []).slice(0, 2)"
                       :key="skill.skillName"
                       class="px-2 py-0.5 bg-primary-50 rounded-full text-xs"
                     >
                       {{ skill.skillName }}
                     </span>
-                    <span 
+                    <span
                       v-if="(badge.attributes?.skills || badge.skills || []).length > 2"
                       class="text-xs text-gray-500"
                     >
@@ -535,18 +555,24 @@ function handleFileUpload(event: Event) {
             </div>
           </div>
         </div>
-        
+
         <!-- Empty State -->
         <div v-if="badges.length === 0 && !isLoadingBadges && !badgeError" class="text-center py-8">
-          <p class="text-gray-500 mb-4">No badges available for issuance.</p>
-          <NButton variant="outline" @click="loadBadges">Refresh</NButton>
+          <p class="text-gray-500 mb-4">
+            No badges available for issuance.
+          </p>
+          <NButton variant="outline" @click="loadBadges">
+            Refresh
+          </NButton>
         </div>
       </div>
-      
+
       <!-- Step 2: Recipient Details -->
       <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-4">Step 2: Recipient Details</h2>
-        
+        <h2 class="text-xl font-semibold mb-4">
+          Step 2: Recipient Details
+        </h2>
+
         <div class="space-y-4">
           <NFormItem label="Recipient Name" required>
             <NInput
@@ -555,7 +581,7 @@ function handleFileUpload(event: Event) {
               required
             />
           </NFormItem>
-          
+
           <NFormItem label="Recipient Email" required>
             <NInput
               v-model="recipientEmail"
@@ -566,33 +592,37 @@ function handleFileUpload(event: Event) {
           </NFormItem>
         </div>
       </div>
-      
+
       <!-- Step 3: Evidence (Optional) -->
       <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-4">Step 3: Evidence (Optional)</h2>
+        <h2 class="text-xl font-semibold mb-4">
+          Step 3: Evidence (Optional)
+        </h2>
         <p class="text-gray-600 mb-4">
           Add evidence to support this credential issuance.
         </p>
-        
+
         <div class="space-y-6">
-          <div 
-            v-for="(evidence, index) in evidenceEntries" 
+          <div
+            v-for="(evidence, index) in evidenceEntries"
             :key="index"
             class="p-4 border border-gray-200 rounded-lg"
           >
             <div class="flex justify-between items-center mb-3">
-              <h3 class="font-medium">Evidence #{{ index + 1 }}</h3>
+              <h3 class="font-medium">
+                Evidence #{{ index + 1 }}
+              </h3>
               <NButton
                 v-if="evidenceEntries.length > 1"
-                @click="removeEvidenceEntry(index)"
                 size="sm"
                 variant="outline"
                 class="text-red-600 hover:bg-red-50"
+                @click="removeEvidenceEntry(index)"
               >
-                <div class="i-lucide-trash-2 w-4 h-4"></div>
+                <div class="i-lucide-trash-2 w-4 h-4" />
               </NButton>
             </div>
-            
+
             <div class="space-y-3">
               <NFormItem label="Name">
                 <NInput
@@ -600,7 +630,7 @@ function handleFileUpload(event: Event) {
                   placeholder="Evidence name"
                 />
               </NFormItem>
-              
+
               <NFormItem label="Description">
                 <NTextarea
                   v-model="evidence.description"
@@ -608,7 +638,7 @@ function handleFileUpload(event: Event) {
                   rows="2"
                 />
               </NFormItem>
-              
+
               <NFormItem label="URL">
                 <NInput
                   v-model="evidence.url"
@@ -618,26 +648,26 @@ function handleFileUpload(event: Event) {
               </NFormItem>
             </div>
           </div>
-          
+
           <div class="flex justify-center">
             <NButton
-              @click="addEvidenceEntry"
               variant="outline"
               type="button"
+              @click="addEvidenceEntry"
             >
-              <div class="i-lucide-plus mr-2"></div>
+              <div class="i-lucide-plus mr-2" />
               Add Evidence
             </NButton>
           </div>
         </div>
       </div>
-      
+
       <!-- Submit Button -->
       <div class="mt-8">
-        <NButton 
-          type="submit" 
-          variant="primary" 
-          block 
+        <NButton
+          type="submit"
+          variant="primary"
+          block
           :loading="issuingBadge"
           :disabled="issuingBadge || !selectedBadge"
         >
@@ -647,34 +677,54 @@ function handleFileUpload(event: Event) {
 
       <!-- Batch Issuance Section -->
       <div class="mt-12 border-t pt-10">
-        <h2 class="text-xl font-semibold mb-4">Batch Issue via CSV</h2>
+        <h2 class="text-xl font-semibold mb-4">
+          Batch Issue via CSV
+        </h2>
         <p class="text-gray-600 mb-4">
           Import a CSV file of recipients to issue this badge to multiple people at once.<br>
           <NButton size="xs" variant="outline" class="mt-2" @click="handleFileUpload">
             Upload CSV File
           </NButton>
         </p>
-        <NAlert v-if="batchError" variant="error" class="mt-4">{{ batchError }}</NAlert>
-        <NAlert v-if="batchSuccess" variant="success" class="mt-4">Batch issuance complete.</NAlert>
+        <NAlert v-if="batchError" variant="error" class="mt-4">
+          {{ batchError }}
+        </NAlert>
+        <NAlert v-if="batchSuccess" variant="success" class="mt-4">
+          Batch issuance complete.
+        </NAlert>
         <div v-if="batchResults.length > 0" class="mt-6 overflow-x-auto">
           <table class="min-w-full text-sm border rounded-lg">
             <thead>
               <tr class="bg-primary-50">
-                <th class="px-4 py-2 text-left">Name</th>
-                <th class="px-4 py-2 text-left">Email</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Error</th>
+                <th class="px-4 py-2 text-left">
+                  Name
+                </th>
+                <th class="px-4 py-2 text-left">
+                  Email
+                </th>
+                <th class="px-4 py-2 text-left">
+                  Status
+                </th>
+                <th class="px-4 py-2 text-left">
+                  Error
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in batchResults" :key="row.recipient.email">
-                <td class="px-4 py-2">{{ row.recipient.name }}</td>
-                <td class="px-4 py-2">{{ row.recipient.email }}</td>
+                <td class="px-4 py-2">
+                  {{ row.recipient.name }}
+                </td>
+                <td class="px-4 py-2">
+                  {{ row.recipient.email }}
+                </td>
                 <td class="px-4 py-2">
                   <span v-if="row.success" class="text-green-600">Success</span>
                   <span v-else class="text-red-600">Failed</span>
                 </td>
-                <td class="px-4 py-2 text-xs text-red-500">{{ row.error || '' }}</td>
+                <td class="px-4 py-2 text-xs text-red-500">
+                  {{ row.error || '' }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -682,4 +732,4 @@ function handleFileUpload(event: Event) {
       </div>
     </form>
   </div>
-</template> 
+</template>

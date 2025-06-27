@@ -46,7 +46,8 @@ export class AuthClient {
         this.saveUser(fullUser)
         return fullUser
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Failed to fetch full user:', error)
     }
     return null
@@ -58,7 +59,7 @@ export class AuthClient {
   async register(data: RegisterData): Promise<RegisterResponse> {
     try {
       const response = await apiClient.post<RegisterResponse>('/api/auth/local/register', data)
-      
+
       // Store auth data
       if (response.jwt) {
         this.saveToken(response.jwt)
@@ -67,9 +68,10 @@ export class AuthClient {
         // Fetch and save the full user with role
         await this.fetchAndSaveFullUser()
       }
-      
+
       return response
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Registration failed:', error)
       throw error
     }
@@ -81,7 +83,7 @@ export class AuthClient {
   async login(data: LoginData): Promise<LoginResponse> {
     try {
       const response = await apiClient.post<LoginResponse>('/api/auth/local', data)
-      
+
       // Set the token for future API calls
       if (response.jwt) {
         this.saveToken(response.jwt)
@@ -90,9 +92,10 @@ export class AuthClient {
         // Fetch and save the full user with role
         await this.fetchAndSaveFullUser()
       }
-      
+
       return response
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Login failed:', error)
       throw error
     }
@@ -110,7 +113,7 @@ export class AuthClient {
    * Check if a user is logged in
    */
   isAuthenticated(): boolean {
-    if (!process.client) return false
+    if (!process.client) { return false }
     const token = this.getToken()
     const user = this.getCurrentUser()
     return !!(token && user)
@@ -120,14 +123,15 @@ export class AuthClient {
    * Get current authenticated user
    */
   getCurrentUser() {
-    if (!process.client) return null
-    
+    if (!process.client) { return null }
+
     try {
       const userJson = localStorage.getItem('user')
-      if (!userJson) return null
-      
+      if (!userJson) { return null }
+
       return JSON.parse(userJson)
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error parsing user from localStorage:', error)
       return null
     }
@@ -137,7 +141,7 @@ export class AuthClient {
    * Get the stored authentication token
    */
   getToken(): string | null {
-    if (!process.client) return null
+    if (!process.client) { return null }
     return localStorage.getItem('token')
   }
 
@@ -173,4 +177,4 @@ export class AuthClient {
 // Export a singleton instance
 export const authClient = new AuthClient()
 
-export default authClient 
+export default authClient

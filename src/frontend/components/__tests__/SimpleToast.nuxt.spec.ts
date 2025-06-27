@@ -1,9 +1,9 @@
 // @vitest-environment nuxt
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { describe, expect, it, vi } from 'vitest'
 import SimpleToast from '@/components/SimpleToast.vue'
-import { describe, it, expect, vi } from 'vitest'
 
-describe('SimpleToast', () => {
+describe('simpleToast', () => {
   it('renders toast message', async () => {
     vi.mock('@/composables/useSimpleToast', () => ({
       useSimpleToast: () => ({
@@ -21,4 +21,4 @@ describe('SimpleToast', () => {
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.text()).toContain('Test Toast')
   })
-}) 
+})

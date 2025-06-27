@@ -2,7 +2,7 @@ import { useAuthStore } from '~/stores/auth'
 
 export default defineNuxtRouteMiddleware((to) => {
   // Skip middleware on server side
-  if (process.server) return
+  if (process.server) { return }
 
   const authStore = useAuthStore()
   const isAuthRoute = to.path.startsWith('/login') || to.path.startsWith('/register')
@@ -17,4 +17,4 @@ export default defineNuxtRouteMiddleware((to) => {
   if (isAuthRoute && authStore.isAuthenticated) {
     return navigateTo('/dashboard')
   }
-}) 
+})

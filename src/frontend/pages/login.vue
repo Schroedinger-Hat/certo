@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useHead } from '#imports'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 useHead({
   title: 'Login | Certo',
@@ -41,7 +41,8 @@ onMounted(() => {
       if (authStore.value.isAuthenticated) {
         router.push('/dashboard')
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error accessing auth store:', error)
     }
   }, 100)
@@ -62,13 +63,16 @@ async function handleSubmit() {
 
       if (success) {
         router.push('/dashboard')
-      } else {
+      }
+      else {
         authError.value = authStore.value.error
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Login error:', error)
       authError.value = 'Login failed. Please try again.'
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -80,8 +84,12 @@ async function handleSubmit() {
     <div class="max-w-md w-full space-y-8">
       <!-- Header -->
       <div class="text-center">
-        <h2 class="text-4xl font-bold text-text-primary">Welcome back</h2>
-        <p class="mt-2 text-text-secondary">Sign in to your account</p>
+        <h2 class="text-4xl font-bold text-text-primary">
+          Welcome back
+        </h2>
+        <p class="mt-2 text-text-secondary">
+          Sign in to your account
+        </p>
       </div>
 
       <!-- Form -->
@@ -90,10 +98,12 @@ async function handleSubmit() {
         <div v-if="authError" class="rounded-lg bg-red-50 p-4 mb-6">
           <div class="flex">
             <div class="flex-shrink-0">
-              <div class="w-5 h-5 i-heroicons-x-circle text-red-400"></div>
+              <div class="w-5 h-5 i-heroicons-x-circle text-red-400" />
             </div>
             <div class="ml-3">
-              <p class="text-sm text-red-800">{{ authError }}</p>
+              <p class="text-sm text-red-800">
+                {{ authError }}
+              </p>
             </div>
           </div>
         </div>
@@ -113,7 +123,7 @@ async function handleSubmit() {
                 required
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                 placeholder="Enter your email"
-              />
+              >
             </div>
           </div>
 
@@ -131,7 +141,7 @@ async function handleSubmit() {
                 required
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                 placeholder="Enter your password"
-              />
+              >
             </div>
           </div>
 
@@ -143,7 +153,7 @@ async function handleSubmit() {
                 name="remember-me"
                 type="checkbox"
                 class="h-4 w-4 text-[#00E5C5] focus:ring-[#00E5C5] border-gray-300 rounded"
-              />
+              >
               <label for="remember-me" class="ml-2 block text-sm text-text-secondary">
                 Remember me
               </label>
@@ -164,7 +174,7 @@ async function handleSubmit() {
               class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span v-if="!isLoading">Sign in</span>
-              <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </button>
           </div>
         </form>

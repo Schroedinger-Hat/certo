@@ -177,4 +177,4 @@ export interface Endorsement {
     updatedAt: string
     publishedAt: string
   }
-} 
+}

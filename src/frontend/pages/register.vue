@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useHead } from '#imports'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 definePageMeta({
   title: 'Register - Certo',
@@ -44,12 +44,13 @@ onMounted(() => {
       const { useAuthStore } = await import('~/stores/auth')
       authStore.value = useAuthStore()
       isStoreReady.value = true
-      
+
       // If user is already authenticated, redirect to dashboard
       if (authStore.value.isAuthenticated) {
         router.push('/dashboard')
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error accessing auth store:', error)
     }
   }, 100)
@@ -63,7 +64,7 @@ async function handleSubmit() {
     validationError.value = 'Authentication system not ready. Please try again in a moment.'
     return
   }
-  
+
   // Form validation
   if (password.value !== confirmPassword.value) {
     validationError.value = 'Passwords do not match'
@@ -74,25 +75,28 @@ async function handleSubmit() {
     validationError.value = 'You must accept the terms and conditions'
     return
   }
-  
+
   if (firstName.value && lastName.value && email.value && password.value) {
     isLoading.value = true
-    
+
     try {
       // Use username as first name + last name for Strapi
       const username = `${firstName.value.toLowerCase()}.${lastName.value.toLowerCase()}`
-      
+
       const success = await authStore.value.register(username, email.value, password.value)
-      
+
       if (success) {
         router.push('/dashboard')
-      } else {
+      }
+      else {
         validationError.value = authStore.value.error || 'Registration failed'
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Registration error:', error)
       validationError.value = 'Registration failed. Please try again.'
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -104,8 +108,12 @@ async function handleSubmit() {
     <div class="max-w-md w-full space-y-8">
       <!-- Header -->
       <div class="text-center">
-        <h2 class="text-4xl font-bold text-text-primary">Create account</h2>
-        <p class="mt-2 text-text-secondary">Start your journey with Certo</p>
+        <h2 class="text-4xl font-bold text-text-primary">
+          Create account
+        </h2>
+        <p class="mt-2 text-text-secondary">
+          Start your journey with Certo
+        </p>
       </div>
 
       <!-- Form -->
@@ -125,7 +133,7 @@ async function handleSubmit() {
                 required
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                 placeholder="Choose a username"
-              />
+              >
             </div>
           </div>
 
@@ -143,7 +151,7 @@ async function handleSubmit() {
                 required
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                 placeholder="Enter your email"
-              />
+              >
             </div>
           </div>
 
@@ -161,7 +169,7 @@ async function handleSubmit() {
                 required
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                 placeholder="Create a strong password"
-              />
+              >
             </div>
           </div>
 
@@ -179,7 +187,7 @@ async function handleSubmit() {
                 required
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                 placeholder="Confirm your password"
-              />
+              >
             </div>
           </div>
 
@@ -192,7 +200,7 @@ async function handleSubmit() {
               type="checkbox"
               required
               class="h-4 w-4 text-[#00E5C5] focus:ring-[#00E5C5] border-gray-300 rounded"
-            />
+            >
             <label for="terms" class="ml-2 block text-sm text-text-secondary">
               I agree to the
               <NuxtLink to="/terms-and-conditions" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Terms and Conditions</NuxtLink>
@@ -209,7 +217,7 @@ async function handleSubmit() {
               class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span v-if="!isLoading">Create account</span>
-              <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </button>
           </div>
         </form>
@@ -226,4 +234,4 @@ async function handleSubmit() {
       </div>
     </div>
   </div>
-</template> 
+</template>

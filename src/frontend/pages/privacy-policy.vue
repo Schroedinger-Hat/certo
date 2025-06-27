@@ -1,8 +1,12 @@
 <template>
   <div class="min-h-screen py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-4xl font-bold mb-4">Privacy Policy</h1>
-      <p class="text-gray-500 mb-8">Last updated: 2025-06-25</p>
+      <h1 class="text-4xl font-bold mb-4">
+        Privacy Policy
+      </h1>
+      <p class="text-gray-500 mb-8">
+        Last updated: 2025-06-25
+      </p>
       <div class="prose prose-lg max-w-none">
         <p>
           This Privacy Policy describes how we collect, use, and disclose your personal information when you use Certo. By accessing or using our services, you agree to the collection, use, and disclosure of your information as described in this Privacy Policy. If you do not agree, please do not use our services.
@@ -76,4 +80,4 @@
       </div>
     </div>
   </div>
-</template> 
+</template>

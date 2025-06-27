@@ -1,5 +1,5 @@
+import { resolve } from 'node:path'
 import { defineVitestConfig } from '@nuxt/test-utils/config'
-import { resolve } from 'path'
 
 export default defineVitestConfig({
   test: {
@@ -21,4 +21,4 @@ export default defineVitestConfig({
       'api/__tests__/**/*.spec.ts',
     ]
   }
-}) 
+})
