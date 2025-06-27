@@ -33,8 +33,6 @@ export default defineEventHandler(async (event) => {
       })
     }
     
-    console.log('Forwarding badge issuance request to Strapi:', `${apiUrl}/api/credentials/issue`)
-    
     // Forward request to backend
     const response = await fetch(`${apiUrl}/api/credentials/issue`, {
       method: 'POST',
@@ -47,15 +45,11 @@ export default defineEventHandler(async (event) => {
       credentials: 'omit'
     })
     
-    console.log('Strapi response status:', response.status)
-    
     // Handle error responses
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ 
         error: { message: `Request failed with status ${response.status}` } 
       }))
-      
-      console.error('Strapi error response:', errorData)
       
       throw createError({
         statusCode: response.status,
@@ -66,10 +60,8 @@ export default defineEventHandler(async (event) => {
     
     // Return successful response
     const result = await response.json()
-    console.log('Successful badge issuance')
     return result
   } catch (error: any) {
-    console.error('Error in credentials/issue proxy:', error)
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.statusMessage || 'Internal Server Error',

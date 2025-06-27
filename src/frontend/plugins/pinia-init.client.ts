@@ -6,7 +6,6 @@ export default defineNuxtPlugin({
   name: 'pinia-init',
   enforce: 'pre', // Run before other plugins
   setup(nuxtApp) {
-    console.log('Initializing Pinia explicitly')
     
     // Create and use Pinia
     const pinia = createPinia()

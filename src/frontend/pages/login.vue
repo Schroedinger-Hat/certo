@@ -39,7 +39,6 @@ onMounted(() => {
       
       // If user is already authenticated, redirect to dashboard
       if (authStore.value.isAuthenticated) {
-        console.log('User already authenticated, redirecting to dashboard')
         router.push('/dashboard')
       }
     } catch (error) {

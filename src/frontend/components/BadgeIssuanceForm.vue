@@ -226,10 +226,6 @@ async function loadBadges() {
         }
       } as Badge
     })
-    
-    if (badges.value.length > 0) {
-      console.log('Sample badge structure:', badges.value[0])
-    }
   } catch (error) {
     console.error('Error loading badges:', error)
     badgeError.value = 'Failed to load badges'

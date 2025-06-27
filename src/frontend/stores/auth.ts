@@ -55,11 +55,9 @@ export const useAuthStore = defineStore('auth', () => {
   async function init() {
     // Prevent multiple initializations
     if (isInitialized) {
-      console.log('Auth store already initialized, skipping')
       return
     }
     
-    console.log('Initializing auth store')
     isLoading.value = true
     
     try {
@@ -68,7 +66,6 @@ export const useAuthStore = defineStore('auth', () => {
         const savedToken = localStorage.getItem('token')
         if (savedToken) {
           token.value = savedToken
-          console.log('Token found in localStorage:', savedToken.substring(0, 10) + '...')
           
           // Set token in API client
           apiClient.setToken(savedToken)
@@ -76,7 +73,6 @@ export const useAuthStore = defineStore('auth', () => {
           // Try to get current user
           const currentUser = authClient.getCurrentUser()
           if (currentUser) {
-            console.log('User found in localStorage:', currentUser.email)
             user.value = currentUser
             
             // Validate token and get profile
@@ -86,22 +82,16 @@ export const useAuthStore = defineStore('auth', () => {
                 profile.value = Array.isArray(profileResponse.data) 
                   ? profileResponse.data[0] 
                   : profileResponse.data
-                console.log('Profile loaded:', profile.value)
               }
-              console.log('Token verified successfully')
             } catch (validationError) {
               console.error('Token validation failed:', validationError)
               // Token is invalid, logout
               logout()
             }
           }
-        } else {
-          console.log('No token found in localStorage')
         }
-      } else {
-        console.log('Running on server side, skipping localStorage checks')
       }
-      
+
       // Mark as initialized
       isInitialized = true
     } catch (e) {
@@ -116,9 +106,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
     
     try {
-      console.log('Attempting login for:', identifier)
       const response = await authClient.login({ identifier, password })
-      console.log('Login successful, jwt length:', response.jwt.length)
       
       // Save user data
       user.value = response.user
@@ -129,7 +117,6 @@ export const useAuthStore = defineStore('auth', () => {
         const fullUser = await apiClient.get<User>('/api/users/me', { populate: '*' })
         if (fullUser) {
           user.value = fullUser
-          console.log('Full user loaded:', fullUser)
         }
       } catch (userError) {
         console.error('Error loading full user:', userError)
@@ -142,7 +129,6 @@ export const useAuthStore = defineStore('auth', () => {
           profile.value = Array.isArray(profileResponse.data) 
             ? profileResponse.data[0] 
             : profileResponse.data
-          console.log('Profile loaded:', profile.value)
         }
       } catch (profileError) {
         console.error('Error loading profile:', profileError)
@@ -157,14 +143,9 @@ export const useAuthStore = defineStore('auth', () => {
         })
       }
       
-      // Log the token for debugging
-      console.log('Token saved (first 20 chars):', response.jwt.substring(0, 20))
-      console.log('User data:', response.user)
-      
       // Test token is working
       try {
         const debugResponse = await apiClient.debugAuth()
-        console.log('Auth debug response:', debugResponse)
       } catch (authErr) {
         console.error('Auth debug test failed:', authErr)
       }
@@ -184,9 +165,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
     
     try {
-      console.log('Attempting registration for:', email)
       const response = await authClient.register({ username, email, password })
-      console.log('Registration successful')
       
       // Save user data
       user.value = response.user
@@ -197,7 +176,6 @@ export const useAuthStore = defineStore('auth', () => {
         const fullUser = await apiClient.get<User>('/api/users/me', { populate: '*' })
         if (fullUser) {
           user.value = fullUser
-          console.log('Full user loaded:', fullUser)
         }
       } catch (userError) {
         console.error('Error loading full user:', userError)
@@ -210,7 +188,6 @@ export const useAuthStore = defineStore('auth', () => {
           profile.value = Array.isArray(profileResponse.data) 
             ? profileResponse.data[0] 
             : profileResponse.data
-          console.log('Profile loaded:', profile.value)
         }
       } catch (profileError) {
         console.error('Error loading profile:', profileError)
@@ -232,8 +209,6 @@ export const useAuthStore = defineStore('auth', () => {
   }
   
   function logout() {
-    console.log('Logging out user')
-    
     if (process.client) {
       // Clear auth client state
       authClient.logout()
@@ -247,9 +222,6 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
     profile.value = null
   }
-  
-  // Do NOT initialize on store creation
-  // This will be done explicitly in plugins or components
   
   return {
     user,

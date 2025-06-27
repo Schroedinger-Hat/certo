@@ -45,7 +45,6 @@ onMounted(() => {
         const { useAuthStore } = module
         authStore.value = useAuthStore()
         isStoreReady.value = true
-        console.log('Auth store successfully accessed in layout')
       }).catch(err => {
         console.error('Error importing auth store:', err)
       })

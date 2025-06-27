@@ -247,7 +247,6 @@
                   :alt="selectedTemplate.title"
                   class="max-w-full max-h-full object-contain"
                   @error="(e) => console.error('Image failed to load:', (e.target as HTMLImageElement)?.src)"
-                  @load="() => console.log('Image loaded successfully')"
                 />
               </div>
 
@@ -344,7 +343,6 @@ const isDev = computed(() => process.env.NODE_ENV === 'development')
 
 // Load available badges
 async function loadTemplates() {
-  console.log('Starting to load templates')
   isLoadingTemplates.value = true
   error.value = null
   
@@ -367,25 +365,20 @@ async function loadTemplates() {
 
     // Check authentication using Pinia store
     if (!authStore.isAuthenticated) {
-      console.log('Not authenticated, redirecting to login')
       router.push('/login')
       return
     }
 
     // Check if user is an issuer
     if (!authStore.isIssuer) {
-      console.log('User is not an issuer, redirecting to dashboard')
       router.push('/dashboard')
       return
     }
 
-    console.log('Fetching available badges')
     const response = await apiClient.getAvailableBadges()
-    console.log('Received response:', response)
 
     if (response?.data) {
       templates.value = response.data.map((badge: any) => {
-        console.log('Processing badge with new structure:', badge)
         return {
           id: String(badge.id),
           title: badge.name || '',
@@ -412,7 +405,6 @@ async function loadTemplates() {
           },
         }
       })
-      console.log('Processed templates:', templates.value)
     } else {
       console.warn('No data in response:', response)
       error.value = 'No templates available'
@@ -421,7 +413,6 @@ async function loadTemplates() {
     console.error('Error loading templates:', err)
     if (err instanceof Error) {
       if (err.message === 'Authentication required' || err.message === 'Authentication failed') {
-        console.log('Authentication error, redirecting to login')
         router.push('/login')
         return
       }
@@ -431,23 +422,14 @@ async function loadTemplates() {
     }
   } finally {
     isLoadingTemplates.value = false
-    console.log('Finished loading templates')
   }
 }
 
 onMounted(async () => {
-  console.log('Issue page mounted')
   await loadTemplates()
 })
 
 function selectTemplate(template: Template) {
-  console.log('Selected template:', {
-    id: template.id,
-    title: template.title,
-    imageData: template.image,
-    attributesImage: template.attributes?.image,
-    fullTemplate: template
-  })
   selectedTemplate.value = template
 }
 
@@ -455,20 +437,16 @@ function selectTemplate(template: Template) {
 function getImageUrl(template: Template): string {
   const config = useRuntimeConfig()
   const apiUrl = config.public.apiUrl
-  console.log('API URL from config:', apiUrl)
   
   let url: string | undefined
   
   // Check all possible image URL paths
   if (template.attributes?.image?.data?.attributes?.url) {
     url = template.attributes.image.data.attributes.url
-    console.log('Found URL in attributes.image:', url)
   } else if (template.image?.data?.attributes?.url) {
     url = template.image.data.attributes.url
-    console.log('Found URL in root image:', url)
   } else if (typeof template.image === 'string') {
     url = template.image
-    console.log('Found direct image string:', url)
   }
   
   if (!url) {
@@ -478,7 +456,6 @@ function getImageUrl(template: Template): string {
   
   // Handle different URL formats
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    console.log('Using absolute URL:', url)
     return url
   }
   
@@ -489,7 +466,6 @@ function getImageUrl(template: Template): string {
   
   // Handle relative URLs
   const finalUrl = url.startsWith('/') ? `${apiUrl}${url}` : `${apiUrl}/${url}`
-  console.log('Final image URL:', finalUrl)
   return finalUrl
 }
 
@@ -553,11 +529,6 @@ async function handleIssue() {
     return
   }
 
-  console.log('Starting badge issuance:', {
-    templateId: selectedTemplate.value.id,
-    recipientsCount: recipients.value.length
-  })
-
   isLoading.value = true
   submissionError.value = null
   isSuccess.value = false
@@ -567,7 +538,6 @@ async function handleIssue() {
       selectedTemplate.value.id,
       recipients.value
     )
-    console.log('Successfully issued badges')
     isSuccess.value = true
     clearForm()
   } catch (err) {

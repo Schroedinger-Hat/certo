@@ -57,7 +57,6 @@ export class AuthClient {
    */
   async register(data: RegisterData): Promise<RegisterResponse> {
     try {
-      console.log('Registering new user:', data.email)
       const response = await apiClient.post<RegisterResponse>('/api/auth/local/register', data)
       
       // Store auth data
@@ -65,7 +64,6 @@ export class AuthClient {
         this.saveToken(response.jwt)
         this.saveUser(response.user)
         apiClient.setToken(response.jwt)
-        console.log('Registration successful, token saved')
         // Fetch and save the full user with role
         await this.fetchAndSaveFullUser()
       }
@@ -82,7 +80,6 @@ export class AuthClient {
    */
   async login(data: LoginData): Promise<LoginResponse> {
     try {
-      console.log('Logging in user:', data.identifier)
       const response = await apiClient.post<LoginResponse>('/api/auth/local', data)
       
       // Set the token for future API calls
@@ -90,7 +87,6 @@ export class AuthClient {
         this.saveToken(response.jwt)
         this.saveUser(response.user)
         apiClient.setToken(response.jwt)
-        console.log('Login successful, token saved')
         // Fetch and save the full user with role
         await this.fetchAndSaveFullUser()
       }
@@ -106,7 +102,6 @@ export class AuthClient {
    * Logout the current user
    */
   logout(): void {
-    console.log('Logging out user')
     this.clearStorage()
     apiClient.clearToken()
   }
@@ -152,7 +147,6 @@ export class AuthClient {
   private saveToken(token: string): void {
     if (process.client) {
       localStorage.setItem('token', token)
-      console.log('Token saved to localStorage')
     }
   }
 
@@ -162,7 +156,6 @@ export class AuthClient {
   private saveUser(user: any): void {
     if (process.client) {
       localStorage.setItem('user', JSON.stringify(user))
-      console.log('User saved to localStorage')
     }
   }
 
@@ -173,7 +166,6 @@ export class AuthClient {
     if (process.client) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      console.log('Auth storage cleared')
     }
   }
 }

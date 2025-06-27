@@ -76,9 +76,6 @@ const shareableUrl = computed(() => {
 
 // Handle image error by trying the next URL in the options
 function handleImageError() {
-  console.log('Image failed to load:', displayImageUrl.value)
-  console.log('Available options:', imageUrlOptions.value)
-  
   if (currentImageIndex.value < imageUrlOptions.value.length - 1) {
     currentImageIndex.value++
   } else {
@@ -184,7 +181,6 @@ onMounted(async () => {
   if (route.params.id) {
     try {
       credentialId.value = decodeURIComponent(route.params.id.toString())
-      console.log('Decoded credential ID:', credentialId.value)
       await fetchCredentialDetails()
     } catch (error) {
       console.error('Error decoding credential ID:', error)

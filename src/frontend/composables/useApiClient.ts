@@ -68,8 +68,6 @@ export function useApiClient() {
   const apiUrl = config.public.apiUrl
   const authStore = useAuthStore()
 
-  console.log('API URL:', apiUrl)
-
   async function getHeaders(): Promise<HeadersInit> {
     const token = authStore.token
     if (!token) {
@@ -85,9 +83,7 @@ export function useApiClient() {
   async function getAvailableBadges(): Promise<StrapiResponse<Badge[]>> {
     try {
       const headers = await getHeaders()
-      console.log('Fetching badges from:', `${apiUrl}/api/badges?populate=*`)
-      
-      const response = await fetch(`${apiUrl}/api/badges?populate=*`, {
+      const response = await fetch(`${apiUrl}/api/achievements?populate=*`, {
         headers,
         credentials: 'include' // Include cookies if needed
       })
@@ -103,7 +99,6 @@ export function useApiClient() {
       }
 
       const data = await response.json()
-      console.log('Received badges data:', data)
       return data
     } catch (error) {
       console.error('Error in getAvailableBadges:', error)
@@ -114,11 +109,6 @@ export function useApiClient() {
   async function issueBadge(badgeId: string, recipient: Recipient, evidence: any[] = []): Promise<void> {
     try {
       const headers = await getHeaders()
-      console.log('Issuing badge:', {
-        badgeId,
-        recipient,
-        evidenceCount: evidence.length
-      })
 
       const response = await fetch(`${apiUrl}/api/credentials/issue`, {
         method: 'POST',
@@ -151,10 +141,6 @@ export function useApiClient() {
   async function batchIssueBadges(badgeId: string, recipients: Recipient[]): Promise<void> {
     try {
       const headers = await getHeaders()
-      console.log('Batch issuing badges:', {
-        badgeId,
-        recipientsCount: recipients.length
-      })
 
       const response = await fetch(`${apiUrl}/api/credentials/batch-issue`, {
         method: 'POST',

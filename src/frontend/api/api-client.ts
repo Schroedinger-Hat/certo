@@ -31,7 +31,6 @@ export class ApiClient {
       const storedToken = localStorage.getItem('token')
       if (storedToken) {
         this.token = storedToken
-        console.log('Token initialized from localStorage')
       }
     }
   }
@@ -40,7 +39,6 @@ export class ApiClient {
    * Set the authentication token
    */
   setToken(token: string) {
-    console.log('Setting token:', token.substring(0, 10) + '...')
     this.token = token
     
     // Also store in localStorage for persistence
@@ -53,7 +51,6 @@ export class ApiClient {
    * Clear the authentication token
    */
   clearToken() {
-    console.log('Clearing token')
     this.token = null
     
     if (process.client) {
@@ -84,7 +81,6 @@ export class ApiClient {
 
     if (token) {
       headers.Authorization = `Bearer ${token}`;
-      console.log('Using Authorization header with token');
     } else {
       console.warn('No authentication token available for request');
     }
@@ -118,12 +114,8 @@ export class ApiClient {
       credentials: isLocalEndpoint ? 'include' : 'omit',
     }
 
-    console.log(`Making ${options.method || 'GET'} request to: ${url}`)
-
     try {
-      console.log('API URL:', this.baseUrl)
       const response = await fetch(url, config)
-      console.log(`Response status for ${url}: ${response.status}`)
 
       if (!response.ok) {
         let errorMessage = `API request failed with status ${response.status}`
@@ -225,11 +217,9 @@ export class ApiClient {
       // Handle different response formats
       if (Array.isArray(response)) {
         // Direct array format
-        console.log('Received badges in flat array format:', response.length)
         return response
       } else if (response && response.data && Array.isArray(response.data)) {
         // Strapi format with data array
-        console.log('Received badges in Strapi format:', response.data.length)
         return response
       } else {
         console.error('Unexpected badge response format:', response)
@@ -295,8 +285,6 @@ export class ApiClient {
    * Issue a badge to a recipient
    */
   async issueBadge(badgeId: number | string, recipient: { id?: number; name: string; email: string }, evidence: any[] = []) {
-    console.log('Calling issueBadge with:', { badgeId, recipient, evidenceCount: evidence.length })
-    
     if (!badgeId) {
       throw new Error('Badge ID is required')
     }
@@ -324,12 +312,8 @@ export class ApiClient {
         }
       }
       
-      console.log('Badge issuance payload:', JSON.stringify(payload, null, 2))
-      
       // Use our server proxy endpoint which will forward to backend
       const result = await this.post<any>('/api/credentials/issue', payload)
-      
-      console.log('Badge issuance success result:', result)
       
       // Add notification information for UI feedback
       if (result && !result.notification) {
@@ -417,8 +401,6 @@ export class ApiClient {
         return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
       }
       
-      console.log('Fetching issued credentials for profile ID:', profileId);
-      
       // Then get credentials issued by that profile
       const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/issued-credentials`);
       
@@ -456,8 +438,6 @@ export class ApiClient {
         console.error('Could not determine profile ID from response:', profileResponse);
         return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
       }
-      
-      console.log('Fetching received credentials for profile ID:', profileId);
       
       // Then get credentials received by that profile
       const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/received-credentials`);
@@ -665,14 +645,6 @@ export class ApiClient {
       formatted.imageUrl = credential.image.url
     }
     
-    // Log the formatted credential for debugging
-    console.log('Formatted credential details:', {
-      id: formatted.id,
-      name: formatted.name,
-      issuer: formatted.issuer?.name,
-      issuanceDate: formatted.issuanceDate
-    })
-    
     return formatted
   }
   
@@ -748,7 +720,6 @@ export class ApiClient {
   public setBaseUrl(url: string) {
     if (url) {
       this.baseUrl = url
-      console.log('ApiClient baseUrl set to:', url)
     }
   }
 }

@@ -57,7 +57,6 @@ onMounted(async () => {
   error.value = null
   
   try {
-    // Fetch certificates
     const [receivedResponse, issuedResponse] = await Promise.all([
       apiClient.getReceivedCertificates(),
       authStore.isIssuer ? apiClient.getIssuedCertificates() : Promise.resolve({ data: [] })
@@ -65,9 +64,6 @@ onMounted(async () => {
 
     receivedCertificates.value = receivedResponse.data || []
     issuedCertificates.value = issuedResponse.data || []
-
-    console.log('Received certificates:', receivedCertificates.value.length)
-    console.log('Issued certificates:', issuedCertificates.value.length)
   } catch (err) {
     console.error('Error fetching dashboard data:', err)
     error.value = 'Failed to load dashboard data. Please try again.'

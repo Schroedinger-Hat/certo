@@ -37,21 +37,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
   
   // If user is not authenticated and trying to access a protected route
   if (!authStore.isAuthenticated && (isProtectedRoute || isIssuerRoute)) {
-    console.log(`Redirecting unauthenticated user from ${to.path} to login`)
     return navigateTo('/login')
   }
   
   // If user is not an issuer and trying to access issuer routes
   if (isIssuerRoute && !authStore.isIssuer) {
-    console.log('isIssuerRoute', isIssuerRoute)
-    console.log('authStore.isIssuer', authStore)
-    console.log(`Redirecting non-issuer user from ${to.path} to dashboard`)
     return navigateTo('/dashboard')
   }
   
   // If user is authenticated and trying to access auth pages
   if (authStore.isAuthenticated && (to.path === '/login' || to.path === '/register')) {
-    console.log(`Redirecting authenticated user from ${to.path} to dashboard`)
     return navigateTo('/dashboard')
   }
 }) 
