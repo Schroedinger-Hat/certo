@@ -1,5 +1,5 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
-import { apiClient, updateApiUrl } from '../../frontend/api/api-client'
+import { apiClient, updateApiUrl } from '~/api/api-client'
 
 export default defineNuxtPlugin(nuxtApp => {
   const config = useRuntimeConfig()
@@ -9,4 +9,4 @@ export default defineNuxtPlugin(nuxtApp => {
   // Do not set apiClient.baseUrl directly since it's private
 
   nuxtApp.provide('apiClient', apiClient)
-}) 
+})
