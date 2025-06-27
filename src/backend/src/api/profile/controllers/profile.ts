@@ -37,19 +37,11 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
    */
   async me(ctx) {
     try {
-      console.log("me endpoint called");
-      
       if (!ctx.state.user) {
-        console.log("No authenticated user found");
         return ctx.unauthorized('You must be logged in');
       }
 
-      // Log what's available in the user object for debugging
-      console.log("User state:", JSON.stringify(ctx.state.user));
-      
       const userEmail = ctx.state.user.email;
-      
-      console.log(`Looking for profile with email: ${userEmail}`);
       
       // Find profile by email
       const profiles = await strapi.entityService.findMany('api::profile.profile', {
@@ -58,15 +50,11 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
         limit: 1
       });
       
-      console.log(`Found ${profiles?.length || 0} profiles`);
-      
       // Return the first profile that matches
       if (profiles && profiles.length > 0) {
         return { data: profiles[0] };
       }
-      
-      // If no profile found, return error
-      console.log("No profile found for the current user");
+
       return ctx.notFound('Profile not found for the current user');
     } catch (err) {
       console.error('Error fetching current user profile:', err);
@@ -206,11 +194,7 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
    */
   async debugAuth(ctx) {
     try {
-      console.log("Auth Debug endpoint called");
-      console.log("Headers:", ctx.request.header);
-      
       if (!ctx.state.user) {
-        console.log("No authenticated user found");
         return ctx.unauthorized('You must be logged in');
       }
       

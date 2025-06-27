@@ -133,14 +133,25 @@ export default ({ strapi }) => ({
    */
   async findIssuerByUrl(url) {
     try {
+      // Extract the numeric ID from the URL (e.g., /api/profiles/123)
+      const match = url.match(/\/api\/profiles\/(\d+)/)
+      if (!match) {
+        console.error(`No numeric profile ID found in URL: ${url}`)
+        return null
+      }
+      const id = parseInt(match[1], 10)
+      if (isNaN(id)) {
+        console.error(`Invalid profile ID extracted from URL: ${url}`)
+        return null
+      }
       const issuer = await strapi.db.query('api::profile.profile').findOne({
-        where: { url }
-      });
-      
-      return issuer;
+        where: { id },
+        status: 'published'
+      })
+      return issuer
     } catch (error) {
-      console.error('Error finding issuer by URL:', error);
-      return null;
+      console.error('Error finding issuer by URL:', error)
+      return null
     }
   },
 
@@ -154,6 +165,7 @@ export default ({ strapi }) => ({
         status: 'published',
         populate: [
           'achievement', 
+          'achievement.creator',
           'achievement.image', 
           'achievement.criteria',
           'achievement.alignment',
@@ -168,6 +180,12 @@ export default ({ strapi }) => ({
       
       if (!credential) {
         throw new Error('Credential not found')
+      }
+      if (!credential.achievement.creator) {
+        throw new Error('Credential is missing an associated achievement creator')
+      }
+      if (!credential.issuer) {
+        throw new Error('Credential is missing an associated issuer')
       }
       
       // Base URL for this application

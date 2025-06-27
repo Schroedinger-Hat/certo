@@ -65,14 +65,14 @@ export default ({ strapi }) => ({
         description: achievement.description,
         type: ['VerifiableCredential', 'OpenBadgeCredential'],
         achievement: achievement.id,
-        issuer: achievement.creator?.id || await this.getDefaultIssuerId(),
+        issuer: achievement.creator?.id,
         recipient: recipientEntity.id,
         issuanceDate: new Date(),
         revoked: false,
         publishedAt: new Date()
       }
       // Generate cryptographic proof (JWS)
-      const proof = await this.generateProof(credentialId, achievement.creator?.id || await this.getDefaultIssuerId(), credentialPayload)
+      const proof = await this.generateProof(credentialPayload.issuer, credentialPayload)
 
       // Create the credential
       const credential = await strapi.entityService.create('api::credential.credential', {
@@ -82,7 +82,7 @@ export default ({ strapi }) => ({
           description: achievement.description,
           type: ['VerifiableCredential', 'OpenBadgeCredential'],
           achievement: achievement.id,
-          issuer: achievement.creator?.id || await this.getDefaultIssuerId(),
+          issuer: achievement.creator?.id,
           recipient: recipientEntity.id,
           issuanceDate: new Date(),
           revoked: false,
@@ -196,7 +196,6 @@ export default ({ strapi }) => ({
   async findOrCreateUser(profile) {
     try {
       if (!profile.email) {
-        console.log('Profile has no email, skipping user creation')
         return null
       }
 
@@ -221,7 +220,6 @@ export default ({ strapi }) => ({
       })
 
       if (existingUser) {
-        console.log(`User already exists for email ${profile.email}`)
         return existingUser
       }
 
@@ -248,7 +246,6 @@ export default ({ strapi }) => ({
         provider: 'local'
       })
 
-      console.log(`Created new user for email ${profile.email}`)
       return newUser
     } catch (error) {
       console.error('Error finding or creating user:', error)
@@ -306,10 +303,10 @@ export default ({ strapi }) => ({
 
   /**
    * Generate cryptographic proof for a credential
-   * @param {string} credentialId - The ID of the credential
    * @param {string} issuerId - The ID of the issuer profile
+   * @param {Object} credentialPayload - The credential payload
    */
-  async generateProof(credentialId, issuerId, credentialPayload) {
+  async generateProof(issuerId, credentialPayload) {
     try {
       const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
       const payload = { ...credentialPayload }
@@ -317,7 +314,7 @@ export default ({ strapi }) => ({
       const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8
       if (!pkcs8) throw new Error('ED25519_PRIVATE_KEY_PKCS8 env var not set')
       const { importPKCS8, SignJWT } = await import('jose')
-      console.log(pkcs8)
+
       const privateKey = await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA')
       const jws = await new SignJWT(payload)
         .setProtectedHeader({ alg: 'EdDSA' })
@@ -352,18 +349,4 @@ export default ({ strapi }) => ({
       return v.toString(16)
     })
   },
-
-  /**
-   * Generate a simple proof value for a credential ID
-   * This is a simplified version for demonstration purposes
-   * In a real implementation, this would use a proper cryptographic algorithm
-   * @param {string} credentialId - The credential ID
-   * @returns {string} A simulated proof value
-   */
-  generateProofValue(credentialId) {
-    // In a real implementation, this would be an actual cryptographic signature
-    // Here we're just creating a dummy value for demonstration
-    const dummySignature = Buffer.from(`${credentialId}-${Date.now()}`).toString('base64')
-    return `z${dummySignature}${this.generateUUID().replace(/-/g, '')}`
-  }
 }) 

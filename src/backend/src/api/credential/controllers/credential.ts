@@ -339,50 +339,6 @@ export default factories.createCoreController('api::credential.credential', ({ s
   },
 
   /**
-   * Get badge by ID
-   * @param {Object} ctx - The context object
-   */
-  async getBadge(ctx) {
-    try {
-      const { id } = ctx.params
-
-      if (!id) {
-        return ctx.badRequest('Badge ID is required')
-      }
-
-      // Find the achievement
-      const achievement = await strapi.entityService.findOne(
-        'api::achievement.achievement',
-        id,
-        {
-          status: 'published',
-          populate: {
-            issuer: true,
-            image: true,
-            criteria: true,
-            alignment: true,
-            skills: true
-          },
-        }
-      )
-
-      if (!achievement) {
-        return ctx.notFound('Badge not found')
-      }
-
-      return {
-        data: achievement,
-        meta: {
-          format: 'OpenBadges3.0',
-        }
-      }
-    } catch (error) {
-      console.error('Error retrieving badge:', error)
-      return ctx.badRequest(error.message || 'Failed to retrieve badge')
-    }
-  },
-
-  /**
    * Get a certificate for a credential
    * @param {Object} ctx - The context object
    */
@@ -421,7 +377,6 @@ export default factories.createCoreController('api::credential.credential', ({ s
         return ctx.badRequest('Credential ID is required');
       }
       
-      console.log(`Getting certificate for credential ID: ${id}`);
       
       // Find credential by ID (could be UUID or database ID)
       let credential;
@@ -461,11 +416,8 @@ export default factories.createCoreController('api::credential.credential', ({ s
    * Override the default find method to filter results based on user
    */
   async find(ctx) {
-    console.log('Credential find method called');
-    console.log('User authenticated:', !!ctx.state.user);
     
     if (ctx.state.user) {
-      console.log('User email:', ctx.state.user.email);
     }
     
     try {
@@ -474,23 +426,19 @@ export default factories.createCoreController('api::credential.credential', ({ s
         try {
           // Find profile by user's email
           const userEmail = ctx.state.user.email
-          console.log('Looking for profile with email:', userEmail);
           
           const profiles = await strapi.entityService.findMany('api::profile.profile', {
             status: 'published',
             filters: { email: userEmail },
           })
 
-          console.log('Found profiles:', profiles?.length || 0);
 
           if (!profiles || profiles.length === 0) {
-            console.log('No profile found for user, returning empty array');
             return { data: [] }
           }
 
           // Get the profile ID
           const profileId = profiles[0].id
-          console.log('Profile ID:', profileId);
 
           // Use entityService directly instead of calling super.find
           const credentials = await strapi.entityService.findMany('api::credential.credential', {
@@ -504,7 +452,6 @@ export default factories.createCoreController('api::credential.credential', ({ s
             populate: ['achievement', 'issuer', 'recipient']
           }) as any[];
           
-          console.log('Found credentials:', credentials?.length || 0);
           
           return { 
             data: credentials.map(credential => {
@@ -588,10 +535,13 @@ export default factories.createCoreController('api::credential.credential', ({ s
       const achievement = await strapi.entityService.findOne('api::achievement.achievement', achievementId, {
         status: 'published',
         populate: { creator: true }
-      })
+      }) as Achievement
 
       if (!achievement) {
         return ctx.notFound('Achievement not found')
+      }
+      if (!achievement.creator) {
+        return ctx.badRequest('Achievement creator not found')
       }
 
       const issuePromises = recipients.map(async (recipientData) => {

@@ -50,8 +50,6 @@ export default factories.createCoreController('api::achievement.achievement', ({
         data.tags = [];
       }
       
-      console.log('Creating achievement with data:', JSON.stringify(data));
-      
       // Create the achievement using the entity service directly
       const achievement = await strapi.entityService.create('api::achievement.achievement', {
         data

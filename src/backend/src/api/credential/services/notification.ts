@@ -12,18 +12,6 @@ export default ({ strapi }) => ({
    */
   async sendBadgeIssuedEmail(credential, recipient, achievement) {
     try {
-      // Debug logs
-      console.log('Notification Service - Credential:', JSON.stringify({
-        id: credential?.id,
-        credentialId: credential?.credentialId,
-        hasRecipient: !!credential?.recipient
-      }))
-      
-      console.log('Notification Service - Recipient param:', recipient ? JSON.stringify({
-        id: recipient.id,
-        email: recipient.email,
-        name: recipient.name
-      }) : 'null')
       
       // Handle case where recipient is provided separately or needs to be fetched
       let recipientData = recipient
@@ -47,12 +35,6 @@ export default ({ strapi }) => ({
         }
       }
       
-      console.log('Notification Service - Final recipient data:', recipientData ? JSON.stringify({
-        id: recipientData.id,
-        email: recipientData.email,
-        name: recipientData.name
-      }) : 'null')
-      
       if (!recipientData || !recipientData.email) {
         console.warn('Cannot send email: recipient or email is missing')
         return false
@@ -63,9 +45,6 @@ export default ({ strapi }) => ({
         console.error('Email plugin is not properly configured')
         return false
       }
-
-      // Get configured settings
-      console.log('Email provider config:', JSON.stringify(strapi.config.get('plugin.email', {})))
 
       const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
       const frontendUrl = strapi.config.get('custom.frontendUrl', 'http://localhost:3000')
@@ -127,15 +106,9 @@ export default ({ strapi }) => ({
         `,
       }
       
-      console.log('Sending email with options:', JSON.stringify({
-        to: emailOptions.to,
-        subject: emailOptions.subject
-      }))
-      
       // Send the email
       try {
         await strapi.plugins.email.services.email.send(emailOptions)
-        console.log('Email sent successfully to:', recipientData.email)
         return true
       } catch (emailError) {
         console.error('Error from email provider:', emailError)
