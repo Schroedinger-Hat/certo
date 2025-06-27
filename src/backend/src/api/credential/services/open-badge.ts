@@ -200,7 +200,7 @@ export default ({ strapi }) => ({
         id: credential.credentialId,
         type: ['VerifiableCredential', 'OpenBadgeCredential'],
         issuer: {
-          id: `${baseUrl}/api/profiles/${credential.issuer.id}`,
+          id: `${baseUrl}/api/profiles/${credential.issuer.id}/issuer`,
           type: ['Profile'],
           name: credential.issuer.name,
           url: credential.issuer.url

@@ -22,5 +22,14 @@ export default {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/profiles/:id/issuer',
+      handler: 'profile.getIssuer',
+      config: {
+        auth: false,
+        middlewares: [],
+      },
+    },
   ],
 } 

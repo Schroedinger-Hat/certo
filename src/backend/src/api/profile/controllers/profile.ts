@@ -146,7 +146,7 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
         publicKeyJwk: key.publicKeyJwk
       }))
 
-      return { data: keys }
+      return keys[0];
     } catch (err) {
       console.error('Error fetching public keys:', err)
       return ctx.internalServerError('Error fetching public keys')
@@ -187,6 +187,16 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
       console.error('Error fetching JWKS:', err)
       return ctx.internalServerError('Error fetching JWKS')
     }
+  },
+
+  async getIssuer(ctx) {
+    const { id } = ctx.params
+    const profile = await strapi.entityService.findOne('api::profile.profile', id, {
+      status: 'published',
+      populate: ['publicKey']
+    }) as ProfileWithPublicKeys
+
+    return profile
   },
 
   /**
