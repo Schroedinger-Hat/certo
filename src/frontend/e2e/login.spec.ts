@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test('login page loads and form is present', async ({ page }) => {
   await page.goto('/login')
@@ -6,4 +6,4 @@ test('login page loads and form is present', async ({ page }) => {
   await expect(page.locator('input[type="email"]')).toBeVisible()
   await expect(page.locator('input[type="password"]')).toBeVisible()
   await expect(page.locator('button[type="submit"]')).toBeVisible()
-}) 
+})

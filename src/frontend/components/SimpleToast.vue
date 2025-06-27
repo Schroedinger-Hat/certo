@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useSimpleToast } from '~/composables/useSimpleToast'
+
+const { toastState } = useSimpleToast()
+const toast = computed(() => toastState.value)
+</script>
+
 <template>
   <transition name="fade">
     <div
@@ -8,25 +16,21 @@
       aria-live="polite"
     >
       <span class="mr-3">
-        <span v-if="toast.type === 'success'" class="i-lucide-check-circle w-6 h-6 text-green-500"></span>
-        <span v-else-if="toast.type === 'error'" class="i-lucide-x-circle w-6 h-6 text-red-500"></span>
-        <span v-else class="i-lucide-info w-6 h-6 text-blue-400"></span>
+        <span v-if="toast.type === 'success'" class="i-lucide-check-circle w-6 h-6 text-green-500" />
+        <span v-else-if="toast.type === 'error'" class="i-lucide-x-circle w-6 h-6 text-red-500" />
+        <span v-else class="i-lucide-info w-6 h-6 text-blue-400" />
       </span>
       <div>
-        <div class="font-semibold">{{ toast.message }}</div>
-        <div v-if="toast.description" class="text-sm opacity-80 mt-0.5">{{ toast.description }}</div>
+        <div class="font-semibold">
+          {{ toast.message }}
+        </div>
+        <div v-if="toast.description" class="text-sm opacity-80 mt-0.5">
+          {{ toast.description }}
+        </div>
       </div>
     </div>
   </transition>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useSimpleToast } from '~/composables/useSimpleToast'
-
-const { toastState } = useSimpleToast()
-const toast = computed(() => toastState.value)
-</script>
 
 <style scoped>
 .fade-enter-active, .fade-leave-active {
@@ -35,4 +39,4 @@ const toast = computed(() => toastState.value)
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
-</style> 
+</style>

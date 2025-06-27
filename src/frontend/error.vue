@@ -3,7 +3,7 @@ defineProps({
   error: Object
 })
 
-const handleError = () => {
+function handleError() {
   clearError()
   navigateTo(useRoute().path)
 }
@@ -14,7 +14,7 @@ const handleError = () => {
     <div class="max-w-md w-full text-center">
       <!-- Error Icon -->
       <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8">
-        <div class="w-12 h-12 i-heroicons-exclamation-triangle text-red-500"></div>
+        <div class="w-12 h-12 i-heroicons-exclamation-triangle text-red-500" />
       </div>
 
       <!-- Error Message -->
@@ -28,8 +28,8 @@ const handleError = () => {
       <!-- Actions -->
       <div class="space-y-4">
         <button
-          @click="handleError"
           class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5]"
+          @click="handleError"
         >
           Try Again
         </button>
@@ -42,4 +42,4 @@ const handleError = () => {
       </div>
     </div>
   </div>
-</template> 
+</template>

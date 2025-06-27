@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiClient } from '../api-client'
 
 globalThis.fetch = vi.fn()
@@ -6,9 +6,10 @@ globalThis.localStorage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn()
+
 } as any
 
-describe('ApiClient', () => {
+describe('apiClient', () => {
   let apiClient: ApiClient
 
   beforeEach(() => {
@@ -45,4 +46,4 @@ describe('ApiClient', () => {
     ;(fetch as any).mockResolvedValue({ ok: false, status: 400, json: async () => ({ error: { message: 'fail' } }) })
     await expect(apiClient.get('/fail')).rejects.toThrow('fail')
   })
-}) 
+})

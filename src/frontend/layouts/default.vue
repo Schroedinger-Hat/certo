@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import type { useAuthStore } from '~/stores/auth'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '~/stores/auth'
 import Footer from '~/components/Footer.vue'
 
 const router = useRouter()
@@ -18,16 +18,17 @@ const isMobileMenuOpen = ref(false)
 watch([isStoreReady, authStore], ([ready, store]) => {
   if (ready && store?.user) {
     isAuthenticated.value = store.isAuthenticated
-    userName.value = store.user.username || 
-      (store.user.email ? store.user.email.split('@')[0] : '')
-  } else {
+    userName.value = store.user.username
+      || (store.user.email ? store.user.email.split('@')[0] : '')
+  }
+  else {
     isAuthenticated.value = false
     userName.value = ''
   }
 }, { immediate: true })
 
 // Handle scroll events
-const updateScroll = () => {
+function updateScroll() {
   isScrolled.value = window.scrollY > 20
 }
 
@@ -35,20 +36,21 @@ const updateScroll = () => {
 onMounted(() => {
   // Add click event listener for click-outside detection
   document.addEventListener('click', handleClickOutside)
-  
+
   // Safe initialization of auth store
   // Using setTimeout to ensure it runs after Pinia and plugins are initialized
   setTimeout(() => {
     try {
       // Try to dynamically import the store
-      import('~/stores/auth').then(module => {
+      import('~/stores/auth').then((module) => {
         const { useAuthStore } = module
         authStore.value = useAuthStore()
         isStoreReady.value = true
       }).catch(err => {
         console.error('Error importing auth store:', err)
       })
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Could not access auth store in layout:', error)
     }
   }, 100)
@@ -62,20 +64,20 @@ onUnmounted(() => {
   // Remove event listeners
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('scroll', updateScroll)
-  
+
   // Clear auth store reference
   authStore.value = null
   isStoreReady.value = false
 })
 
-const handleClickOutside = (event: MouseEvent) => {
+function handleClickOutside(event: MouseEvent) {
   const target = event.target as HTMLElement
   if (userMenuRef.value && !userMenuRef.value.contains(target)) {
     showUserMenu.value = false
   }
 }
 
-const handleLogout = () => {
+function handleLogout() {
   if (isStoreReady.value && authStore.value) {
     authStore.value.logout()
     isAuthenticated.value = false
@@ -97,23 +99,22 @@ const navLinks = [
 <template>
   <div class="min-h-screen flex flex-col bg-gradient-to-b from-white to-[#FFE5AE]/20">
     <!-- Navigation -->
-    <nav 
-      :class="[
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled ? 'bg-white/80 backdrop-blur-lg shadow-sm' : ''
+    <nav
+      class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" :class="[
+        isScrolled ? 'bg-white/80 backdrop-blur-lg shadow-sm' : '',
       ]"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
           <NuxtLink to="/" class="flex items-center gap-2">
-            <img src="/certo-logo-text.png" alt="Certo logo" class="h-10 w-auto" />
+            <img src="/certo-logo-text.png" alt="Certo logo" class="h-10 w-auto">
           </NuxtLink>
 
           <!-- Desktop Navigation -->
           <div class="hidden md:flex items-center gap-6">
-            <NuxtLink 
-              v-for="link in navLinks" 
+            <NuxtLink
+              v-for="link in navLinks"
               :key="link.name"
               :to="link.href"
               class="text-text-secondary hover:text-text-primary transition-colors font-medium"
@@ -127,11 +128,11 @@ const navLinks = [
                 <div class="relative">
                   <button
                     ref="userMenuRef"
-                    @click="showUserMenu = !showUserMenu"
                     class="flex items-center gap-2 text-text-primary hover:text-text-secondary transition-colors"
+                    @click="showUserMenu = !showUserMenu"
                   >
                     <span class="font-medium">{{ userName }}</span>
-                    <div class="w-5 h-5 i-heroicons-chevron-down" :class="{ 'rotate-180': showUserMenu }"></div>
+                    <div class="w-5 h-5 i-heroicons-chevron-down" :class="{ 'rotate-180': showUserMenu }" />
                   </button>
 
                   <!-- User Menu Dropdown -->
@@ -147,8 +148,8 @@ const navLinks = [
                       Profile Settings
                     </NuxtLink> -->
                     <button
-                      @click="handleLogout"
                       class="block w-full text-left px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50"
+                      @click="handleLogout"
                     >
                       Sign Out
                     </button>
@@ -156,13 +157,13 @@ const navLinks = [
                 </div>
               </template>
               <template v-else>
-                <NuxtLink 
+                <NuxtLink
                   to="/login"
                   class="font-medium text-text-primary hover:text-text-secondary transition-colors"
                 >
                   Sign in
                 </NuxtLink>
-                <NuxtLink 
+                <NuxtLink
                   to="/get-started"
                   class="px-4 py-2 bg-[#00E5C5] text-white rounded-full font-medium hover:bg-[#00E5C5]/90 transition-colors"
                 >
@@ -173,24 +174,24 @@ const navLinks = [
           </div>
 
           <!-- Mobile Menu Button -->
-          <button 
+          <button
             class="md:hidden p-2 rounded-lg hover:bg-gray-100"
             @click="isMobileMenuOpen = !isMobileMenuOpen"
           >
-            <div class="w-6 h-6 i-heroicons-bars-3" v-if="!isMobileMenuOpen"></div>
-            <div class="w-6 h-6 i-heroicons-x-mark" v-else></div>
+            <div v-if="!isMobileMenuOpen" class="w-6 h-6 i-heroicons-bars-3" />
+            <div v-else class="w-6 h-6 i-heroicons-x-mark" />
           </button>
         </div>
       </div>
 
       <!-- Mobile Menu -->
-      <div 
+      <div
         v-if="isMobileMenuOpen"
         class="md:hidden bg-white border-t"
       >
         <div class="px-4 py-2 space-y-1">
-          <NuxtLink 
-            v-for="link in navLinks" 
+          <NuxtLink
+            v-for="link in navLinks"
             :key="link.name"
             :to="link.href"
             class="block py-2 text-text-secondary hover:text-text-primary transition-colors"
@@ -199,27 +200,27 @@ const navLinks = [
           </NuxtLink>
           <div class="pt-4 space-y-2">
             <template v-if="isAuthenticated && userName">
-              <!-- <NuxtLink 
+              <!-- <NuxtLink
                 to="/profile"
                 class="block w-full py-2 text-text-primary hover:text-text-secondary transition-colors"
               >
                 Profile Settings
               </NuxtLink> -->
               <button
-                @click="handleLogout"
                 class="block w-full py-2 text-text-primary hover:text-text-secondary transition-colors"
+                @click="handleLogout"
               >
                 Sign Out
               </button>
             </template>
             <template v-else>
-              <NuxtLink 
+              <NuxtLink
                 to="/login"
                 class="block w-full py-2 text-center text-text-primary hover:text-text-secondary transition-colors"
               >
                 Sign in
               </NuxtLink>
-              <NuxtLink 
+              <NuxtLink
                 to="/get-started"
                 class="block w-full py-2 text-center bg-[#00E5C5] text-white rounded-full hover:bg-[#00E5C5]/90 transition-colors"
               >
@@ -261,4 +262,4 @@ body {
   opacity: 0;
   transform: translateY(-10px);
 }
-</style> 
+</style>

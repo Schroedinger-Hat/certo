@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
 import Cookies from 'js-cookie'
-import { authClient } from '~/api/auth-client'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 import { apiClient } from '~/api/api-client'
+import { authClient } from '~/api/auth-client'
 
 interface User {
   id: number
@@ -46,11 +46,11 @@ export const useAuthStore = defineStore('auth', () => {
   const profile = ref<Profile | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
-  
+
   const isAuthenticated = computed(() => !!user.value && !!token.value)
   const isIssuer = computed(() => (userRole.value && userRole.value.toLowerCase() === 'issuer'))
   const userRole = computed(() => user.value?.role?.name || null)
-  
+
   // Initialize auth state from localStorage/cookies
   async function init() {
     // Prevent multiple initializations
@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     
     isLoading.value = true
-    
+
     try {
       // Check if running in browser
       if (process.client) {
@@ -69,18 +69,18 @@ export const useAuthStore = defineStore('auth', () => {
           
           // Set token in API client
           apiClient.setToken(savedToken)
-          
+
           // Try to get current user
           const currentUser = authClient.getCurrentUser()
           if (currentUser) {
             user.value = currentUser
-            
+
             // Validate token and get profile
             try {
               const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
               if (profileResponse.data) {
-                profile.value = Array.isArray(profileResponse.data) 
-                  ? profileResponse.data[0] 
+                profile.value = Array.isArray(profileResponse.data)
+                  ? profileResponse.data[0]
                   : profileResponse.data
               }
             } catch (validationError) {
@@ -94,49 +94,53 @@ export const useAuthStore = defineStore('auth', () => {
 
       // Mark as initialized
       isInitialized = true
-    } catch (e) {
+    }
+    catch (e) {
       console.error('Error initializing auth store:', e)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
-  
+
   async function login(identifier: string, password: string) {
     error.value = null
     isLoading.value = true
-    
+
     try {
       const response = await authClient.login({ identifier, password })
       
       // Save user data
       user.value = response.user
       token.value = response.jwt
-      
+
       // Fetch full user with role using /api/users/me?populate=*
       try {
         const fullUser = await apiClient.get<User>('/api/users/me', { populate: '*' })
         if (fullUser) {
           user.value = fullUser
         }
-      } catch (userError) {
+      }
+      catch (userError) {
         console.error('Error loading full user:', userError)
       }
-      
+
       // Get user profile
       try {
         const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
         if (profileResponse.data) {
-          profile.value = Array.isArray(profileResponse.data) 
-            ? profileResponse.data[0] 
+          profile.value = Array.isArray(profileResponse.data)
+            ? profileResponse.data[0]
             : profileResponse.data
         }
-      } catch (profileError) {
+      }
+      catch (profileError) {
         console.error('Error loading profile:', profileError)
       }
-      
+
       // Set token in cookie for server-side auth checks
       if (process.client) {
-        Cookies.set('token', response.jwt, { 
+        Cookies.set('token', response.jwt, {
           expires: 7,
           path: '/',
           sameSite: 'strict'
@@ -149,74 +153,80 @@ export const useAuthStore = defineStore('auth', () => {
       } catch (authErr) {
         console.error('Auth debug test failed:', authErr)
       }
-      
+
       return true
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Login error:', err)
       error.value = err instanceof Error ? err.message : 'Login failed'
       return false
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
-  
+
   async function register(username: string, email: string, password: string) {
     error.value = null
     isLoading.value = true
-    
+
     try {
       const response = await authClient.register({ username, email, password })
       
       // Save user data
       user.value = response.user
       token.value = response.jwt
-      
+
       // Fetch full user with role using /api/users/me?populate=*
       try {
         const fullUser = await apiClient.get<User>('/api/users/me', { populate: '*' })
         if (fullUser) {
           user.value = fullUser
         }
-      } catch (userError) {
+      }
+      catch (userError) {
         console.error('Error loading full user:', userError)
       }
-      
+
       // Get user profile
       try {
         const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
         if (profileResponse.data) {
-          profile.value = Array.isArray(profileResponse.data) 
-            ? profileResponse.data[0] 
+          profile.value = Array.isArray(profileResponse.data)
+            ? profileResponse.data[0]
             : profileResponse.data
         }
-      } catch (profileError) {
+      }
+      catch (profileError) {
         console.error('Error loading profile:', profileError)
       }
-      
+
       // Set token in cookie for server-side auth checks
       if (process.client) {
         Cookies.set('token', response.jwt, { expires: 7 })
       }
-      
+
       return true
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Registration error:', err)
       error.value = err instanceof Error ? err.message : 'Registration failed'
       return false
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
-  
+
   function logout() {
     if (process.client) {
       // Clear auth client state
       authClient.logout()
-      
+
       // Clear cookies
       Cookies.remove('token')
     }
-    
+
     // Clear state
     user.value = null
     token.value = null
@@ -237,4 +247,4 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     init
   }
-}) 
+})

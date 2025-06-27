@@ -1,4 +1,4 @@
-import { defineConfig, presetIcons, presetUno, presetAttributify } from 'unocss'
+import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss'
 
 export default defineConfig({
   presets: [
@@ -43,4 +43,4 @@ export default defineConfig({
       display: ['Space Grotesk', 'system-ui', 'sans-serif']
     }
   }
-}) 
+})

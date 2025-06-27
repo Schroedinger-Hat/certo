@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { useHead, useRuntimeConfig } from '#imports'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useHead, useRuntimeConfig } from '#imports'
+
 const email = ref('')
 const isLoading = ref(false)
 const success = ref(false)
@@ -32,9 +33,11 @@ async function handleSubmit() {
       throw new Error(data?.error?.message || 'Failed to send reset email')
     }
     success.value = true
-  } catch (e: any) {
+  }
+  catch (e: any) {
     error.value = e.message || 'Failed to send reset email'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -45,13 +48,17 @@ async function handleSubmit() {
     <div class="max-w-md w-full space-y-8">
       <!-- Header -->
       <div class="text-center">
-        <h2 class="text-4xl font-bold text-text-primary">Reset password</h2>
-        <p class="mt-2 text-text-secondary">We'll send you instructions to reset your password</p>
+        <h2 class="text-4xl font-bold text-text-primary">
+          Reset password
+        </h2>
+        <p class="mt-2 text-text-secondary">
+          We'll send you instructions to reset your password
+        </p>
       </div>
 
       <!-- Form -->
       <div class="mt-8 bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg">
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form class="space-y-6" @submit.prevent="handleSubmit">
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-text-primary">
@@ -67,7 +74,7 @@ async function handleSubmit() {
                 placeholder="Enter your email"
                 :disabled="isLoading"
                 autocomplete="email"
-              />
+              >
             </div>
           </div>
 
@@ -75,7 +82,7 @@ async function handleSubmit() {
           <div v-if="success" class="rounded-lg bg-green-50 p-4">
             <div class="flex">
               <div class="flex-shrink-0">
-                <div class="w-5 h-5 i-heroicons-check-circle text-green-400"></div>
+                <div class="w-5 h-5 i-heroicons-check-circle text-green-400" />
               </div>
               <div class="ml-3">
                 <p class="text-sm text-green-800">
@@ -89,10 +96,12 @@ async function handleSubmit() {
           <div v-if="error" class="rounded-lg bg-red-50 p-4">
             <div class="flex">
               <div class="flex-shrink-0">
-                <div class="w-5 h-5 i-heroicons-x-circle text-red-400"></div>
+                <div class="w-5 h-5 i-heroicons-x-circle text-red-400" />
               </div>
               <div class="ml-3">
-                <p class="text-sm text-red-800">{{ error }}</p>
+                <p class="text-sm text-red-800">
+                  {{ error }}
+                </p>
               </div>
             </div>
           </div>
@@ -104,7 +113,7 @@ async function handleSubmit() {
             class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="!isLoading">Send reset link</span>
-            <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
           </button>
         </form>
 
@@ -120,4 +129,4 @@ async function handleSubmit() {
       </div>
     </div>
   </div>
-</template> 
+</template>

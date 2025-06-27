@@ -1,8 +1,7 @@
 import type {
+  StrapiError,
   StrapiResponse,
   StrapiSingleResponse,
-  StrapiError,
-  AchievementCredential,
   VerificationResult,
 } from '../types/openbadges'
 
@@ -10,7 +9,7 @@ let API_URL = '' // fallback, will be set by Nuxt plugin
 
 // This will be updated when the module is initialized in the browser
 export function updateApiUrl(url: string) {
-  if (url) API_URL = url
+  if (url) { API_URL = url }
   apiClient.setBaseUrl(url)
   console.log('API URL set to:', API_URL)
 }
@@ -25,7 +24,7 @@ export class ApiClient {
   constructor(baseUrl = '') {
     this.baseUrl = baseUrl
     this.token = null
-    
+
     // Initialize token from localStorage if available
     if (process.client) {
       const storedToken = localStorage.getItem('token')
@@ -40,7 +39,7 @@ export class ApiClient {
    */
   setToken(token: string) {
     this.token = token
-    
+
     // Also store in localStorage for persistence
     if (process.client) {
       localStorage.setItem('token', token)
@@ -52,7 +51,7 @@ export class ApiClient {
    */
   clearToken() {
     this.token = null
-    
+
     if (process.client) {
       localStorage.removeItem('token')
     }
@@ -68,14 +67,14 @@ export class ApiClient {
     }
 
     // Get token from instance, localStorage, or cookie
-    let token = this.token;
-    
+    let token = this.token
+
     if (!token && process.client) {
       // Try localStorage
-      const localToken = localStorage.getItem('token');
+      const localToken = localStorage.getItem('token')
       if (localToken) {
-        token = localToken;
-        this.token = localToken; // Update instance token
+        token = localToken
+        this.token = localToken // Update instance token
       }
     }
 
@@ -85,7 +84,7 @@ export class ApiClient {
       console.warn('No authentication token available for request');
     }
 
-    return headers;
+    return headers
   }
 
   /**
@@ -120,29 +119,30 @@ export class ApiClient {
       if (!response.ok) {
         let errorMessage = `API request failed with status ${response.status}`
         let errorData: any = null
-        
+
         try {
           errorData = await response.json() as StrapiError
           console.error('API error response:', errorData)
-          
+
           if (errorData.error) {
             errorMessage = errorData.error.message || errorMessage
-            
+
             // Add details for validation errors
             if (errorData.error.details && errorData.error.details.errors) {
               const errorDetails = errorData.error.details.errors
                 .map((err: any) => `${err.path.join('.')}: ${err.message}`)
                 .join('; ')
-              
+
               if (errorDetails) {
                 errorMessage += ` (${errorDetails})`
               }
             }
           }
-        } catch (parseError) {
+        }
+        catch (parseError) {
           console.error('Could not parse error response:', parseError)
         }
-        
+
         const error = new Error(errorMessage)
         // @ts-ignore - Add response data to error for debugging
         error.response = response
@@ -156,7 +156,8 @@ export class ApiClient {
       }
 
       return await response.json() as T
-    } catch (error) {
+    }
+    catch (error) {
       console.error('API request error:', error)
       throw error
     }
@@ -209,23 +210,26 @@ export class ApiClient {
       // Always include populate=* to get nested data including images
       const populatedParams = {
         ...params,
-        'populate': '*'
+        populate: '*'
       }
-      
+
       const response = await this.get<any>('/api/achievements', populatedParams)
-      
+
       // Handle different response formats
       if (Array.isArray(response)) {
         // Direct array format
         return response
-      } else if (response && response.data && Array.isArray(response.data)) {
+      }
+      else if (response && response.data && Array.isArray(response.data)) {
         // Strapi format with data array
         return response
-      } else {
+      }
+      else {
         console.error('Unexpected badge response format:', response)
         return { data: [] }
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error fetching badges:', error)
       return { data: [] }
     }
@@ -288,18 +292,18 @@ export class ApiClient {
     if (!badgeId) {
       throw new Error('Badge ID is required')
     }
-    
+
     if (!recipient || !recipient.email || !recipient.name) {
       throw new Error('Recipient email and name are required')
     }
-    
+
     try {
       // Ensure we have a valid token
       const token = this.token || (process.client ? localStorage.getItem('token') : null)
       if (!token) {
         throw new Error('Authentication required. Please log in to issue badges.')
       }
-      
+
       const payload = {
         data: {
           achievementId: badgeId,
@@ -322,22 +326,24 @@ export class ApiClient {
           emailError: null
         }
       }
-      
+
       return result
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Badge issuance error:', error)
-      
+
       // Add more context to the error
       if (error instanceof Error) {
         // Check if there's a more specific error about the badge
         if (error.message.includes('not found') || error.message.includes('does not exist')) {
           error.message = `Badge with ID ${badgeId} not found or is not available for issuance`
-        } else if (!error.message.includes('Authentication required') && 
-                  !error.message.includes('Method not allowed')) {
+        }
+        else if (!error.message.includes('Authentication required')
+          && !error.message.includes('Method not allowed')) {
           error.message = `Failed to issue badge: ${error.message}`
         }
       }
-      
+
       throw error
     }
   }
@@ -370,7 +376,8 @@ export class ApiClient {
         data: this.formatCredentials(response.data || []),
         meta: response.meta
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error fetching user certificates:', error)
       return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
     }
@@ -383,34 +390,30 @@ export class ApiClient {
   async getIssuedCertificates() {
     try {
       // First get the current user's profile
-      const profileResponse = await this.get<any>('/api/profiles/me');
-      
+      const profileResponse = await this.get<any>('/api/profiles/me')
+
       if (!profileResponse.data) {
-        console.error('No profile data returned from /api/profiles/me');
-        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
+        console.error('No profile data returned from /api/profiles/me')
+        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
       }
-      
+
       // Extract profile ID depending on response structure
-      let profileId;
+      let profileId
       if (Array.isArray(profileResponse.data) && profileResponse.data.length > 0) {
-        profileId = profileResponse.data[0].id;
-      } else if (profileResponse.data.id) {
-        profileId = profileResponse.data.id;
-      } else {
-        console.error('Could not determine profile ID from response:', profileResponse);
-        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
+        profileId = profileResponse.data[0].id
       }
       
       // Then get credentials issued by that profile
-      const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/issued-credentials`);
-      
+      const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/issued-credentials`)
+
       return {
         data: this.formatCredentials(response.data || []),
         meta: response.meta
       }
-    } catch (error) {
-      console.error('Error fetching issued certificates:', error);
-      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
+    }
+    catch (error) {
+      console.error('Error fetching issued certificates:', error)
+      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
     }
   }
 
@@ -421,34 +424,30 @@ export class ApiClient {
   async getReceivedCertificates() {
     try {
       // First get the current user's profile
-      const profileResponse = await this.get<any>('/api/profiles/me');
-      
+      const profileResponse = await this.get<any>('/api/profiles/me')
+
       if (!profileResponse.data) {
-        console.error('No profile data returned from /api/profiles/me');
-        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
+        console.error('No profile data returned from /api/profiles/me')
+        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
       }
-      
+
       // Extract profile ID depending on response structure
-      let profileId;
+      let profileId
       if (Array.isArray(profileResponse.data) && profileResponse.data.length > 0) {
-        profileId = profileResponse.data[0].id;
-      } else if (profileResponse.data.id) {
-        profileId = profileResponse.data.id;
-      } else {
-        console.error('Could not determine profile ID from response:', profileResponse);
-        return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
+        profileId = profileResponse.data[0].id
       }
       
       // Then get credentials received by that profile
-      const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/received-credentials`);
-      
+      const response = await this.get<StrapiResponse<any>>(`/api/profiles/${profileId}/received-credentials`)
+
       return {
         data: this.formatCredentials(response.data || []),
         meta: response.meta
       }
-    } catch (error) {
-      console.error('Error fetching received certificates:', error);
-      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } };
+    }
+    catch (error) {
+      console.error('Error fetching received certificates:', error)
+      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
     }
   }
 
@@ -530,8 +529,8 @@ export class ApiClient {
    */
   async searchBadges(searchTerm: string) {
     return this.get<StrapiResponse<any>>('/api/achievements', {
-      '_q': searchTerm,
-      'populate': '*'
+      _q: searchTerm,
+      populate: '*'
     })
   }
 
@@ -548,7 +547,8 @@ export class ApiClient {
           activeTemplates: 0
         }
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error fetching dashboard stats:', error)
       return {
         data: {
@@ -572,87 +572,94 @@ export class ApiClient {
    * This helps handle different data formats from Strapi
    */
   formatCredential(credential: any) {
-    if (!credential) return null
-    
+    if (!credential) { return null }
+
     const formatted: any = {
       id: credential.id,
       credentialId: credential.attributes?.credentialId || credential.credentialId || credential.id,
     }
-    
+
     // Copy all attributes if they exist
     if (credential.attributes) {
       Object.assign(formatted, credential.attributes)
-    } else {
+    }
+    else {
       // If no attributes, copy all direct properties
       Object.assign(formatted, credential)
     }
-    
+
     // Handle issuer data
     if (credential.attributes?.issuer?.data) {
       // Nested Strapi format
       formatted.issuer = credential.attributes.issuer.data.attributes || {}
       formatted.issuer.id = credential.attributes.issuer.data.id
-    } else if (credential.issuer) {
+    }
+    else if (credential.issuer) {
       // Direct issuer object
       formatted.issuer = credential.issuer
-      
+
       // Make sure the issuer name is available
       if (!formatted.issuer.name && credential.issuer.attributes?.name) {
         formatted.issuer.name = credential.issuer.attributes.name
       }
     }
-    
+
     // Handle recipient data
     if (credential.attributes?.recipient?.data) {
       formatted.recipient = credential.attributes.recipient.data.attributes || {}
       formatted.recipient.id = credential.attributes.recipient.data.id
-    } else if (credential.recipient) {
+    }
+    else if (credential.recipient) {
       formatted.recipient = credential.recipient
     }
-    
+
     // Handle achievement data
     if (credential.attributes?.achievement?.data) {
       formatted.achievement = credential.attributes.achievement.data.attributes || {}
       formatted.achievement.id = credential.attributes.achievement.data.id
-    } else if (credential.achievement) {
+    }
+    else if (credential.achievement) {
       formatted.achievement = credential.achievement
     }
-    
+
     // Handle description
     if (!formatted.description) {
-      formatted.description = credential.description || 
-                             credential.attributes?.description || 
-                             formatted.achievement?.description || 
-                             'No description available'
+      formatted.description = credential.description
+        || credential.attributes?.description
+        || formatted.achievement?.description
+        || 'No description available'
     }
-    
+
     // Handle issuance date
     if (!formatted.issuanceDate) {
-      formatted.issuanceDate = credential.issuanceDate || 
-                              credential.attributes?.issuanceDate || 
-                              credential.issuedOn || 
-                              credential.attributes?.issuedOn
+      formatted.issuanceDate = credential.issuanceDate
+        || credential.attributes?.issuanceDate
+        || credential.issuedOn
+        || credential.attributes?.issuedOn
     }
-    
+
     // Extract image URL if available
     if (credential.attributes?.image?.data?.attributes?.url) {
       formatted.imageUrl = credential.attributes.image.data.attributes.url
-    } else if (credential.attributes?.achievement?.data?.attributes?.image?.data?.attributes?.url) {
+    }
+    else if (credential.attributes?.achievement?.data?.attributes?.image?.data?.attributes?.url) {
       formatted.imageUrl = credential.attributes.achievement.data.attributes.image.data.attributes.url
-    } else if (credential.achievement?.image?.url) {
+    }
+    else if (credential.achievement?.image?.url) {
       formatted.imageUrl = credential.achievement.image.url
-    } else if (credential.image?.url) {
+    }
+    else if (credential.image?.url) {
       formatted.imageUrl = credential.image.url
     }
     
     return formatted
   }
-  
+
   /**
    * Format an array of credentials
    */
   formatCredentials(credentials: any[]) {
-    if (!credentials || !Array.isArray(credentials)) return []
+    if (!credentials || !Array.isArray(credentials)) { return [] }
     return credentials.map(credential => this.formatCredential(credential))
   }
 
@@ -661,7 +668,7 @@ export class ApiClient {
    */
   async batchIssueBadges(
     badgeId: number | string,
-    recipients: { name: string; email: string }[],
+    recipients: { name: string, email: string }[],
     evidence: any[] = []
   ) {
     if (!badgeId) {
@@ -684,7 +691,8 @@ export class ApiClient {
       }
       const result = await this.post<any>('/api/credentials/batch-issue', payload)
       return result
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Batch badge issuance error:', error)
       throw error
     }
@@ -699,7 +707,7 @@ export class ApiClient {
         'populate': '*',
         'filters[publishedAt][$notNull]': 'true'
       })
-      
+
       if (!response.data) {
         return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
       }
@@ -708,7 +716,8 @@ export class ApiClient {
         data: Array.isArray(response.data) ? response.data : [response.data],
         meta: response.meta
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error fetching available badges:', error)
       return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
     }
@@ -727,4 +736,4 @@ export class ApiClient {
 // Export a singleton instance
 export const apiClient = new ApiClient()
 
-export default apiClient 
+export default apiClient

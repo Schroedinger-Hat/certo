@@ -10,11 +10,11 @@ export default defineNuxtPlugin({
     // Create and use Pinia
     const pinia = createPinia()
     nuxtApp.vueApp.use(pinia)
-    
+
     return {
       provide: {
         piniaInit: true
       }
     }
   }
-}) 
+})

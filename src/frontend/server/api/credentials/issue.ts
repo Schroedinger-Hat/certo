@@ -1,11 +1,11 @@
-import { defineEventHandler, readBody, getHeader, createError } from 'h3'
+import { createError, defineEventHandler, getHeader, readBody } from 'h3'
 
 export default defineEventHandler(async (event) => {
   try {
     // Get API URL from runtime config
     const config = useRuntimeConfig()
     const apiUrl = config.public.apiUrl
-    
+
     // Get authorization header
     const authorization = getHeader(event, 'authorization')
     if (!authorization) {
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
         message: 'Authentication required'
       })
     }
-    
+
     // Extract the token
     const token = authorization.replace('Bearer ', '')
     if (!token) {
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         message: 'Invalid authorization token'
       })
     }
-    
+
     // Read request body
     const body = await readBody(event)
     if (!body || !body.data || !body.data.achievementId) {
@@ -47,8 +47,8 @@ export default defineEventHandler(async (event) => {
     
     // Handle error responses
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ 
-        error: { message: `Request failed with status ${response.status}` } 
+      const errorData = await response.json().catch(() => ({
+        error: { message: `Request failed with status ${response.status}` }
       }))
       
       throw createError({
@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
         data: errorData
       })
     }
-    
+
     // Return successful response
     const result = await response.json()
     return result
@@ -69,4 +69,4 @@ export default defineEventHandler(async (event) => {
       data: error.data
     })
   }
-}) 
+})

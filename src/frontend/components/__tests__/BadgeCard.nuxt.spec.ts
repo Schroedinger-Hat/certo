@@ -1,9 +1,9 @@
 // @vitest-environment nuxt
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { describe, expect, it } from 'vitest'
 import BadgeCard from '@/components/BadgeCard.vue'
-import { describe, it, expect } from 'vitest'
 
-describe('BadgeCard', () => {
+describe('badgeCard', () => {
   it('renders badge card', async () => {
     const wrapper = await mountSuspended(BadgeCard, {
       props: {
@@ -21,4 +21,4 @@ describe('BadgeCard', () => {
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.text()).toContain('Test Badge')
   })
-}) 
+})

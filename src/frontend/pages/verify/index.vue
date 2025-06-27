@@ -1,6 +1,6 @@
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { ref, onMounted } from 'vue'
 import BadgeVerifier from '~/components/BadgeVerifier.vue'
 
 const route = useRoute()
@@ -26,15 +26,17 @@ useHead({
     <h1 class="text-3xl font-bold text-center mb-8">
       Open Badge Verification
     </h1>
-    
+
     <ClientOnly>
-      <BadgeVerifier :initialIdentifier="id" />
+      <BadgeVerifier :initial-identifier="id" />
       <template #fallback>
         <div class="text-center py-8">
-          <div class="i-lucide-loader animate-spin w-8 h-8 mx-auto"></div>
-          <p class="mt-4">Loading verification tool...</p>
+          <div class="i-lucide-loader animate-spin w-8 h-8 mx-auto" />
+          <p class="mt-4">
+            Loading verification tool...
+          </p>
         </div>
       </template>
     </ClientOnly>
   </div>
-</template> 
+</template>

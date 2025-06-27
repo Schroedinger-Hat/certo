@@ -1,5 +1,5 @@
-import { ref } from 'vue'
 import { useRuntimeConfig } from '#app'
+import { ref } from 'vue'
 
 interface AuthState {
   token: string | null
@@ -44,7 +44,8 @@ export function useAuth() {
       // Store token in localStorage for persistence
       localStorage.setItem('auth_token', data.jwt)
       localStorage.setItem('auth_user', JSON.stringify(data.user))
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Login error:', error)
       throw error
     }
@@ -92,4 +93,4 @@ export function useAuth() {
     isAuthenticated: () => state.value.isAuthenticated,
     getUser: () => state.value.user,
   }
-} 
+}

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import authMiddleware from '../auth'
 
 const mockNavigateTo = vi.fn()
@@ -29,7 +29,8 @@ describe('auth middleware', () => {
     if (originalProcessServer === undefined) {
       // @ts-ignore
       delete globalThis.process.server
-    } else {
+    }
+    else {
       // @ts-ignore
       globalThis.process.server = originalProcessServer
     }
@@ -44,4 +45,4 @@ describe('auth middleware', () => {
     await authMiddleware(createMockTo('/about'))
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
-}) 
+})

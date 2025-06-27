@@ -12,7 +12,9 @@
     "postinstall": "nuxt prepare",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@nuxtjs/sitemap": "^7.4.2",
@@ -35,6 +37,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^4.16.1",
     "@iconify-json/heroicons": "^1.2.2",
     "@iconify-json/lucide": "^1.1.133",
     "@iconify-json/radix-icons": "^1.2.2",
@@ -46,8 +49,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.11.15",
     "@vue/test-utils": "^2.4.6",
-    "eslint": "^8.56.0",
-    "eslint-plugin-vue": "^9.20.1",
+    "eslint": "^9.29.0",
     "happy-dom": "^17.6.3",
     "playwright-core": "^1.53.1",
     "postcss": "^8.4.33",

@@ -1,7 +1,7 @@
+import type { ConfigOptions } from '@nuxt/test-utils/playwright'
+import { fileURLToPath } from 'node:url'
 // @ts-ignore: Could not find module '@playwright/test' types in dev environment
 import { defineConfig, devices } from '@playwright/test'
-import { fileURLToPath } from 'node:url'
-import type { ConfigOptions } from '@nuxt/test-utils/playwright'
 
 export default defineConfig<ConfigOptions>({
   testDir: './e2e',
@@ -26,4 +26,4 @@ export default defineConfig<ConfigOptions>({
       use: { ...devices['Desktop Firefox'] }
     },
   ]
-}) 
+})
