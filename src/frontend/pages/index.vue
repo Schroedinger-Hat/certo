@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useHead } from '#imports'
-
 useHead({
   title: 'Certo - Digital Credential Platform',
   meta: [
@@ -116,11 +114,10 @@ const exportFeatures = [
           <NCard
             v-for="feature in features"
             :key="feature.title"
-            variant="subtle"
-            class="group transition-all duration-300 hover:shadow-lg"
+            class="group transition-all duration-300 hover:shadow-lg p-4 border border-gray-200 rounded-xl"
           >
-            <div class="text-primary mb-4 w-12 h-12">
-              <div :class="feature.icon" />
+            <div class="text-primary mb-4 size-8">
+              <div :class="feature.icon" class="size-full" />
             </div>
             <h3 class="text-xl font-bold mb-2">
               {{ feature.title }}
