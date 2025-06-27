@@ -36,7 +36,7 @@ onMounted(() => {
       const { useAuthStore } = await import('~/stores/auth')
       authStore.value = useAuthStore()
       isStoreReady.value = true
-      
+
       // If user is already authenticated, redirect to dashboard
       if (authStore.value.isAuthenticated) {
         console.log('User already authenticated, redirecting to dashboard')
@@ -53,14 +53,14 @@ async function handleSubmit() {
     authError.value = 'Authentication system not ready. Please try again in a moment.'
     return
   }
-  
+
   if (email.value && password.value) {
     isLoading.value = true
     authError.value = null
-    
+
     try {
       const success = await authStore.value.login(email.value, password.value)
-      
+
       if (success) {
         router.push('/dashboard')
       } else {
@@ -171,15 +171,15 @@ async function handleSubmit() {
         </form>
 
         <!-- Sign up link -->
-        <div class="mt-6 text-center">
+        <!-- <div class="mt-6 text-center">
           <p class="text-sm text-text-secondary">
             Don't have an account?
             <NuxtLink to="/register" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
               Sign up for free
             </NuxtLink>
           </p>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
-</template> 
+</template>
