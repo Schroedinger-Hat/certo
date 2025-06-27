@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import type { Recipient } from '../composables/useApiClient'
-import { computed, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '~/stores/auth'
-import { useApiClient } from '../composables/useApiClient'
 
 definePageMeta({
   middleware: ['auth']
