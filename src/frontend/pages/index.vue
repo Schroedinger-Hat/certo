@@ -60,6 +60,16 @@ const exportFeatures = [
   'Export certificates in PNG, JPG and SVG formats',
   'Manage issued certificates'
 ]
+
+const test = {
+  title: 'This is a test certificate',
+  header: 'Try me now',
+  features: [
+    'Send emails with PDF certificates automatically',
+    'Export certificates in PNG, JPG and SVG formats',
+    'Manage issued certificates'
+  ]
+}
 </script>
 
 <template>
@@ -130,6 +140,28 @@ const exportFeatures = [
       </div>
     </div>
 
+    <DashboardSection :section="test" reverse>
+      <GraduationIllustration />
+      <template #content>
+        <div class="p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-primary/20">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="i-heroicons-shield-check w-5 h-5 text-primary" />
+            <h3 class="font-bold text-text-primary">
+              {{ badgeStandard.title }}
+            </h3>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div
+              v-for="(feature, index) in badgeStandard.features" :key="index"
+              class="flex items-center gap-2 text-sm text-text-secondary"
+            >
+              <div class="i-heroicons-check w-4 h-4 text-primary" />
+              <span>{{ feature }}</span>
+            </div>
+          </div>
+        </div>
+      </template>
+    </DashboardSection>
     <!-- Create & Design Section -->
     <div class="relative mb-16">
       <!-- Decorative background -->
@@ -145,10 +177,8 @@ const exportFeatures = [
           </button>
 
           <!-- Heading -->
-          <h2 class="text-4xl md:text-5xl font-bold mb-8">
-            Create & Design
-            <br>
-            Certificates
+          <h2 class="text-4xl md:text-5xl font-bold mb-8 text-balance">
+            Create & Design Certificates
           </h2>
 
           <!-- Feature List -->
@@ -162,23 +192,6 @@ const exportFeatures = [
           </ul>
 
           <!-- Open Badges Standard Info -->
-          <div class="p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-primary/20">
-            <div class="flex items-center gap-2 mb-3">
-              <div class="i-heroicons-shield-check w-5 h-5 text-primary" />
-              <h3 class="font-bold text-text-primary">
-                {{ badgeStandard.title }}
-              </h3>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div
-                v-for="(feature, index) in badgeStandard.features" :key="index"
-                class="flex items-center gap-2 text-sm text-text-secondary"
-              >
-                <div class="i-heroicons-check w-4 h-4 text-primary" />
-                <span>{{ feature }}</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -197,10 +210,8 @@ const exportFeatures = [
           </span>
 
           <!-- Heading -->
-          <h2 class="text-4xl md:text-5xl font-bold mb-8">
-            Add Recipients
-            <br>
-            & Lists
+          <h2 class="text-4xl md:text-5xl font-bold mb-8 text-balance">
+            Add Recipients & Create Lists
           </h2>
 
           <!-- Feature List -->
@@ -229,10 +240,8 @@ const exportFeatures = [
             Issue in bulk
           </span>
 
-          <h2 class="text-4xl md:text-5xl font-bold mb-8">
-            Export & Send
-            <br>
-            Issued Certificates
+          <h2 class="text-4xl md:text-5xl font-bold mb-8 text-balance">
+            Export & Send Issued Certificates
           </h2>
 
           <ul class="space-y-4">
