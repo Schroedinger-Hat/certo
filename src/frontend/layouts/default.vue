@@ -165,7 +165,7 @@ const navLinks = [
                 </NuxtLink>
                 <NuxtLink
                   to="/get-started"
-                  class="px-4 py-2 bg-[#00E5C5] text-white rounded-full font-medium hover:bg-[#00E5C5]/90 transition-colors"
+                  class="px-4 py-2 bg-[#5AB69F] rounded-full font-medium hover:bg-[#5AB69F]/90 transition-colors text-text-primary"
                 >
                   Get Started
                 </NuxtLink>
