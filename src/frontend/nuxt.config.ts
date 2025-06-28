@@ -5,11 +5,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-06-12',
   devtools: { enabled: true },
   modules: [
-    '@una-ui/nuxt',
-    '@pinia/nuxt',
-    '@unocss/nuxt',
-    '@nuxtjs/color-mode',
     '@nuxt/test-utils/module',
+    '@nuxtjs/color-mode',
+    '@pinia/nuxt',
+    '@una-ui/nuxt',
+    '@unocss/nuxt',
+    'nuxt-svgo',
     ['nuxt-gtag', {
       id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
       config: {
@@ -24,6 +25,9 @@ export default defineNuxtConfig({
       trailingSlash: true
     }],
   ],
+  svgo: {
+    autoImportPath: './assets/svg/'
+  },
   colorMode: {
     preference: 'light',
     fallback: 'light',
