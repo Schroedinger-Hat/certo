@@ -233,7 +233,7 @@ const navLinks = [
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-16 flex-grow">
+    <main class="pt-16 flex-grow flex flex-col">
       <slot />
     </main>
 
