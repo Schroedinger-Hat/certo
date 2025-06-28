@@ -20,10 +20,10 @@
               href="https://github.com/schroedinger-hat/certo"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700] text-white hover:opacity-80 transition-opacity"
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700]  text-white hover:opacity-80 transition-opacity"
               title="GitHub"
             >
-              <div class="i-lucide-github w-4 h-4" />
+              <div class="i-lucide-github w-4 h-4 color-[#000]" />
             </a>
             <a
               href="https://discord.gg/schroedinger-hat"
@@ -32,7 +32,7 @@
               class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700] text-white hover:opacity-80 transition-opacity"
               title="Discord"
             >
-              <div class="i-lucide-message-circle w-4 h-4" />
+              <div class="i-lucide-message-circle w-4 h-4 color-[#000]" />
             </a>
             <a
               href="https://twitter.com/schroedinger_hat"
@@ -41,7 +41,7 @@
               class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700] text-white hover:opacity-80 transition-opacity"
               title="Twitter"
             >
-              <div class="i-lucide-twitter w-4 h-4" />
+              <div class="i-lucide-twitter w-4 h-4 color-[#000]" />
             </a>
           </div>
         </div>
