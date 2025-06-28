@@ -12,7 +12,10 @@ useHead({
   ],
   link: [
     { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/' }
-  ]
+  ],
+	htmlAttrs: {
+		lang: 'en'
+	}
 })
 
 const features = [
