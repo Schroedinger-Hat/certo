@@ -88,6 +88,13 @@ const faqs = ref([
     isOpen: false
   }
 ])
+
+useHead({
+	htmlAttrs: {
+		lang: 'en'
+	}
+})
+
 </script>
 
 <template>
@@ -117,7 +124,7 @@ const faqs = ref([
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg">
             <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-full flex items-center justify-center mb-4">
-              <div class="w-6 h-6 i-heroicons-cube-transparent text-[#00E5C5]" />
+              <div class="w-6 h-6 i-heroicons-cube-transparent text-[#5AB69F]" />
             </div>
             <h3 class="text-lg font-medium text-text-primary mb-2">
               Open Badges 3.0
@@ -130,7 +137,7 @@ const faqs = ref([
           <!-- Instant Results -->
           <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg">
             <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-full flex items-center justify-center mb-4">
-              <div class="w-6 h-6 i-heroicons-bolt text-[#00E5C5]" />
+              <div class="w-6 h-6 i-heroicons-bolt text-[#5AB69F]" />
             </div>
             <h3 class="text-lg font-medium text-text-primary mb-2">
               Instant Results
@@ -143,7 +150,7 @@ const faqs = ref([
           <!-- Multiple Formats -->
           <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg">
             <div class="w-12 h-12 bg-[#00E5C5]/10 rounded-full flex items-center justify-center mb-4">
-              <div class="w-6 h-6 i-heroicons-document-duplicate text-[#00E5C5]" />
+              <div class="w-6 h-6 i-heroicons-document-duplicate text-[#5AB69F]" />
             </div>
             <h3 class="text-lg font-medium text-text-primary mb-2">
               Multiple Formats
