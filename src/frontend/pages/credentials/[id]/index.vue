@@ -450,6 +450,15 @@ useHead({
                   {{ formattedExpirationDate }}
                 </div>
               </div>
+              <!-- Recipient Name -->
+              <div v-if="verificationResult?.rawCredential?.recipient?.name">
+                <div class="text-sm font-medium text-gray-500">
+                  Recipient
+                </div>
+                <div class="mt-1">
+                  {{ verificationResult?.rawCredential?.recipient?.name }}
+                </div>
+              </div>
             </div>
 
             <!-- Issuer -->
