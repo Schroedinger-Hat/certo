@@ -2,13 +2,13 @@ import { z } from 'zod'
 
 const sections = z.enum(['certificate', 'recipient', 'export'])
 
-const content = z.object({
+const dashboardContent = z.object({
   title: z.string(),
   features: z.array(z.string()).min(1),
 })
 
 const _dashboardSectionSchema = z.object({
-  content: content.optional(),
+  content: dashboardContent.optional(),
   features: z.array(z.string()).min(1),
   header: z.string(),
   id: sections,
