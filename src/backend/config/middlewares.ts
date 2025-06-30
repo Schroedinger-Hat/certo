@@ -32,6 +32,7 @@ export default [
         'https://bold-approval-5bde4fbd5d.strapiapp.com',
         'https://certo.netlify.app',
         'https://certo.schroedinger-hat.org',
+        'https://certo-strapi.schroedinger-hat.org',
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
