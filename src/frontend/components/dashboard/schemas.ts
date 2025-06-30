@@ -15,4 +15,11 @@ const _dashboardSectionSchema = z.object({
   title: z.string(),
 })
 
+const _dashboardFeatureCard = z.object({
+  title: z.string(),
+  description: z.string(),
+  icon: z.string()
+})
+
 export type DashboardSection = z.infer<typeof _dashboardSectionSchema>
+export type DashboardFeatureCard = z.infer<typeof _dashboardFeatureCard>

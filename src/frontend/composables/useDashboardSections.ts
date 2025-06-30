@@ -1,4 +1,4 @@
-import type { DashboardSection } from '~/components/dashboard/schemas'
+import type { DashboardFeatureCard, DashboardSection } from '~/components/dashboard/schemas'
 
 export default () => {
   const certificateSection: DashboardSection = {
@@ -43,6 +43,24 @@ export default () => {
     ]
   }
 
+  const features: DashboardFeatureCard[] = [
+    {
+      title: 'Secure Verification',
+      description: 'Verify the authenticity of any credential using our powerful verification engine.',
+      icon: 'i-heroicons-shield-check'
+    },
+    {
+      title: 'Badge Issuance',
+      description: 'Create and issue badges to recognize achievements, skills and credentials.',
+      icon: 'i-heroicons-identification'
+    },
+    {
+      title: 'Credential Management',
+      description: 'Manage your digital credentials in one place, with easy export and sharing options.',
+      icon: 'i-heroicons-briefcase'
+    }
+  ]
+
   const sections = [
     certificateSection,
     recipientSection,
@@ -50,6 +68,7 @@ export default () => {
   ]
 
   return {
-    sections
+    sections,
+    features
   }
 }

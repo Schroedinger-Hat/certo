@@ -15,25 +15,7 @@ useHead({
   ]
 })
 
-const { sections } = useDashboardSections()
-
-const features = [
-  {
-    title: 'Secure Verification',
-    description: 'Verify the authenticity of any credential using our powerful verification engine.',
-    icon: 'i-heroicons-shield-check'
-  },
-  {
-    title: 'Badge Issuance',
-    description: 'Create and issue badges to recognize achievements, skills and credentials.',
-    icon: 'i-heroicons-identification'
-  },
-  {
-    title: 'Credential Management',
-    description: 'Manage your digital credentials in one place, with easy export and sharing options.',
-    icon: 'i-heroicons-briefcase'
-  }
-]
+const { sections, features } = useDashboardSections()
 </script>
 
 <template>
@@ -77,29 +59,16 @@ const features = [
       </div>
     </div>
 
-    <!-- Features Grid -->
     <div class="relative mb-16">
-      <!-- Decorative background -->
       <div class="absolute inset-0 bg-white/40 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl" />
 
-      <!-- Content -->
       <div class="relative p-6 md:p-8 lg:p-12">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <NCard
+          <DashboardCardFeature
             v-for="feature in features"
             :key="feature.title"
-            class="group transition-all duration-300 hover:shadow-lg p-4 border border-gray-200 rounded-xl"
-          >
-            <div class="text-primary mb-4 size-8">
-              <div :class="feature.icon" class="size-full" />
-            </div>
-            <h3 class="text-xl font-bold mb-2">
-              {{ feature.title }}
-            </h3>
-            <p class="text-text-secondary">
-              {{ feature.description }}
-            </p>
-          </NCard>
+            :feature="feature"
+          />
         </div>
       </div>
     </div>
