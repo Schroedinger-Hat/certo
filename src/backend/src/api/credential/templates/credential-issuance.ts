@@ -29,6 +29,8 @@ View your credential at: ${frontendUrl}/credentials/${credential.credentialId}
 
 Follow our LinkedIn guide to add this credential to your LinkedIn profile: ${frontendUrl}/linkedin
 
+If you need any support or have any question please contact us at hello@schroedinger-hat.org
+
 ${user ? `
 A user account has been created for you to manage your credentials.
 Username: ${user.username}
@@ -81,6 +83,10 @@ The Certo Team`
               <div style="margin: 24px 0; padding: 16px; background: #f3f4f6; border-radius: 6px; text-align: center;">
                 <strong>Want to add this credential to your LinkedIn profile?</strong><br />
                 <a href="https://certo.schroedinger-hat.org/linkedin" style="color: #0077b5; text-decoration: underline;">Follow our LinkedIn guide</a>
+              </div>
+
+              <div style="margin: 24px 0; padding: 16px; background: #fef9c3; border-radius: 6px; text-align: center; color: #92400e;">
+                If you need any support or have any question please contact us at <a href="mailto:hello@schroedinger-hat.org" style="color: #92400e; text-decoration: underline;">hello@schroedinger-hat.org</a>
               </div>
 
               ${user ? `
