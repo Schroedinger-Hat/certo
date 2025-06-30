@@ -61,7 +61,6 @@ const { sections, features } = useDashboardSections()
 
     <div class="relative mb-16">
       <div class="absolute inset-0 bg-white/40 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl" />
-
       <div class="relative p-6 md:p-8 lg:p-12">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <DashboardCardFeature

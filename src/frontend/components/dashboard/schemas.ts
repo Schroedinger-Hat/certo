@@ -21,5 +21,14 @@ const _dashboardFeatureCard = z.object({
   icon: z.string()
 })
 
+const _dashboardTrustee = z.object({
+  url: z.string().url(),
+  img: z.object({
+    src: z.string().url(),
+    alt: z.string().min(1)
+  }),
+})
+
 export type DashboardSection = z.infer<typeof _dashboardSectionSchema>
 export type DashboardFeatureCard = z.infer<typeof _dashboardFeatureCard>
+export type DashboardTrustee = z.infer<typeof _dashboardTrustee>

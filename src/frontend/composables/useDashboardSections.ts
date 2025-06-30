@@ -1,4 +1,4 @@
-import type { DashboardFeatureCard, DashboardSection } from '~/components/dashboard/schemas'
+import type { DashboardFeatureCard, DashboardSection, DashboardTrustee } from '~/components/dashboard/schemas'
 
 export default () => {
   const certificateSection: DashboardSection = {
@@ -43,6 +43,12 @@ export default () => {
     ]
   }
 
+  const sections = [
+    certificateSection,
+    recipientSection,
+    exportSection,
+  ]
+
   const features: DashboardFeatureCard[] = [
     {
       title: 'Secure Verification',
@@ -61,14 +67,33 @@ export default () => {
     }
   ]
 
-  const sections = [
-    certificateSection,
-    recipientSection,
-    exportSection,
+  const trustees: DashboardTrustee[] = [
+    {
+      url: 'https://strapi.io',
+      img: {
+        src: '/strapi.png',
+        alt: 'Strapi Logo'
+      }
+    },
+    {
+      url: 'https://schroedinger-hat.org',
+      img: {
+        src: '/schroedinger-hat.png',
+        alt: 'Schroedinger Hat Logo'
+      }
+    },
+    {
+      url: 'https://osday.dev',
+      img: {
+        src: '/osday.png',
+        alt: 'OSDay Logo'
+      }
+    }
   ]
 
   return {
     sections,
-    features
+    features,
+    trustees
   }
 }
