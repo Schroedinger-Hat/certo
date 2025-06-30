@@ -14,7 +14,10 @@ useHead({
   ],
   link: [
     { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/about' }
-  ]
+  ],
+	htmlAttrs: {
+		lang: 'en'
+	}
 })
 
 function handleSupportClick() {
@@ -174,7 +177,7 @@ function handleSupportClick() {
 
           <!-- Supporter Plan -->
           <div class="bg-gradient-to-br from-[#FFD700]/10 to-[#00E5C5]/10 rounded-2xl p-8 shadow-lg border border-[#00E5C5]/20 relative overflow-hidden">
-            <div class="absolute top-3 right-3 px-3 py-1 bg-[#00E5C5] text-white text-sm rounded-full">
+            <div class="absolute top-3 right-3 px-3 py-1 bg-[#00E5C5] text-black text-sm rounded-full">
               Support Us ❤️
             </div>
             <h3 class="text-2xl font-bold mb-4">
@@ -242,7 +245,7 @@ function handleSupportClick() {
             href="https://discord.gg/schroedinger-hat"
             target="_blank"
             rel="noopener noreferrer"
-            class="py-3 px-6 rounded-full bg-[#00E5C5] text-white hover:bg-[#00E5C5]/90 transition-colors"
+            class="py-3 px-6 rounded-full bg-[#00E5C5] text-black hover:bg-[#00E5C5]/90 transition-colors"
           >
             Join Discord
           </a>
