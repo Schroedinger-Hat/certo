@@ -433,7 +433,7 @@ export class ApiClient {
       }
 
       // Extract profile ID depending on response structure
-      let profileId
+      let profileId = profileResponse?.data?.id
       if (Array.isArray(profileResponse.data) && profileResponse.data.length > 0) {
         profileId = profileResponse.data[0].id
       }
