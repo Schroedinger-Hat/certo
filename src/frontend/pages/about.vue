@@ -139,7 +139,7 @@ function handleSupportClick() {
 
         <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <!-- Free Plan -->
-          <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+          <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 flex flex-col justify-between">
             <h3 class="text-2xl font-bold mb-4">
               Community Edition
             </h3>
@@ -164,16 +164,18 @@ function handleSupportClick() {
                 <span>Community support</span>
               </li>
             </ul>
-            <NuxtLink
-              to="/get-started"
-              class="block w-full py-3 px-4 text-center rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-colors"
-            >
-              Get Started
-            </NuxtLink>
+            <div class="flex-grow-1 flex items-end">
+              <NuxtLink
+                to="/get-started"
+                class="block w-full py-3 px-4 text-center rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+              >
+                Get Started
+              </NuxtLink>
+            </div>
           </div>
 
           <!-- Supporter Plan -->
-          <div class="bg-gradient-to-br from-[#FFD700]/10 to-[#00E5C5]/10 rounded-2xl p-8 shadow-lg border border-[#00E5C5]/20 relative overflow-hidden">
+          <div class="bg-gradient-to-br from-[#FFD700]/10 to-[#00E5C5]/10 rounded-2xl p-8 shadow-lg border border-[#00E5C5]/20 relative overflow-hidden flex flex-col justify-between">
             <div class="absolute top-3 right-3 px-3 py-1 bg-[#5AB69F] text-black text-sm rounded-full">
               Support Us ❤️
             </div>
@@ -210,7 +212,7 @@ function handleSupportClick() {
               </li>
             </ul>
             <button
-              class="w-full py-3 px-6 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#5AB69F] text-white font-semibold hover:opacity-90 transition-opacity"
+              class="w-full py-3 px-6 rounded-full bg-gradient-to-r from-[#387364] to-[#5AB69F] text-white font-semibold hover:opacity-90 transition-opacity"
               @click="handleSupportClick"
             >
               Become a Supporter
