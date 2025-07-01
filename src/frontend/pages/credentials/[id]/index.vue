@@ -245,6 +245,22 @@ useHead({
     }
   ]
 })
+
+// Utility to generate LinkedIn Add to Profile URL
+function getLinkedInAddToProfileUrl() {
+  if (!credential.value) return '#'
+  const cert = credential.value
+  const params = new URLSearchParams({
+    startTask: 'CERTIFICATION_NAME',
+    name: cert.name || cert.title || '',
+    organizationId: '53115782',
+    issueYear: cert.issuanceDate ? new Date(cert.issuanceDate).getFullYear().toString() : '',
+    issueMonth: cert.issuanceDate ? (new Date(cert.issuanceDate).getMonth() + 1).toString() : '',
+    certId: cert.id,
+    certUrl: `${window.location.origin}/credentials/${cert.id}`
+  })
+  return `https://www.linkedin.com/profile/add?${params.toString()}`
+}
 </script>
 
 <template>
@@ -310,6 +326,20 @@ useHead({
 
     <!-- Credential Details -->
     <div v-else-if="credential" class="max-w-4xl mx-auto">
+      <!-- LinkedIn Add to Profile Button at the Top -->
+      <div class="flex flex-wrap gap-4 mb-6">
+        <a
+          :href="getLinkedInAddToProfileUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium"
+          aria-label="Add this certificate to your LinkedIn profile"
+        >
+          <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
+          Add to LinkedIn
+        </a>
+      </div>
+
       <!-- Verification Status -->
       <div
         class="mb-8 p-6 rounded-2xl bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl"

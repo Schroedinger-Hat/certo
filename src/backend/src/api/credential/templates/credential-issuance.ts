@@ -42,6 +42,8 @@ To set your password, please visit: ${frontendUrl}/forgot-password
 Thank you,
 The Certo Team`
 
+  const linkedInUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(achievement.name)}&organizationId=53115782&issueYear=${new Date().getFullYear()}&certId=${credential.credentialId}&certUrl=${encodeURIComponent(frontendUrl + '/credentials/' + credential.credentialId)}`
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,10 +74,21 @@ The Certo Team`
               <h2 style="margin-top: 0; color: #2d3748; font-size: 22px;">Congratulations!</h2>
               <p style="margin: 0; color: #4a5568; line-height: 1.6;">You have been awarded the "<strong>${achievement.name}</strong>" credential.</p>
               
-              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; margin-top: 32px; margin-bottom: 32px;">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; margin-top: 32px; margin-bottom: 16px;">
                 <tr>
                   <td align="center">
                     <a href="${frontendUrl}/credentials/${credential.credentialId}" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #3182ce; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 6px;">View Your Credential</a>
+                  </td>
+                </tr>
+              </table>
+              <!-- LinkedIn Add to Profile Button -->
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; margin-bottom: 32px;">
+                <tr>
+                  <td align="center">
+                    <a href="${linkedInUrl}" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #0077b5; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 6px;">
+                      <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" style="height: 20px; vertical-align: middle; margin-right: 8px;" />
+                      Add to LinkedIn
+                    </a>
                   </td>
                 </tr>
               </table>
