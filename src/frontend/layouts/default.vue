@@ -175,6 +175,7 @@ const navLinks = [
 
           <!-- Mobile Menu Button -->
           <button
+            aria-label="Toggle mobile menu"
             class="md:hidden p-2 rounded-lg hover:bg-gray-100"
             @click="isMobileMenuOpen = !isMobileMenuOpen"
           >
