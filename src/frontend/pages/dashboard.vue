@@ -158,7 +158,7 @@ onMounted(async () => {
           <div class="flex items-center gap-4">
             <NuxtLink
               to="/issue"
-              class="px-4 py-2 bg-[#00E5C5] text-white rounded-full hover:bg-[#00E5C5]/90 transition-colors"
+              class="px-4 py-2 bg-[#5AB69F] text-black rounded-full hover:bg-[#5AB69F]/90 transition-colors"
             >
               Issue New
             </NuxtLink>
@@ -174,7 +174,7 @@ onMounted(async () => {
           </p>
           <NuxtLink
             to="/issue"
-            class="inline-flex items-center px-4 py-2 bg-[#00E5C5] text-white rounded-full hover:bg-[#00E5C5]/90 transition-colors"
+            class="inline-flex items-center px-4 py-2 bg-[#5AB69F] text-black rounded-full hover:bg-[#5AB69F]/90 transition-colors"
           >
             <div class="i-heroicons-plus w-5 h-5 mr-2" />
             Issue Your First Certificate
