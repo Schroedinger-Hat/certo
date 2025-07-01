@@ -89,12 +89,6 @@ const faqs = ref([
   }
 ])
 
-useHead({
-	htmlAttrs: {
-		lang: 'en'
-	}
-})
-
 </script>
 
 <template>

@@ -14,10 +14,7 @@ useHead({
   ],
   link: [
     { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/about' }
-  ],
-	htmlAttrs: {
-		lang: 'en'
-	}
+  ]
 })
 
 function handleSupportClick() {

@@ -16,10 +16,7 @@ useHead({
   ],
   link: [
     { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/login' }
-  ],
-	htmlAttrs: {
-		lang: 'en'
-	}
+  ]
 })
 
 // Don't import useAuthStore directly
