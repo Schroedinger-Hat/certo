@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '@una-ui/nuxt',
     '@unocss/nuxt',
     'nuxt-svgo',
+    '@nuxt/image',
     ['nuxt-gtag', {
       id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
       config: {

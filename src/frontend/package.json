@@ -17,6 +17,7 @@
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
+    "@nuxt/image": "^1.10.0",
     "@nuxtjs/sitemap": "^7.4.2",
     "@pinia/nuxt": "^0.5.1",
     "@playwright/test": "^1.53.1",
