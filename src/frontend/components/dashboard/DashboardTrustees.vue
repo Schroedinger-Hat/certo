@@ -1,13 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { DashboardTrustee } from '~/components/dashboard/schemas'
+
+defineProps<{
+  trustee: DashboardTrustee
+}>()
+</script>
 
 <template>
-  <a href="https://strapi.io" target="_blank" rel="noopener noreferrer">
-    <img src="/strapi.png" alt="Strapi logo" class="h-12 w-auto grayscale">
-  </a>
-  <a href="https://schroedinger-hat.org" target="_blank" rel="noopener noreferrer">
-    <img src="/schroedinger-hat.png" alt="Schroedinger Hat logo" class="h-12 w-auto grayscale">
-  </a>
-  <a href="https://osday.dev" target="_blank" rel="noopener noreferrer">
-    <img src="/osday.png" alt="OSDay logo" class="h-12 w-auto grayscale">
-  </a>
+  <NuxtLink :href="trustee.url" target="_blank">
+    <NuxtImg :src="trustee.img.src" :alt="trustee.img.alt" class="h-12 w-auto grayscale" />
+  </NuxtLink>
 </template>
