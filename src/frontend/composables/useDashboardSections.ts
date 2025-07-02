@@ -53,17 +53,17 @@ export default () => {
     {
       title: 'Secure Verification',
       description: 'Verify the authenticity of any credential using our powerful verification engine.',
-      icon: 'i-heroicons-shield-check'
+      icon: 'shield-check'
     },
     {
       title: 'Badge Issuance',
       description: 'Create and issue badges to recognize achievements, skills and credentials.',
-      icon: 'i-heroicons-identification'
+      icon: 'identification'
     },
     {
       title: 'Credential Management',
       description: 'Manage your digital credentials in one place, with easy export and sharing options.',
-      icon: 'i-heroicons-briefcase'
+      icon: 'briefcase'
     }
   ]
 
