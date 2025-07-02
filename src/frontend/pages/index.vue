@@ -86,19 +86,19 @@ const exportFeatures = [
     </div>
 
     <!-- Trusted By Section -->
-    <div class="text-center mb-16">
+    <div class="text-center mb-8 md:mb-16">
       <h2 class="text-text-secondary text-xl mb-12">
         Trusted by
       </h2>
-      <div class="flex justify-center gap-16 items-center opacity-70">
+      <div class="flex justify-center gap-8 items-center opacity-70 md:gap-16 h-auto">
         <a href="https://strapi.io" target="_blank" rel="noopener noreferrer">
-          <img src="/strapi.png" alt="Strapi logo" class="h-12 w-auto grayscale">
+          <img src="/strapi.png" alt="Strapi logo" class="h-8 md:h-12 w-auto grayscale">
         </a>
         <a href="https://schroedinger-hat.org" target="_blank" rel="noopener noreferrer">
-          <img src="/schroedinger-hat.png" alt="Schroedinger Hat logo" class="h-12 w-auto grayscale">
+          <img src="/schroedinger-hat.png" alt="Schroedinger Hat logo" class="h-8 md:h-12 w-auto grayscale">
         </a>
         <a href="https://osday.dev" target="_blank" rel="noopener noreferrer">
-          <img src="/osday.png" alt="OSDay logo" class="h-12 w-auto grayscale">
+          <img src="/osday.png" alt="OSDay logo" class="h-8 md:h-12 w-auto grayscale">
         </a>
       </div>
     </div>
