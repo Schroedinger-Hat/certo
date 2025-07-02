@@ -1,20 +1,4 @@
 <script setup lang="ts">
-useHead({
-  title: 'Certo - Digital Credential Platform',
-  meta: [
-    { name: 'description', content: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.' },
-    { name: 'og:title', property: 'og:title', content: 'Certo - Digital Credential Platform' },
-    { name: 'og:description', property: 'og:description', content: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.' },
-    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/' }
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/' }
-  ]
-})
-
 const { sections, features, trustees } = useDashboardSections()
 </script>
 
