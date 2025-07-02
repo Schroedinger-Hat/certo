@@ -5,11 +5,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-06-12',
   devtools: { enabled: true },
   modules: [
-    '@una-ui/nuxt',
-    '@pinia/nuxt',
-    '@unocss/nuxt',
-    '@nuxtjs/color-mode',
     '@nuxt/test-utils/module',
+    '@nuxtjs/color-mode',
+    '@pinia/nuxt',
+    '@una-ui/nuxt',
+    '@unocss/nuxt',
+    'nuxt-svgo',
+    '@nuxt/image',
+    '@nuxt/icon',
     ['nuxt-gtag', {
       id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
       config: {
@@ -24,9 +27,17 @@ export default defineNuxtConfig({
       trailingSlash: true
     }],
   ],
+  svgo: {
+    autoImportPath: './assets/svg/'
+  },
   colorMode: {
     preference: 'light',
     fallback: 'light',
+  },
+  icon: {
+    serverBundle: {
+      collections: ['heroicons', 'lucide', 'radix-icons', 'simple-icons', 'tabler']
+    }
   },
   unocss: {
     // UnoCSS configuration
@@ -50,26 +61,17 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      titleTemplate: '%s | Certo',
-      meta: [
-        { name: 'description', content: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.' },
-        { name: 'og:site_name', property: 'og:site_name', content: 'Certo' },
-        { name: 'og:type', property: 'og:type', content: 'website' },
-        { name: 'twitter:card', property: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', property: 'twitter:site', content: '@schroedinger_hat' },
-        { name: 'theme-color', property: 'theme-color', content: '#00E5C5' }
-      ],
       link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap'
-        },
         { rel: 'icon', type: 'image/png', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'canonical', href: 'https://certo.schroedinger-hat.org' }
+        { rel: 'canonical', href: 'https://certo.schroedinger-hat.org' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap'
+        },
       ]
     }
   },
