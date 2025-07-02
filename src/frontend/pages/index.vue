@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { sections, features, trustees } = useDashboardSections()
+const { sections, features, trustees } = useHomeContent()
 </script>
 
 <template>
@@ -28,7 +28,7 @@ const { sections, features, trustees } = useDashboardSections()
         Trusted by
       </h2>
       <div class="flex justify-center gap-16 items-center opacity-70">
-        <DashboardTrustees v-for="trustee in trustees" :key="trustee.url" :trustee="trustee" />
+        <HomeTrustees v-for="trustee in trustees" :key="trustee.url" :trustee="trustee" />
       </div>
     </div>
 
@@ -36,7 +36,7 @@ const { sections, features, trustees } = useDashboardSections()
       <div class="absolute inset-0 bg-white/40 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl" />
       <div class="relative p-6 md:p-8 lg:p-12">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <DashboardCardFeature
+          <HomeCardFeature
             v-for="feature in features"
             :key="feature.title"
             :feature="feature"
@@ -46,7 +46,7 @@ const { sections, features, trustees } = useDashboardSections()
     </div>
 
     <div class="space-y-8">
-      <DashboardSection
+      <HomeSection
         v-for="(section, sectionIndex) in sections"
         :key="section.id"
         :section="section"

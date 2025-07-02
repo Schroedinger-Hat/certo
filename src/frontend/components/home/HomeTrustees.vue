@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { DashboardTrustee } from '~/components/dashboard/schemas'
+import type { Trustee } from '~/composables/useHomeContent'
 
 defineProps<{
-  trustee: DashboardTrustee
+  trustee: Trustee
 }>()
 </script>
 

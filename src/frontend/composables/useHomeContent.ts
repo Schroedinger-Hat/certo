@@ -1,10 +1,33 @@
-import type { DashboardFeatureCard, DashboardSection, DashboardTrustee } from '~/components/dashboard/schemas'
+export interface Section {
+  features: string[]
+  header: string
+  id: 'certificate' | 'recipient' | 'export'
+  title: string
+  content?: {
+    title: string
+    features: string[]
+  }
+}
+
+export interface Trustee {
+  url: string
+  img: {
+    src: string
+    alt: string
+  }
+}
+
+export interface CardFeature {
+  description: string
+  icon: string
+  title: string
+}
 
 export default () => {
-  const certificateSection: DashboardSection = {
+  const certificateSection: Section = {
     id: 'certificate',
-    header: 'Create certificates',
-    title: 'Create & Design Certificates',
+    title: 'Create certificates',
+    header: 'Create & Design Certificates',
     features: [
       'Professionally designed certificates templates',
       'The possibility to design a certificate from scratch',
@@ -21,10 +44,10 @@ export default () => {
     }
   }
 
-  const recipientSection: DashboardSection = {
+  const recipientSection: Section = {
     id: 'recipient',
-    header: 'Upload the list',
-    title: 'Add recipients & create lists',
+    title: 'Upload the list',
+    header: 'Add recipients & create lists',
     features: [
       'Create courses, groups, and recipient lists',
       'Upload recipients list via CSV format',
@@ -32,10 +55,10 @@ export default () => {
     ]
   }
 
-  const exportSection: DashboardSection = {
+  const exportSection: Section = {
     id: 'export',
-    header: 'Issue in bulk',
-    title: 'Export & send issued certificates',
+    title: 'Issue in bulk',
+    header: 'Export & send issued certificates',
     features: [
       'Send emails with PDF certificates automatically',
       'Export certificates in PNG, JPG and SVG formats',
@@ -43,13 +66,13 @@ export default () => {
     ]
   }
 
-  const sections = [
+  const sections: Section[] = [
     certificateSection,
     recipientSection,
     exportSection,
   ]
 
-  const features: DashboardFeatureCard[] = [
+  const features: CardFeature[] = [
     {
       title: 'Secure Verification',
       description: 'Verify the authenticity of any credential using our powerful verification engine.',
@@ -67,7 +90,7 @@ export default () => {
     }
   ]
 
-  const trustees: DashboardTrustee[] = [
+  const trustees: Trustee[] = [
     {
       url: 'https://strapi.io',
       img: {
@@ -92,8 +115,8 @@ export default () => {
   ]
 
   return {
-    sections,
     features,
+    sections,
     trustees
   }
 }

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { DashboardFeatureCard } from './schemas'
+import type { CardFeature } from '~/composables/useHomeContent'
 
 defineProps<{
-  feature: DashboardFeatureCard
+  feature: CardFeature
 }>()
 </script>
 
