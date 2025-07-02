@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     'nuxt-svgo',
     '@nuxt/image',
+    '@nuxt/icon',
     ['nuxt-gtag', {
       id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
       config: {
@@ -32,6 +33,11 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'light',
     fallback: 'light',
+  },
+  icon: {
+    serverBundle: {
+      collections: ['heroicons', 'lucide', 'radix-icons', 'simple-icons', 'tabler']
+    }
   },
   unocss: {
     // UnoCSS configuration
