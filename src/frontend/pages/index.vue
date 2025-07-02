@@ -23,11 +23,11 @@ const { sections, features, trustees } = useHomeContent()
       </NuxtLink>
     </div>
 
-    <div class="text-center mb-16">
+    <div class="text-center mb-8 md:mb-16">
       <h2 class="text-text-secondary text-xl mb-12">
         Trusted by
       </h2>
-      <div class="flex justify-center gap-16 items-center opacity-70">
+      <div class="flex justify-center gap-8 items-center opacity-70 md:gap-16 h-auto">
         <HomeTrustees v-for="trustee in trustees" :key="trustee.url" :trustee="trustee" />
       </div>
     </div>
