@@ -5,6 +5,15 @@
 #   https://github.com/blog/2392-introducing-code-owners
 #   https://help.github.com/articles/about-codeowners
 
+# +----------------------+
+# + Backend & Api Client +
+# +----------------------+
+
+/src/backend @TheJoin95
+/src/frontend/api @TheJoin95
+
 # +--------------------+
-# + Default Code Owner +
+# + Frontend           +
 # +--------------------+
+
+/src/frontend @Readpato @MarcoJul
