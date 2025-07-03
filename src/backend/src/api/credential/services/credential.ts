@@ -10,8 +10,9 @@ export default ({ strapi }) => ({
    * @param {Object} achievement - The achievement to issue
    * @param {Object} recipient - The recipient profile
    * @param {Array} evidence - Optional evidence items
+   * @param {string} expirationDate - Optional expiration date for the credential
    */
-  async issue(achievement, recipient, evidence = []) {
+  async issue(achievement, recipient, evidence = [], expirationDate = undefined) {
     try {
       // Find or create recipient profile
       let recipientEntity = null
@@ -69,7 +70,8 @@ export default ({ strapi }) => ({
         recipient: recipientEntity.id,
         issuanceDate: new Date(),
         revoked: false,
-        publishedAt: new Date()
+        publishedAt: new Date(),
+        ...(expirationDate ? { expirationDate: new Date(expirationDate) } : {})
       }
       // Generate cryptographic proof (JWS)
       const proof = await this.generateProof(credentialPayload.issuer, credentialPayload)
@@ -87,7 +89,8 @@ export default ({ strapi }) => ({
           issuanceDate: new Date(),
           revoked: false,
           publishedAt: new Date(),
-          proof: [proof]
+          proof: [proof],
+          ...(expirationDate ? { expirationDate: new Date(expirationDate) } : {})
         }
       })
 

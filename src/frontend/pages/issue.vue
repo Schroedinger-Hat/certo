@@ -42,7 +42,7 @@ const authStore = useAuthStore()
 const apiClient = useApiClient()
 const templates = ref<Template[]>([])
 const selectedTemplate = ref<Template | null>(null)
-const recipients = ref<Recipient[]>([{ name: '', email: '' }])
+const recipients = ref<Recipient[]>([{ name: '', email: '', expirationDate: '' }])
 const issueDate = ref(new Date().toISOString().split('T')[0])
 const isLoading = ref(false)
 const isSuccess = ref(false)
@@ -50,6 +50,7 @@ const error = ref<string | null>(null)
 const submissionError = ref<string | null>(null)
 const isLoadingTemplates = ref(false)
 const csvUploaded = ref(false)
+const batchResults = ref<any[]>([])
 const isDev = computed(() => process.env.NODE_ENV === 'development')
 
 // Load available badges
@@ -189,7 +190,7 @@ function getImageUrl(template: Template): string {
 }
 
 function addRecipient() {
-  recipients.value.push({ name: '', email: '' })
+  recipients.value.push({ name: '', email: '', expirationDate: '' })
 }
 
 function removeRecipient(index: number) {
@@ -205,28 +206,41 @@ function handleFileUpload(event: Event) {
   reader.onload = () => {
     try {
       const content = reader.result as string
-      const rows = content.split(/\r?\n/).slice(1) // Skip header row
-      const parsedRecipients: Recipient[] = rows
-        .map(row => row.split(','))
-        .filter(([name, email]) => name && name.trim() && email && email.trim())
-        .map(([name, email, organization]) => ({
-          name: name.trim(),
-          email: email.trim(),
-          organization: organization?.trim() || '',
-        }))
+      const lines = content.split(/\r?\n/)
+      if (lines.length < 2) throw new Error('CSV file is empty or invalid.')
+      const header = lines[0].split(',').map(h => h.trim().toLowerCase())
+      const nameIdx = header.indexOf('name')
+      const emailIdx = header.indexOf('email')
+      const orgIdx = header.indexOf('organization')
+      const expIdx = header.indexOf('expirationdate')
 
+      const parsedRecipients: Recipient[] = []
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue
+        const row = lines[i].split(',')
+        const name = row[nameIdx]?.trim()
+        const email = row[emailIdx]?.trim()
+        const organization = orgIdx !== -1 ? row[orgIdx]?.trim() : ''
+        const expirationDate = expIdx !== -1 ? row[expIdx]?.trim() : ''
+        if (name && email) {
+          parsedRecipients.push({
+            name,
+            email,
+            organization,
+            expirationDate
+          })
+        }
+      }
       if (parsedRecipients.length === 0) {
         throw new Error('CSV file is empty or invalid. Please check the file and try again.')
       }
-
       recipients.value = parsedRecipients
       csvUploaded.value = true
       error.value = null
-    }
-    catch (err) {
+    } catch (err) {
       console.error('Error parsing CSV:', err)
       error.value = err instanceof Error ? err.message : 'Failed to parse CSV file'
-      recipients.value = [{ name: '', email: '' }]
+      recipients.value = [{ name: '', email: '', expirationDate: '' }]
       csvUploaded.value = false
     }
   }
@@ -239,7 +253,7 @@ function handleFileUpload(event: Event) {
 }
 
 function clearCsvRecipients() {
-  recipients.value = [{ name: '', email: '' }]
+  recipients.value = [{ name: '', email: '', expirationDate: '' }]
   csvUploaded.value = false
 }
 
@@ -252,13 +266,19 @@ async function handleIssue() {
   isLoading.value = true
   submissionError.value = null
   isSuccess.value = false
+  batchResults.value = []
 
   try {
-    await apiClient.batchIssueBadges(
+    const response = await apiClient.batchIssueBadges(
       selectedTemplate.value.id,
       recipients.value
     )
-    isSuccess.value = true
+    if (response && Array.isArray(response.results)) {
+      batchResults.value = response.results
+      isSuccess.value = response.results.every(r => r.success)
+    } else {
+      isSuccess.value = true
+    }
     clearForm()
   }
   catch (err) {
@@ -278,11 +298,12 @@ async function handleIssue() {
 
 function clearForm() {
   selectedTemplate.value = null
-  recipients.value = [{ name: '', email: '' }]
+  recipients.value = [{ name: '', email: '', expirationDate: '' }]
   csvUploaded.value = false
   isSuccess.value = false
   error.value = null
   submissionError.value = null
+  batchResults.value = []
 }
 
 function formatDate(date: string) {
@@ -450,8 +471,11 @@ function formatDate(date: string) {
                       </button>
                     </div>
                     <ul class="max-h-32 overflow-y-auto text-xs text-gray-600">
-                      <li v-for="(r, i) in recipients" :key="i">
-                        {{ r.name }} &lt;{{ r.email }}&gt;
+                      <li v-for="(recipient, i) in recipients" :key="i">
+                        {{ recipient.name }} &lt;{{ recipient.email }}&gt;
+                        <span v-if="recipient.expirationDate" class="ml-2 text-gray-400">
+                          (expires {{ formatDate(recipient.expirationDate) }})
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -472,6 +496,14 @@ function formatDate(date: string) {
                         type="email"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
                         placeholder="Email address"
+                      >
+                    </div>
+                    <div class="flex-1">
+                      <input
+                        v-model="recipients[0].expirationDate"
+                        type="date"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+                        placeholder="Expiration date (optional)"
                       >
                     </div>
                   </div>
@@ -512,6 +544,32 @@ function formatDate(date: string) {
                         </button>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <!-- Batch Results Table -->
+                <div v-if="batchResults.length > 0" class="rounded-lg bg-gray-50 p-4">
+                  <h3 class="font-medium mb-2">Batch Issuance Results</h3>
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm border rounded-lg">
+                      <thead>
+                        <tr class="bg-gray-100">
+                          <th class="px-4 py-2 text-left">Email</th>
+                          <th class="px-4 py-2 text-left">Status</th>
+                          <th class="px-4 py-2 text-left">Error</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(row, idx) in batchResults" :key="row.recipient ?? idx">
+                          <td class="px-4 py-2">{{ row.recipient }}</td>
+                          <td class="px-4 py-2">
+                            <span v-if="row.success" class="text-green-600">Success</span>
+                            <span v-else class="text-red-600">Failed</span>
+                          </td>
+                          <td class="px-4 py-2 text-xs text-red-500">{{ row.error || '' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
@@ -583,6 +641,10 @@ function formatDate(date: string) {
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-text-secondary">Issue Date</span>
                   <span class="font-medium text-text-primary">{{ formatDate(issueDate) }}</span>
+                </div>
+                <div v-if="recipients[0].expirationDate" class="flex items-center justify-between text-sm">
+                  <span class="text-text-secondary">Expiration Date</span>
+                  <span class="font-medium text-text-primary">{{ formatDate(recipients[0].expirationDate) }}</span>
                 </div>
                 <div v-if="selectedTemplate.attributes?.creator?.data?.attributes?.name" class="flex items-center justify-between text-sm">
                   <span class="text-text-secondary">Issuer</span>

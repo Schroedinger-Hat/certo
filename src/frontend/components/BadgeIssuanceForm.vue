@@ -2,6 +2,7 @@
 import { useRuntimeConfig } from '#app'
 import { computed, onMounted, ref } from 'vue'
 import { apiClient } from '~/api/api-client'
+import type { Ref } from 'vue'
 
 interface StrapiImage {
   data?: {
@@ -103,12 +104,14 @@ interface CsvRow {
   name: string
   email: string
   organization?: string
+  expirationDate?: string
 }
 
 interface Recipient {
   name: string
   email: string
   organization?: string
+  expirationDate?: string
 }
 
 const props = defineProps<{
@@ -125,6 +128,7 @@ const badges = ref<Badge[]>([])
 const selectedBadge = ref<Badge | null>(props.initialBadge || null)
 const recipientName = ref('')
 const recipientEmail = ref('')
+const recipientExpirationDate = ref<string | null>(null)
 const isLoadingBadges = ref(false)
 const issuingBadge = ref(false)
 const issuanceSuccess = ref(false)
@@ -266,7 +270,8 @@ async function handleSubmit() {
   try {
     const recipient = {
       name: recipientName.value,
-      email: recipientEmail.value
+      email: recipientEmail.value,
+      expirationDate: recipientExpirationDate.value || undefined
     }
 
     await apiClient.issueBadge(
@@ -280,6 +285,7 @@ async function handleSubmit() {
     // Reset form
     recipientName.value = ''
     recipientEmail.value = ''
+    recipientExpirationDate.value = null
     evidenceEntries.value = [{ name: '', description: '', url: '' }]
   }
   catch (error) {
@@ -332,21 +338,28 @@ function handleFileUpload(event: Event) {
       const rows = content.split('\n')
       const parsedRecipients: Recipient[] = []
 
-      // Skip header row
-      for (let i = 1; i < rows.length; i++) {
-        const row = rows[i].split(',')
-        if (row.length >= 2) {
-          const name = row[0]?.trim()
-          const email = row[1]?.trim()
-          const organization = row[2]?.trim()
+      // Parse header to determine columns
+      const header = rows[0].split(',').map(h => h.trim().toLowerCase())
+      const nameIdx = header.indexOf('name')
+      const emailIdx = header.indexOf('email')
+      const orgIdx = header.indexOf('organization')
+      const expIdx = header.indexOf('expirationdate')
 
-          if (name && email) {
-            parsedRecipients.push({
-              name,
-              email,
-              organization
-            })
-          }
+      for (let i = 1; i < rows.length; i++) {
+        if (!rows[i].trim()) continue
+        const row = rows[i].split(',')
+        const name = row[nameIdx]?.trim()
+        const email = row[emailIdx]?.trim()
+        const organization = orgIdx !== -1 ? row[orgIdx]?.trim() : undefined
+        const expirationDate = expIdx !== -1 ? row[expIdx]?.trim() : undefined
+
+        if (name && email) {
+          parsedRecipients.push({
+            name,
+            email,
+            organization,
+            expirationDate: expirationDate || undefined
+          })
         }
       }
 
@@ -358,6 +371,12 @@ function handleFileUpload(event: Event) {
     }
   }
   reader.readAsText(file)
+}
+
+const csvInput = ref<HTMLInputElement | null>(null)
+
+function handleCsvButtonClick() {
+  csvInput.value?.click()
 }
 </script>
 
@@ -590,6 +609,14 @@ function handleFileUpload(event: Event) {
               required
             />
           </NFormItem>
+
+          <NFormItem label="Expiration Date (optional)">
+            <NInput
+              v-model="recipientExpirationDate"
+              type="date"
+              placeholder="YYYY-MM-DD"
+            />
+          </NFormItem>
         </div>
       </div>
 
@@ -682,9 +709,11 @@ function handleFileUpload(event: Event) {
         </h2>
         <p class="text-gray-600 mb-4">
           Import a CSV file of recipients to issue this badge to multiple people at once.<br>
-          <NButton size="xs" variant="outline" class="mt-2" @click="handleFileUpload">
+          <span class="block text-xs mt-2 text-gray-500">CSV columns: name,email[,organization][,expirationDate]</span>
+          <NButton size="xs" variant="outline" class="mt-2" @click="handleCsvButtonClick">
             Upload CSV File
           </NButton>
+          <input ref="csvInput" type="file" accept=".csv" class="hidden" @change="handleFileUpload" />
         </p>
         <NAlert v-if="batchError" variant="error" class="mt-4">
           {{ batchError }}

@@ -61,6 +61,7 @@ interface Recipient {
   name: string
   email: string
   organization?: string
+  expirationDate?: string
 }
 
 export default () => {
@@ -140,7 +141,7 @@ export default () => {
     }
   }
 
-  async function batchIssueBadges(badgeId: string, recipients: Recipient[]): Promise<void> {
+  async function batchIssueBadges(badgeId: string, recipients: Recipient[]): Promise<any> {
     try {
       const headers = await getHeaders()
 
@@ -165,6 +166,8 @@ export default () => {
         })
         throw new Error(`Failed to issue badges: ${response.status} ${response.statusText}`)
       }
+      // Return the parsed response for per-recipient feedback
+      return await response.json()
     }
     catch (error) {
       console.error('Error in batchIssueBadges:', error)

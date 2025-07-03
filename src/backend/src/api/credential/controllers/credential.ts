@@ -84,6 +84,9 @@ export default factories.createCoreController('api::credential.credential', ({ s
         ...recipientData
       }
 
+      // Support expirationDate at top-level or in recipient
+      const expirationDate = data.expirationDate || recipient.expirationDate || undefined
+
       strapi.log.debug('[credential.issue] Processing with data:', { 
         achievementId, 
         recipientId: recipient.id,
@@ -94,7 +97,8 @@ export default factories.createCoreController('api::credential.credential', ({ s
       const credential = await strapi.service('api::credential.credential').issue(
         achievement,
         recipient,
-        evidence
+        evidence,
+        expirationDate
       )
 
       return credential
@@ -547,10 +551,12 @@ export default factories.createCoreController('api::credential.credential', ({ s
       const issuePromises = recipients.map(async (recipientData) => {
         try {
           const recipient = { ...recipientData }
+          const expirationDate = recipientData.expirationDate || undefined
           const credential = await strapi.service('api::credential.credential').issue(
             achievement,
             recipient,
-            evidence
+            evidence,
+            expirationDate
           )
           return { success: true, recipient: recipientData.email, data: credential }
         } catch (error) {
