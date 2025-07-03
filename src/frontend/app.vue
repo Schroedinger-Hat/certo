@@ -1,3 +1,20 @@
+<script setup lang="ts">
+useHead({
+  title: 'Certo - Digital Credential Platform',
+  titleTemplate: '%s | Certo',
+})
+
+useSeoMeta({
+  description: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.',
+  ogTitle: 'Certo - Digital Credential Platform',
+  ogDescription: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.',
+  ogImage: 'https://certo.schroedinger-hat.org/og-default.png',
+  twitterCard: 'summary_large_image',
+  twitterImage: 'https://certo.schroedinger-hat.org/og-default.png',
+  url: 'https://certo.schroedinger-hat.org/'
+})
+</script>
+
 <template>
   <div>
     <NuxtLayout>

@@ -17,6 +17,8 @@
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
+    "@nuxt/icon": "^1.15.0",
+    "@nuxt/image": "^1.10.0",
     "@nuxtjs/sitemap": "^7.4.2",
     "@pinia/nuxt": "^0.5.1",
     "@playwright/test": "^1.53.1",
@@ -29,6 +31,7 @@
     "nuqs": "^1.16.0",
     "nuxt": "^3.10.0",
     "nuxt-gtag": "^3.0.3",
+    "nuxt-svgo": "^4.2.2",
     "papaparse": "^5.5.3",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",
