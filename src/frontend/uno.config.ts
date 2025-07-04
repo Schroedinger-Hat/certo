@@ -27,7 +27,7 @@ export default defineConfig({
   ],
   theme: {
     colors: {
-      primary: '#00E5C5',
+      primary: '#5AB69F',
       secondary: '#FFE5AE',
       background: {
         light: '#FFFFFF',
@@ -35,7 +35,7 @@ export default defineConfig({
       },
       text: {
         primary: '#2D3436',
-        secondary: '#64748B'
+        secondary: '#495265'
       }
     },
     fontFamily: {

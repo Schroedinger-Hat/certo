@@ -80,7 +80,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 h-full flex-grow-1">
     <div class="max-w-md w-full space-y-8">
       <!-- Header -->
       <div class="text-center">
@@ -121,7 +121,7 @@ async function handleSubmit() {
                 name="email"
                 type="email"
                 required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5AB69F] focus:border-transparent"
                 placeholder="Enter your email"
               >
             </div>
@@ -139,7 +139,7 @@ async function handleSubmit() {
                 name="password"
                 type="password"
                 required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E5C5] focus:border-transparent"
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5AB69F] focus:border-transparent"
                 placeholder="Enter your password"
               >
             </div>
@@ -152,7 +152,7 @@ async function handleSubmit() {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                class="h-4 w-4 text-[#00E5C5] focus:ring-[#00E5C5] border-gray-300 rounded"
+                class="h-4 w-4 text-[#00E5C5] focus:ring-[#5AB69F] border-gray-300 rounded"
               >
               <label for="remember-me" class="ml-2 block text-sm text-text-secondary">
                 Remember me
@@ -160,7 +160,7 @@ async function handleSubmit() {
             </div>
 
             <div class="text-sm">
-              <NuxtLink to="/forgot-password" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
+              <NuxtLink to="/forgot-password" class="font-medium text-text-secondary hover:text-[#5AB69F]/80">
                 Forgot your password?
               </NuxtLink>
             </div>
@@ -171,9 +171,9 @@ async function handleSubmit() {
             <button
               type="submit"
               :disabled="isLoading"
-              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#5AB69F] hover:bg-[#5AB69F]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="!isLoading">Sign in</span>
+              <span class="text-[#000]" v-if="!isLoading">Sign in</span>
               <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </button>
           </div>

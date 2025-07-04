@@ -57,19 +57,19 @@ function handleSupportClick() {
             </h2>
             <ul class="space-y-4">
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-check-circle flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-check-circle flex-shrink-0" />
                 <span class="text-lg text-gray-700">Easy-to-use interface</span>
               </li>
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-check-circle flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-check-circle flex-shrink-0" />
                 <span class="text-lg text-gray-700">Customizable templates</span>
               </li>
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-check-circle flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-check-circle flex-shrink-0" />
                 <span class="text-lg text-gray-700">Instant verification</span>
               </li>
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-check-circle flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-check-circle flex-shrink-0" />
                 <span class="text-lg text-gray-700">Open-source transparency</span>
               </li>
             </ul>
@@ -83,25 +83,25 @@ function handleSupportClick() {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-16 items-start">
           <!-- Left Column -->
-          <div class="bg-gradient-to-br from-[#FFE5AE]/20 to-[#00E5C5]/20 rounded-2xl p-8">
+          <div class="bg-gradient-to-br from-[#FFE5AE]/20 to-[#5AB69F]/20 rounded-2xl p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">
               What We Do
             </h2>
             <ul class="space-y-4">
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-code flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-code flex-shrink-0" />
                 <span class="text-lg text-gray-700">Open Source Development</span>
               </li>
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-users flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-users flex-shrink-0" />
                 <span class="text-lg text-gray-700">Community Events</span>
               </li>
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-graduation-cap flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-graduation-cap flex-shrink-0" />
                 <span class="text-lg text-gray-700">Educational Resources</span>
               </li>
               <li class="flex items-center gap-4">
-                <div class="w-6 h-6 text-[#00E5C5] i-lucide-heart-handshake flex-shrink-0" />
+                <div class="w-6 h-6 text-[#5AB69F] i-lucide-heart-handshake flex-shrink-0" />
                 <span class="text-lg text-gray-700">Non-Profit Initiatives</span>
               </li>
             </ul>
@@ -139,7 +139,7 @@ function handleSupportClick() {
 
         <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <!-- Free Plan -->
-          <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+          <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 flex flex-col justify-between">
             <h3 class="text-2xl font-bold mb-4">
               Community Edition
             </h3>
@@ -152,29 +152,31 @@ function handleSupportClick() {
             </p>
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Unlimited certificates</span>
               </li>
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Basic templates</span>
               </li>
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Community support</span>
               </li>
             </ul>
-            <NuxtLink
-              to="/get-started"
-              class="block w-full py-3 px-4 text-center rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-colors"
-            >
-              Get Started
-            </NuxtLink>
+            <div class="flex-grow-1 flex items-end">
+              <NuxtLink
+                to="/get-started"
+                class="block w-full py-3 px-4 text-center rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+              >
+                Get Started
+              </NuxtLink>
+            </div>
           </div>
 
           <!-- Supporter Plan -->
-          <div class="bg-gradient-to-br from-[#FFD700]/10 to-[#00E5C5]/10 rounded-2xl p-8 shadow-lg border border-[#00E5C5]/20 relative overflow-hidden">
-            <div class="absolute top-3 right-3 px-3 py-1 bg-[#00E5C5] text-white text-sm rounded-full">
+          <div class="bg-gradient-to-br from-[#FFD700]/10 to-[#00E5C5]/10 rounded-2xl p-8 shadow-lg border border-[#00E5C5]/20 relative overflow-hidden flex flex-col justify-between">
+            <div class="absolute top-3 right-3 px-3 py-1 bg-[#5AB69F] text-black text-sm rounded-full">
               Support Us ❤️
             </div>
             <h3 class="text-2xl font-bold mb-4">
@@ -189,28 +191,28 @@ function handleSupportClick() {
             </p>
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>All Community features</span>
               </li>
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Priority support</span>
               </li>
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Early access to features</span>
               </li>
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Name in supporters list</span>
               </li>
               <li class="flex items-center gap-3">
-                <div class="i-lucide-check w-5 h-5 text-[#00E5C5]" />
+                <div class="i-lucide-check w-5 h-5 text-[#5AB69F]" />
                 <span>Custom badge on profile</span>
               </li>
             </ul>
             <button
-              class="w-full py-3 px-6 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#00E5C5] text-white font-semibold hover:opacity-90 transition-opacity"
+              class="w-full py-3 px-6 rounded-full bg-gradient-to-r from-[#387364] to-[#5AB69F] text-white font-semibold hover:opacity-90 transition-opacity"
               @click="handleSupportClick"
             >
               Become a Supporter
@@ -242,7 +244,7 @@ function handleSupportClick() {
             href="https://discord.gg/schroedinger-hat"
             target="_blank"
             rel="noopener noreferrer"
-            class="py-3 px-6 rounded-full bg-[#00E5C5] text-white hover:bg-[#00E5C5]/90 transition-colors"
+            class="py-3 px-6 rounded-full bg-[#5AB69F] text-black hover:bg-[#5AB69F]/90 transition-colors"
           >
             Join Discord
           </a>

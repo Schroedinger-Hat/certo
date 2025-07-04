@@ -67,12 +67,16 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
+
         { rel: 'canonical', href: 'https://certo.schroedinger-hat.org' },
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap'
         },
-      ]
+      ],
+       htmlAttrs: {
+        lang: 'en'
+      }
     }
   },
   runtimeConfig: {

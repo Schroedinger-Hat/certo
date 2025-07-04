@@ -165,7 +165,7 @@ const navLinks = [
                 </NuxtLink>
                 <NuxtLink
                   to="/get-started"
-                  class="px-4 py-2 bg-[#00E5C5] text-white rounded-full font-medium hover:bg-[#00E5C5]/90 transition-colors"
+                  class="px-4 py-2 bg-[#5AB69F] rounded-full font-medium hover:bg-[#5AB69F]/90 transition-colors text-text-primary"
                 >
                   Get Started
                 </NuxtLink>
@@ -175,6 +175,7 @@ const navLinks = [
 
           <!-- Mobile Menu Button -->
           <button
+            aria-label="Toggle mobile menu"
             class="md:hidden p-2 rounded-lg hover:bg-gray-100"
             @click="isMobileMenuOpen = !isMobileMenuOpen"
           >
@@ -222,7 +223,7 @@ const navLinks = [
               </NuxtLink>
               <NuxtLink
                 to="/get-started"
-                class="block w-full py-2 text-center bg-[#00E5C5] text-white rounded-full hover:bg-[#00E5C5]/90 transition-colors"
+                class="block w-full py-2 text-center bg-[#5AB69F] text-white rounded-full hover:bg-[#5AB69F]/90 transition-colors"
               >
                 Get Started
               </NuxtLink>
@@ -233,7 +234,7 @@ const navLinks = [
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-16 flex-grow">
+    <main class="pt-16 flex-grow flex flex-col mb-32">
       <slot />
     </main>
 

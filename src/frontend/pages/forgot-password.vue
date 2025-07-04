@@ -44,7 +44,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-white to-[#FFE5AE]/20 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="bg-gradient-to-b from-white to-[#FFE5AE]/20 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 h-full flex-grow-1">
     <div class="max-w-md w-full space-y-8">
       <!-- Header -->
       <div class="text-center">
@@ -110,7 +110,7 @@ async function handleSubmit() {
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-black bg-[#5AB69F] hover:bg-[#5AB69F]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="!isLoading">Send reset link</span>
             <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -121,7 +121,7 @@ async function handleSubmit() {
         <div class="mt-6 text-center">
           <p class="text-sm text-text-secondary">
             Remember your password?
-            <NuxtLink to="/login" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
+            <NuxtLink to="/login" class="font-medium text-[#5AB69F] hover:text-[#5AB69F]/80">
               Sign in
             </NuxtLink>
           </p>
