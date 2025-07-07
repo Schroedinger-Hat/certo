@@ -12,5 +12,13 @@ export default {
         auth: false,
       },
     },
+    {
+      method: 'GET',
+      path: '/achievements/creator/:creatorId',
+      handler: 'achievement.findByCreator',
+      config: {
+        auth: false,
+      },
+    },
   ],
 } 

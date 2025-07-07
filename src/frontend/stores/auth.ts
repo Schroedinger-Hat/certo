@@ -148,14 +148,6 @@ export const useAuthStore = defineStore('auth', () => {
         })
       }
 
-      // Test token is working
-      try {
-        const debugResponse = await apiClient.debugAuth()
-      }
-      catch (authErr) {
-        console.error('Auth debug test failed:', authErr)
-      }
-
       return true
     }
     catch (err) {

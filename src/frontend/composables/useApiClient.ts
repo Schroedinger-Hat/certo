@@ -81,10 +81,14 @@ export default () => {
     }
   }
 
-  async function getAvailableBadges(): Promise<StrapiResponse<Badge[]>> {
+  async function getAvailableBadges(creatorId?: string): Promise<StrapiResponse<Badge[]>> {
     try {
       const headers = await getHeaders()
-      const response = await fetch(`${apiUrl}/api/achievements?populate=*`, {
+      let url = `${apiUrl}/api/achievements?populate=*`
+      if (creatorId) {
+        url = `${apiUrl}/api/achievements/creator/${creatorId}?populate=*`
+      }
+      const response = await fetch(url, {
         headers,
         credentials: 'include' // Include cookies if needed
       })

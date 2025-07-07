@@ -562,13 +562,6 @@ export class ApiClient {
   }
 
   /**
-   * Debug authentication
-   */
-  async debugAuth() {
-    return this.get<any>('/api/auth-debug')
-  }
-
-  /**
    * Format credential data to normalize structure
    * This helps handle different data formats from Strapi
    */

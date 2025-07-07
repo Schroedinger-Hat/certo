@@ -80,5 +80,23 @@ export default factories.createCoreController('api::achievement.achievement', ({
     } catch (err) {
       ctx.badRequest('Error fetching achievement', { error: err })
     }
+  },
+  
+  // Custom method to find achievements by creator id
+  async findByCreator(ctx) {
+    try {
+      const { creatorId } = ctx.params
+      if (!creatorId) {
+        return ctx.badRequest('Missing creatorId parameter')
+      }
+      const achievements = await strapi.entityService.findMany('api::achievement.achievement', {
+        status: 'published',
+        filters: { creator: { id: creatorId } },
+        populate: '*',
+      })
+      return { data: achievements }
+    } catch (err) {
+      ctx.badRequest('Error fetching achievements by creator', { error: err })
+    }
   }
 })) 

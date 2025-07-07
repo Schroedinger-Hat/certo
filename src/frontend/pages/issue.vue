@@ -87,7 +87,7 @@ async function loadTemplates() {
       return
     }
 
-    const response = await apiClient.getAvailableBadges()
+    const response = await apiClient.getAvailableBadges(authStore.profile?.id?.toString())
 
     if (response?.data) {
       templates.value = response.data.map((badge: any) => {
@@ -275,7 +275,7 @@ async function handleIssue() {
     )
     if (response && Array.isArray(response.results)) {
       batchResults.value = response.results
-      isSuccess.value = response.results.every(r => r.success)
+      isSuccess.value = response.results.every((r: { success: boolean }) => r.success)
     } else {
       isSuccess.value = true
     }

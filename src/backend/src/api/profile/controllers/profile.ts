@@ -198,28 +198,4 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
 
     return profile
   },
-
-  /**
-   * Debug handler to inspect authentication
-   */
-  async debugAuth(ctx) {
-    try {
-      if (!ctx.state.user) {
-        return ctx.unauthorized('You must be logged in');
-      }
-      
-      // Return the user object from the JWT token
-      return {
-        message: "Authentication successful",
-        user: ctx.state.user,
-        headers: {
-          authorization: ctx.request.header.authorization ? "Present" : "Missing",
-          cookie: ctx.request.header.cookie ? "Present" : "Missing"
-        }
-      };
-    } catch (err) {
-      console.error('Error in auth debug:', err);
-      return ctx.badRequest('Error in auth debug', { error: err });
-    }
-  }
 })) 
