@@ -1,3 +1,17 @@
+<script setup lang="ts">
+useSeoMeta({
+  description: 'Read everything regarding the Certo privacy and policy',
+  ogDescription: 'Read everything regarding the Certo privacy and policy'
+})
+
+useHead({
+  title: 'Privacy and Policy',
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/privacy-policy' }
+  ]
+})
+</script>
+
 <template>
   <div class="min-h-screen py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import BadgeVerifier from '~/components/BadgeVerifier.vue'
-
 interface VerificationResult {
   verified: boolean
   error?: string
@@ -19,8 +16,48 @@ interface VerificationResult {
 
 const verificationResult = ref<VerificationResult | null>(null)
 const isVerifying = ref(false)
+const faqs = ref([
+  {
+    question: 'How does certificate verification work?',
+    answer: 'Our verification system checks the certificate\'s digital signature and metadata according to the Open Badges 3.0 standard. This ensures the certificate is authentic, untampered, and issued by a legitimate authority.',
+    isOpen: false
+  },
+  {
+    question: 'What types of certificates can I verify?',
+    answer: 'You can verify any digital certificate issued through Certo, including Open Badges 3.0 and other compatible verifiable credentials. We support various formats to ensure compatibility with different certification standards.',
+    isOpen: false
+  },
+  {
+    question: 'Is the verification process secure?',
+    answer: 'Yes, our verification process is completely secure. We use the Open Badges 3.0 standard, which ensures each credential is tamper-evident and verifiable. All data is processed securely and transparently.',
+    isOpen: false
+  },
+  {
+    question: 'How long does verification take?',
+    answer: 'Verification is instant in most cases. Once you submit a certificate for verification, our system immediately checks its authenticity and validity using the Open Badges 3.0 protocol and provides results within seconds.',
+    isOpen: false
+  },
+  {
+    question: 'What information is shown in the verification results?',
+    answer: 'Verification results include the certificate\'s status, issuer details, issue date, expiration date (if applicable), and Open Badges 3.0 verification proof. You can also view the full certificate details if available.',
+    isOpen: false
+  }
+])
 
-async function handleVerify(badgeId: string) {
+useSeoMeta({
+  description: 'Verify your badges with Certo',
+  ogDescription: 'Verify your badges with Certo',
+  ogUrl: 'https://certo.schroedinger-hat.org/verify'
+})
+
+useHead({
+  title: 'Verify your badge',
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/verify' }
+  ]
+})
+
+async function handleVerify() {
   isVerifying.value = true
   verificationResult.value = null
 
@@ -60,35 +97,6 @@ function formatDate(date: string) {
     day: 'numeric'
   })
 }
-
-const faqs = ref([
-  {
-    question: 'How does certificate verification work?',
-    answer: 'Our verification system checks the certificate\'s digital signature and metadata according to the Open Badges 3.0 standard. This ensures the certificate is authentic, untampered, and issued by a legitimate authority.',
-    isOpen: false
-  },
-  {
-    question: 'What types of certificates can I verify?',
-    answer: 'You can verify any digital certificate issued through Certo, including Open Badges 3.0 and other compatible verifiable credentials. We support various formats to ensure compatibility with different certification standards.',
-    isOpen: false
-  },
-  {
-    question: 'Is the verification process secure?',
-    answer: 'Yes, our verification process is completely secure. We use the Open Badges 3.0 standard, which ensures each credential is tamper-evident and verifiable. All data is processed securely and transparently.',
-    isOpen: false
-  },
-  {
-    question: 'How long does verification take?',
-    answer: 'Verification is instant in most cases. Once you submit a certificate for verification, our system immediately checks its authenticity and validity using the Open Badges 3.0 protocol and provides results within seconds.',
-    isOpen: false
-  },
-  {
-    question: 'What information is shown in the verification results?',
-    answer: 'Verification results include the certificate\'s status, issuer details, issue date, expiration date (if applicable), and Open Badges 3.0 verification proof. You can also view the full certificate details if available.',
-    isOpen: false
-  }
-])
-
 </script>
 
 <template>

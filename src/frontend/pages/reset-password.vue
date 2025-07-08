@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useHead, useRuntimeConfig } from '#imports'
-import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-
 const password = ref('')
 const confirmPassword = ref('')
 const isLoading = ref(false)
@@ -14,19 +10,17 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const apiUrl = config.public.apiUrl
 
-useHead({
-  title: 'Reset Password | Certo',
-  meta: [
-    { name: 'description', content: 'Set a new password for your Certo account.' }
-  ]
+useSeoMeta({
+  description: 'Set a new password for your Certo account.',
+  ogDescription: 'Set a new password for your Certo account.',
+  ogUrl: 'https://certo.schroedinger-hat.org/reset-passowrd'
 })
 
-onMounted(() => {
-  // Get the reset code from the URL
-  code.value = route.query.code as string
-  if (!code.value) {
-    error.value = 'Reset code is missing. Please check your reset link.'
-  }
+useHead({
+  title: 'Reset Password',
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/reset-password' }
+  ]
 })
 
 async function handleSubmit() {
@@ -73,6 +67,14 @@ async function handleSubmit() {
     isLoading.value = false
   }
 }
+
+onMounted(() => {
+  // Get the reset code from the URL
+  code.value = route.query.code as string
+  if (!code.value) {
+    error.value = 'Reset code is missing. Please check your reset link.'
+  }
+})
 </script>
 
 <template>

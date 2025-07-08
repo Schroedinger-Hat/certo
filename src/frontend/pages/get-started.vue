@@ -1,4 +1,18 @@
 <script setup lang="ts">
+const pageDescription = ref('Get started with Certo, learn how it works')
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/get-started`
+})
+
+useHead({
+  title: 'Get started',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/get-started` }
+  ]
+})
 </script>
 
 <template>
@@ -102,6 +116,3 @@
     </div>
   </section>
 </template>
-
-<style scoped>
-</style>

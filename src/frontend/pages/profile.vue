@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuthStore } from '~/stores/auth'
-
 interface UserProfile {
   id: string
   name: string
@@ -27,7 +24,6 @@ interface Stats {
   memberSince: string
 }
 
-const authStore = useAuthStore()
 const loading = ref(false)
 const profilePicture = ref<string>('')
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -77,7 +73,9 @@ function handleImageUpload() {
 
 function onImageSelected(event: Event) {
   const input = event.target as HTMLInputElement
-  if (!input.files?.length) { return }
+  if (!input.files?.length) {
+    return
+  }
 
   const file = input.files[0]
   const reader = new FileReader()
@@ -136,6 +134,19 @@ function formatDate(date: string) {
     day: 'numeric'
   })
 }
+
+useSeoMeta({
+  description: 'Everything regarding your profile from your Certo account',
+  ogDescription: 'Everything regarding your profile from your Certo account',
+  ogUrl: 'https://certo.schroedinger-hat.org/profile'
+})
+
+useHead({
+  title: 'Profile',
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/profile' }
+  ]
+})
 </script>
 
 <template>

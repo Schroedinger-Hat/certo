@@ -1,3 +1,18 @@
+<script setup lang="ts">
+useSeoMeta({
+  description: 'Terms and conditions that apply whenever utilizing Certo',
+  ogDescription: 'Terms and conditions that apply whenever utilizing Certo',
+  ogUrl: 'https://certo.schroedinger-hat.org/terms-and-conditions'
+})
+
+useHead({
+  title: 'Terms and Conditions',
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/terms-and-conditions' }
+  ]
+})
+</script>
+
 <template>
   <div class="min-h-screen py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

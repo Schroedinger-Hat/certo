@@ -4,35 +4,40 @@ import type {
   Evidence,
   VerificationResult
 } from '~/types/openbadges'
-import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { apiClient } from '~/api/api-client'
 
-const route = useRoute()
-const credentialId = ref('')
 const credential = ref<AchievementCredential | null>(null)
-const loading = ref(false)
-const error = ref<string | null>(null)
-const verificationResult = ref<VerificationResult | null>(null)
+const credentialId = ref('')
 const currentImageIndex = ref(0)
+const error = ref<string | null>(null)
 const imageLoadError = ref(false)
+const loading = ref(false)
+const pageDescription = ref('View and verify credential details')
+const route = useRoute()
+const verificationResult = ref<VerificationResult | null>(null)
 
 // Format dates with proper localization
 const formattedIssuanceDate = computed(() => {
   const date = credential.value?.issuanceDate
-  if (!date) { return 'Unknown' }
+  if (!date) {
+    return 'Unknown'
+  }
   return formatDate(date)
 })
 
 const formattedExpirationDate = computed(() => {
   const date = credential.value?.expirationDate
-  if (!date) { return 'No expiration' }
+  if (!date) {
+    return 'No expiration'
+  }
   return formatDate(date)
 })
 
 // Get all possible image URLs
 const imageUrlOptions = computed(() => {
-  if (!credential.value) { return [] }
+  if (!credential.value) {
+    return []
+  }
 
   const cred = credential.value
   const rawCred = verificationResult.value?.rawCredential
@@ -64,13 +69,17 @@ const imageUrlOptions = computed(() => {
 
 // Get the current image URL based on the current index
 const displayImageUrl = computed(() => {
-  if (imageUrlOptions.value.length === 0) { return null }
+  if (imageUrlOptions.value.length === 0) {
+    return null
+  }
   return imageUrlOptions.value[currentImageIndex.value]
 })
 
 // Generate shareable URL
 const shareableUrl = computed(() => {
-  if (!credentialId.value) { return '' }
+  if (!credentialId.value) {
+    return ''
+  }
   return `${window.location.origin}/credentials/${encodeURIComponent(credentialId.value)}`
 })
 
@@ -85,7 +94,9 @@ function handleImageError() {
 }
 
 function formatDate(dateString: string) {
-  if (!dateString) { return 'Unknown' }
+  if (!dateString) {
+    return 'Unknown'
+  }
 
   try {
     const date = new Date(dateString)
@@ -125,7 +136,9 @@ async function shareCredential() {
 
 async function downloadCredential() {
   const imageUrl = displayImageUrl.value
-  if (!imageUrl) { return }
+  if (!imageUrl) {
+    return
+  }
 
   try {
     const response = await fetch(imageUrl)
@@ -145,7 +158,9 @@ async function downloadCredential() {
 }
 
 async function fetchCredentialDetails() {
-  if (!credentialId.value) { return }
+  if (!credentialId.value) {
+    return
+  }
 
   loading.value = true
   error.value = null
@@ -186,6 +201,43 @@ async function fetchCredentialDetails() {
   }
 }
 
+function getLinkedInAddToProfileUrl() {
+  if (!credential.value) {
+    return '#'
+  }
+  const cert = credential.value
+  const params = new URLSearchParams({
+    startTask: 'CERTIFICATION_NAME',
+    name: cert.name || cert.title || '',
+    organizationId: '53115782',
+    issueYear: cert.issuanceDate ? new Date(cert.issuanceDate).getFullYear().toString() : '',
+    issueMonth: cert.issuanceDate ? (new Date(cert.issuanceDate).getMonth() + 1).toString() : '',
+    certId: cert.id,
+    certUrl: `${window.location.origin}/credentials/${cert.id}`
+  })
+  return `https://www.linkedin.com/profile/add?${params.toString()}`
+}
+
+useSeoMeta({
+  description: () => credential.value?.description || pageDescription.value,
+  ogDescription: () => credential.value?.description || pageDescription.value,
+  ogTitle: () => credential.value?.name ? `${credential.value.name} | Certo` : 'Credential Details | Certo',
+  ogImage: () => displayImageUrl.value || `${WEBSITE_URL}/og-default.png`,
+  twitterImage: () => displayImageUrl.value || `${WEBSITE_URL}/og-default.png`,
+  ogUrl: () => shareableUrl.value
+
+})
+
+useHead({
+  title: () => credential.value?.name
+    ? `${credential.value.name} | Credential Details`
+    : 'Credential Details | Certo',
+  link: [{
+    rel: 'canonical',
+    href: () => shareableUrl.value
+  }]
+})
+
 onMounted(async () => {
   // Get the credential ID from the route params and decode it
   if (route.params.id) {
@@ -199,68 +251,6 @@ onMounted(async () => {
     }
   }
 })
-
-// Update page metadata
-useHead({
-  title: computed(() => credential.value?.name
-    ? `${credential.value.name} | Credential Details`
-    : 'Credential Details | Certo'),
-  meta: [
-    {
-      name: 'description',
-      content: computed(() => credential.value?.description || 'View and verify credential details')
-    },
-    {
-      name: 'og:title',
-      property: 'og:title',
-      content: computed(() => credential.value?.name ? `${credential.value.name} | Certo` : 'Credential Details | Certo')
-    },
-    {
-      name: 'og:description',
-      property: 'og:description',
-      content: computed(() => credential.value?.description || 'View and verify credential details')
-    },
-    {
-      name: 'og:image',
-      property: 'og:image',
-      content: computed(() => displayImageUrl.value || 'https://certo.schroedinger-hat.org/og-default.png')
-    },
-    {
-      name: 'twitter:card',
-      content: 'summary_large_image'
-    },
-    {
-      name: 'twitter:image',
-      content: computed(() => displayImageUrl.value || 'https://certo.schroedinger-hat.org/og-default.png')
-    },
-    {
-      property: 'og:url',
-      content: computed(() => shareableUrl.value)
-    }
-  ],
-  link: [
-    {
-      rel: 'canonical',
-      href: computed(() => shareableUrl.value)
-    }
-  ]
-})
-
-// Utility to generate LinkedIn Add to Profile URL
-function getLinkedInAddToProfileUrl() {
-  if (!credential.value) return '#'
-  const cert = credential.value
-  const params = new URLSearchParams({
-    startTask: 'CERTIFICATION_NAME',
-    name: cert.name || cert.title || '',
-    organizationId: '53115782',
-    issueYear: cert.issuanceDate ? new Date(cert.issuanceDate).getFullYear().toString() : '',
-    issueMonth: cert.issuanceDate ? (new Date(cert.issuanceDate).getMonth() + 1).toString() : '',
-    certId: cert.id,
-    certUrl: `${window.location.origin}/credentials/${cert.id}`
-  })
-  return `https://www.linkedin.com/profile/add?${params.toString()}`
-}
 </script>
 
 <template>
@@ -335,7 +325,7 @@ function getLinkedInAddToProfileUrl() {
           class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium"
           aria-label="Add this certificate to your LinkedIn profile"
         >
-          <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
+          <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
           Add to LinkedIn
         </a>
       </div>

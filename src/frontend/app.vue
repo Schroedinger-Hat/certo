@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  title: 'Certo - Digital Credential Platform',
+  title: 'Digital Credential Platform',
   titleTemplate: '%s | Certo',
 })
 
@@ -11,7 +11,7 @@ useSeoMeta({
   ogImage: 'https://certo.schroedinger-hat.org/og-default.png',
   twitterCard: 'summary_large_image',
   twitterImage: 'https://certo.schroedinger-hat.org/og-default.png',
-  url: 'https://certo.schroedinger-hat.org/'
+  ogUrl: 'https://certo.schroedinger-hat.org/'
 })
 </script>
 

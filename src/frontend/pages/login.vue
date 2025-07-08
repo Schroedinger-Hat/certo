@@ -1,51 +1,22 @@
 <script setup lang="ts">
-import { useHead } from '#imports'
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-useHead({
-  title: 'Login | Certo',
-  meta: [
-    { name: 'description', content: 'Sign in to your Certo account to access your credentials and dashboard.' },
-    { name: 'og:title', property: 'og:title', content: 'Login | Certo' },
-    { name: 'og:description', property: 'og:description', content: 'Sign in to your Certo account to access your credentials and dashboard.' },
-    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/login' }
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/login' }
-  ]
-})
-
-// Don't import useAuthStore directly
 const router = useRouter()
 const email = ref('')
 const password = ref('')
-const rememberMe = ref(false)
 const authStore = ref(null)
 const isStoreReady = ref(false)
 const authError = ref(null)
 const isLoading = ref(false)
 
-onMounted(() => {
-  // Safely initialize auth store with a delay
-  setTimeout(async () => {
-    try {
-      const { useAuthStore } = await import('~/stores/auth')
-      authStore.value = useAuthStore()
-      isStoreReady.value = true
+useSeoMeta({
+  description: 'Sign in to your Certo account to access your credentials and dashboard.',
+  ogDescription: 'Sign in to your Certo account to access your credentials and dashboard.'
+})
 
-      // If user is already authenticated, redirect to dashboard
-      if (authStore.value.isAuthenticated) {
-        router.push('/dashboard')
-      }
-    }
-    catch (error) {
-      console.error('Error accessing auth store:', error)
-    }
-  }, 100)
+useHead({
+  title: 'Login',
+  link: [
+    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/login' }
+  ]
 })
 
 async function handleSubmit() {
@@ -77,6 +48,25 @@ async function handleSubmit() {
     }
   }
 }
+
+onMounted(() => {
+  // Safely initialize auth store with a delay
+  setTimeout(async () => {
+    try {
+      const { useAuthStore } = await import('~/stores/auth')
+      authStore.value = useAuthStore()
+      isStoreReady.value = true
+
+      // If user is already authenticated, redirect to dashboard
+      if (authStore.value.isAuthenticated) {
+        router.push('/dashboard')
+      }
+    }
+    catch (error) {
+      console.error('Error accessing auth store:', error)
+    }
+  }, 100)
+})
 </script>
 
 <template>
