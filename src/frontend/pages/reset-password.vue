@@ -9,17 +9,18 @@ const router = useRouter()
 const route = useRoute()
 const config = useRuntimeConfig()
 const apiUrl = config.public.apiUrl
+const pageDescription = ref('Set a new password for your Certo account.')
 
 useSeoMeta({
-  description: 'Set a new password for your Certo account.',
-  ogDescription: 'Set a new password for your Certo account.',
-  ogUrl: 'https://certo.schroedinger-hat.org/reset-passowrd'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/reset-password`
 })
 
 useHead({
   title: 'Reset Password',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/reset-password' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/reset-password` }
   ]
 })
 

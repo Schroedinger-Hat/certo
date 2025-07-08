@@ -15,6 +15,7 @@ const validationError = ref('')
 const authStore = ref(null)
 const isStoreReady = ref(false)
 const isLoading = ref(false)
+const pageDescription = ref('Create a Certo account to issue, manage, and verify digital credentials.')
 
 onMounted(() => {
   // Safely initialize auth store with a delay
@@ -82,15 +83,15 @@ async function handleSubmit() {
 }
 
 useSeoMeta({
-  description: 'Create a Certo account to issue, manage, and verify digital credentials.',
-  ogDescription: 'Create a Certo account to issue, manage, and verify digital credentials.',
-  ogUrl: 'https://certo.schroedinger-hat.org/register'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/register`
 })
 
 useHead({
   title: 'Register',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/register' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/register` }
   ]
 })
 </script>

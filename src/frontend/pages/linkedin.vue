@@ -1,14 +1,16 @@
 <script setup lang="ts">
+const pageDescription = ref('Step-by-step guide to adding your Certo certificate to your LinkedIn profile')
+
 useSeoMeta({
-  description: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.',
-  ogDescription: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.',
-  ogUrl: 'https://certo.schroedinger-hat.org/linkedin'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/linkedin`
 })
 
 useHead({
   title: 'LinkedIn Guide',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/linkedin' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/linkedin` }
   ]
 })
 </script>

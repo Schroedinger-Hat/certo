@@ -27,6 +27,7 @@ interface Stats {
 const loading = ref(false)
 const profilePicture = ref<string>('')
 const fileInput = ref<HTMLInputElement | null>(null)
+const pageDescription = ref('Everything regarding your profile from your Certo account')
 
 const form = ref({
   name: '',
@@ -136,15 +137,15 @@ function formatDate(date: string) {
 }
 
 useSeoMeta({
-  description: 'Everything regarding your profile from your Certo account',
-  ogDescription: 'Everything regarding your profile from your Certo account',
-  ogUrl: 'https://certo.schroedinger-hat.org/profile'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/profile`
 })
 
 useHead({
   title: 'Profile',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/profile' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/profile` }
   ]
 })
 </script>

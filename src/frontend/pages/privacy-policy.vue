@@ -1,13 +1,15 @@
 <script setup lang="ts">
+const pageDescription = ref('Read everything regarding the Certo privacy and policy')
+
 useSeoMeta({
-  description: 'Read everything regarding the Certo privacy and policy',
-  ogDescription: 'Read everything regarding the Certo privacy and policy'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
 })
 
 useHead({
   title: 'Privacy and Policy',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/privacy-policy' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/privacy-policy` }
   ]
 })
 </script>

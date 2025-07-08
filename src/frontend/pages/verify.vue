@@ -14,6 +14,7 @@ interface VerificationResult {
   }
 }
 
+const pageDescription = ref('Verify your badges with Certo')
 const verificationResult = ref<VerificationResult | null>(null)
 const isVerifying = ref(false)
 const faqs = ref([
@@ -45,15 +46,15 @@ const faqs = ref([
 ])
 
 useSeoMeta({
-  description: 'Verify your badges with Certo',
-  ogDescription: 'Verify your badges with Certo',
-  ogUrl: 'https://certo.schroedinger-hat.org/verify'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/verify`
 })
 
 useHead({
   title: 'Verify your badge',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/verify' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/verify` }
   ]
 })
 

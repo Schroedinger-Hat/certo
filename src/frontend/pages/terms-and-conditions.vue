@@ -1,14 +1,16 @@
 <script setup lang="ts">
+const pageDescription = ref('Terms and conditions that apply whenever utilizing Certo')
+
 useSeoMeta({
-  description: 'Terms and conditions that apply whenever utilizing Certo',
-  ogDescription: 'Terms and conditions that apply whenever utilizing Certo',
-  ogUrl: 'https://certo.schroedinger-hat.org/terms-and-conditions'
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/terms-and-conditions`
 })
 
 useHead({
   title: 'Terms and Conditions',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/terms-and-conditions' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/terms-and-conditions` }
   ]
 })
 </script>
