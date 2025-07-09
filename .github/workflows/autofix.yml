@@ -1,0 +1,59 @@
+name: autofix.ci
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/frontend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/frontend/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - run: npm i -fg corepack && corepack enable
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+        cache-dependency-path: 'src/frontend/package-lock.json'
+    
+    - name: Install dependencies
+      run: |
+        cd src/frontend
+        npm install 
+    
+    - name: Lint & Format
+      run: |
+        cd src/frontend
+        # Get changed files for PR or push events
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          # For PRs, compare against the base branch
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- . | grep -E '\.(js|ts|vue)$' | sed 's|^src/frontend/||' | tr '\n' ' ')
+        else
+          # For pushes, compare against the previous commit
+          CHANGED_FILES=$(git diff --name-only HEAD~1 -- . | grep -E '\.(js|ts|vue)$' | sed 's|^src/frontend/||' | tr '\n' ' ')
+        fi
+        
+        if [ -n "$CHANGED_FILES" ]; then
+          echo "Linting changed files: $CHANGED_FILES"
+          npx eslint --fix $CHANGED_FILES
+        else
+          echo "No JavaScript/TypeScript/Vue files changed, skipping lint"
+        fi
+    
+    - uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
+      with:
+        commit-message: 'chore: lint & format'
