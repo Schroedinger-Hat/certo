@@ -75,7 +75,7 @@ jobs:
         
         # Commit the changes
         git add ../../CHANGELOG.md ../../src/frontend/package.json
-        git commit -m "chore: prepare frontend release"
+        git commit -m "chore:prepare frontend release"
         
         # Push the branch
         git push origin $BRANCH_NAME
