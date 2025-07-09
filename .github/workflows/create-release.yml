@@ -1,0 +1,40 @@
+name: Create Release
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'CHANGELOG.md'
+      - 'src/frontend/package.json'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # Only run if the push was from a release preparation PR
+    if: contains(github.event.head_commit.message, 'chore: prepare frontend release')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - run: npm i -fg corepack && corepack enable
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: pnpm
+    
+    - name: Install changelogen
+      run: |
+        cd src/frontend
+        pnpm install
+    
+    - name: Create release
+      run: |
+        cd src/frontend
+        pnpm run release:create
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

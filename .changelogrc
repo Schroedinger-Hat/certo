@@ -1,0 +1,37 @@
+{
+  "cwd": ".",
+  "types": {
+    "feat": { "title": "✨ New Features", "semver": "minor" },
+    "fix": { "title": "🐛 Bug Fixes", "semver": "patch" },
+    "ui": { "title": "🎨 UI/UX Improvements", "semver": "minor" },
+    "perf": { "title": "⚡ Performance Improvements", "semver": "patch" },
+    "refactor": { "title": "♻️ Code Refactoring", "semver": "patch" },
+    "test": { "title": "✅ Tests", "semver": "patch" },
+    "docs": { "title": "📖 Documentation", "semver": "patch" },
+    "style": { "title": "💄 Styles", "semver": "patch" },
+    "chore": { "title": "🔧 Maintenance", "semver": "patch" },
+    "build": { "title": "📦 Build System", "semver": "patch" },
+    "ci": { "title": "🤖 CI/CD", "semver": "patch" }
+  },
+  "scopeMap": {
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "ui": "User Interface",
+    "auth": "Authentication",
+    "badge": "Badge System",
+    "cert": "Certificate",
+    "api": "API"
+  },
+  "output": "CHANGELOG.md",
+  "repo": {
+    "provider": "github",
+    "domain": "github.com",
+    "repo": "Schroedinger-Hat/certo"
+  },
+  "excludeAuthors": ["renovate[bot]", "dependabot[bot]"],
+  "templates": {
+    "commitMessage": "chore(release): v{{newVersion}}",
+    "tagMessage": "Release v{{newVersion}}",
+    "tagBody": "{{changelog}}"
+  }
+}
