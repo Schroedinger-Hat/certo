@@ -27,18 +27,18 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 22
-        cache: pnpm
-        cache-dependency-path: 'src/frontend/pnpm-lock.yaml'
+        cache: npm
+        cache-dependency-path: 'src/frontend/package-lock.yaml'
     
     - name: Install dependencies
       run: |
         cd src/frontend
-        pnpm install
+        npm install 
     
     - name: Lint & Format
       run: |
         cd src/frontend
-        pnpm run lint:fix --ignore-pattern './github/*'
+        npm run lint:fix --ignore-pattern './github/*'
     
     - uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
       with:
@@ -66,7 +66,7 @@ jobs:
         
         # Generate changelog and prepare release
         cd src/frontend
-        pnpm run release:prepare
+        npm run release:prepare
         
         # Check if there are changes to commit
         if git diff --quiet; then
