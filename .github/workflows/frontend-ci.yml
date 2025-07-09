@@ -88,6 +88,7 @@ jobs:
           2. Merge this PR to trigger the release
           3. The release will be automatically created with a GitHub tag" \
           --base main \
-          --head $BRANCH_NAME
+          --head $BRANCH_NAME \
+          --merge
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
