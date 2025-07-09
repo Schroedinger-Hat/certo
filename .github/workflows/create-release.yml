@@ -24,17 +24,17 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 22
-        cache: pnpm
-        cache-dependency-path: 'src/frontend/pnpm-lock.yaml'
+        cache: npm
+        cache-dependency-path: 'src/frontend/package-lock.yaml'
     
     - name: Install changelogen
       run: |
         cd src/frontend
-        pnpm install
+        npm install
     
     - name: Create release
       run: |
         cd src/frontend
-        pnpm run release:create
+        npm run release:create
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
