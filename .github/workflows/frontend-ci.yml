@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   frontend:
@@ -28,7 +29,7 @@ jobs:
       with:
         node-version: 22
         cache: npm
-        cache-dependency-path: 'src/frontend/package-lock.yaml'
+        cache-dependency-path: 'src/frontend/package-lock.json'
     
     - name: Install dependencies
       run: |
@@ -38,7 +39,7 @@ jobs:
     - name: Lint & Format
       run: |
         cd src/frontend
-        npm run lint:fix --ignore-pattern './github/*'
+        npm run lint:fix --ignore-pattern './.github/*'
     
     - uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
       with:
@@ -51,7 +52,7 @@ jobs:
       run: |
         cd src/frontend
         # Check if there are any feat/fix/ui commits since last release
-        if git log --oneline --grep="feat\|fix\|ui" --since="1 week ago" -- ../frontend/ | head -10 | grep -q .; then
+        if git log --oneline --grep="feat\|fix\|ui" --since="1 week ago" -- ./ | head -10 | grep -q .; then
           echo "has-releaseable-changes=true" >> $GITHUB_OUTPUT
         else
           echo "has-releaseable-changes=false" >> $GITHUB_OUTPUT
