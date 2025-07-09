@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'CHANGELOG.md'
+      - 'src/frontend/CHANGELOG.md'
       - 'src/frontend/package.json'
 
 permissions:
