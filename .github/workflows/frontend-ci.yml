@@ -51,6 +51,7 @@ jobs:
         # Configure git user
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
+
         
         # Create a new branch for release preparation
         BRANCH_NAME="release/frontend-$(date +%Y%m%d-%H%M%S)"
