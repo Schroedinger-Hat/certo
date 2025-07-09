@@ -1,6 +1,155 @@
 # Changelog
 
 
+## v1.2.0
+
+
+### 🚀 Enhancements
+
+- First iteration ([1bea461](https://github.com/Schroedinger-Hat/certo/commit/1bea461))
+- **dashboard:** Credentials grid ([0b8c105](https://github.com/Schroedinger-Hat/certo/commit/0b8c105))
+- Starting up nuxt with unaui frontend ([7867516](https://github.com/Schroedinger-Hat/certo/commit/7867516))
+- Add issuer role ([07aa7d8](https://github.com/Schroedinger-Hat/certo/commit/07aa7d8))
+- Add csv import and bulk issue badge ([95831b7](https://github.com/Schroedinger-Hat/certo/commit/95831b7))
+- **ui:** Add ui based on some templates around the web ([67f2159](https://github.com/Schroedinger-Hat/certo/commit/67f2159))
+- Update copy ([be20b19](https://github.com/Schroedinger-Hat/certo/commit/be20b19))
+- Update cors and issue cert ([1c29ca1](https://github.com/Schroedinger-Hat/certo/commit/1c29ca1))
+- Email template and fix retrieving credentials ([b7f3c58](https://github.com/Schroedinger-Hat/certo/commit/b7f3c58))
+- Terms and privacy policy ([9111ea8](https://github.com/Schroedinger-Hat/certo/commit/9111ea8))
+- Add linkedin how-to guide ([a216454](https://github.com/Schroedinger-Hat/certo/commit/a216454))
+- Add netlify function for og:image ([5fa62e7](https://github.com/Schroedinger-Hat/certo/commit/5fa62e7))
+- **test:** Add unit and e2e test ([4fab0dc](https://github.com/Schroedinger-Hat/certo/commit/4fab0dc))
+- **tests:** Add more e2e simple tests ([07c06d4](https://github.com/Schroedinger-Hat/certo/commit/07c06d4))
+- **tests:** Add unit for middlewares and api ([c072b46](https://github.com/Schroedinger-Hat/certo/commit/c072b46))
+- Adding real logo and get started page ([24ffc39](https://github.com/Schroedinger-Hat/certo/commit/24ffc39))
+- Add gtag ([159156c](https://github.com/Schroedinger-Hat/certo/commit/159156c))
+- Add recipient in credential page ([44a28ad](https://github.com/Schroedinger-Hat/certo/commit/44a28ad))
+- Add linkedin link to quick add cert ([0cdd2c3](https://github.com/Schroedinger-Hat/certo/commit/0cdd2c3))
+- **components:** Create components to hold svgs illustrations ([1633de9](https://github.com/Schroedinger-Hat/certo/commit/1633de9))
+- **components/dashboard:** Create schema for dashboard sections ([7bda385](https://github.com/Schroedinger-Hat/certo/commit/7bda385))
+- **components/dashboard:** Create DashboardSection component ([6da683f](https://github.com/Schroedinger-Hat/certo/commit/6da683f))
+- **composables/useDashboardSections:** Implement composable to get dashboard data ([d8595f2](https://github.com/Schroedinger-Hat/certo/commit/d8595f2))
+- **components/DashboardCardFeature:** Implement and utilize dashboard card feature ([4d5739c](https://github.com/Schroedinger-Hat/certo/commit/4d5739c))
+- Add expirationDate on issuance badge ([9eb2707](https://github.com/Schroedinger-Hat/certo/commit/9eb2707))
+- Multi-tenant admin account ([264e05d](https://github.com/Schroedinger-Hat/certo/commit/264e05d))
+
+### 🩹 Fixes
+
+- Add status published filter ([0475eec](https://github.com/Schroedinger-Hat/certo/commit/0475eec))
+- Env apiUrl ([7cb43c9](https://github.com/Schroedinger-Hat/certo/commit/7cb43c9))
+- Doc and verification links ([99b310f](https://github.com/Schroedinger-Hat/certo/commit/99b310f))
+- Add toast and fix verification link ([56c96bb](https://github.com/Schroedinger-Hat/certo/commit/56c96bb))
+- Unset darkmode ([c33bba3](https://github.com/Schroedinger-Hat/certo/commit/c33bba3))
+- Verification on json file ([3dcfda0](https://github.com/Schroedinger-Hat/certo/commit/3dcfda0))
+- **seo:** Og:image default ([658b27b](https://github.com/Schroedinger-Hat/certo/commit/658b27b))
+- Certificate preview ([596251d](https://github.com/Schroedinger-Hat/certo/commit/596251d))
+- Netlify and certs img ([a04a2dc](https://github.com/Schroedinger-Hat/certo/commit/a04a2dc))
+- Certificate images ([4dc73eb](https://github.com/Schroedinger-Hat/certo/commit/4dc73eb))
+- Issues cert image ([f3c82cc](https://github.com/Schroedinger-Hat/certo/commit/f3c82cc))
+- Osday.dev link ([8cbb9a6](https://github.com/Schroedinger-Hat/certo/commit/8cbb9a6))
+- Updating spacing in svg ([7bd5252](https://github.com/Schroedinger-Hat/certo/commit/7bd5252))
+- Certificate json compatible issues ([a6bd96f](https://github.com/Schroedinger-Hat/certo/commit/a6bd96f))
+- **frontend/plugins/api-client:** Add proper path to file ([b0da56e](https://github.com/Schroedinger-Hat/certo/commit/b0da56e))
+- **frontend/pages/login:** Deactivate registration ([68d6990](https://github.com/Schroedinger-Hat/certo/commit/68d6990))
+- Issue link in open badge 3.0 standard ([4a75d21](https://github.com/Schroedinger-Hat/certo/commit/4a75d21))
+- ApiClient getting the right profile.id from /me ([1353b7f](https://github.com/Schroedinger-Hat/certo/commit/1353b7f))
+- Issued credential ([d4dddcf](https://github.com/Schroedinger-Hat/certo/commit/d4dddcf))
+- Minor fixis ([531dfb7](https://github.com/Schroedinger-Hat/certo/commit/531dfb7))
+- **login.vue:** Fix form positioning ([d5527aa](https://github.com/Schroedinger-Hat/certo/commit/d5527aa))
+- **uno-config:** Change color based on accessibility checks ([9ee0c07](https://github.com/Schroedinger-Hat/certo/commit/9ee0c07))
+- **about/index:** Change color for accessibility check ([4b9d15e](https://github.com/Schroedinger-Hat/certo/commit/4b9d15e))
+- **pages/verify:** Add lang attribute to html tag ([875fbe3](https://github.com/Schroedinger-Hat/certo/commit/875fbe3))
+- **default/badgeVerifier:** Change ui color for accessibility check ([a5ba3a7](https://github.com/Schroedinger-Hat/certo/commit/a5ba3a7))
+- **default.vue:** Add name to mobile menu button ([c85a89e](https://github.com/Schroedinger-Hat/certo/commit/c85a89e))
+- **create-release.yml:** Address syntax ([7bf58a6](https://github.com/Schroedinger-Hat/certo/commit/7bf58a6))
+- **workflow:** Address yml ([ad03243](https://github.com/Schroedinger-Hat/certo/commit/ad03243))
+- **workflow:** Address pipeline ([7aba915](https://github.com/Schroedinger-Hat/certo/commit/7aba915))
+- **workflow:** Address pipeline ([1bd6823](https://github.com/Schroedinger-Hat/certo/commit/1bd6823))
+
+### 💅 Refactors
+
+- **composables/useApiClient:** Utilize default export ([70d177d](https://github.com/Schroedinger-Hat/certo/commit/70d177d))
+- **assets/svg:** Create specific files for the home page ([4247233](https://github.com/Schroedinger-Hat/certo/commit/4247233))
+- **pages/index:** Implement svg components ([30bbd0a](https://github.com/Schroedinger-Hat/certo/commit/30bbd0a))
+- **pages/index:** Implement initial refactoring ([060b24c](https://github.com/Schroedinger-Hat/certo/commit/060b24c))
+- **components/Dashboard:** Integrate styles and illustrations into component ([7f9d761](https://github.com/Schroedinger-Hat/certo/commit/7f9d761))
+- **pages/index:** Remove boilerplate with component ([293a160](https://github.com/Schroedinger-Hat/certo/commit/293a160))
+- **dashboard/schemas:** Add proper naming to types ([001c6f8](https://github.com/Schroedinger-Hat/certo/commit/001c6f8))
+- **pages/index:** Implement DashboardTrustees ([f4080a7](https://github.com/Schroedinger-Hat/certo/commit/f4080a7))
+- Address SEO and Meta ([f34b182](https://github.com/Schroedinger-Hat/certo/commit/f34b182))
+- Implement BaseIcon component ([3efb8ee](https://github.com/Schroedinger-Hat/certo/commit/3efb8ee))
+- Rename components, implement proper icons ([05745d4](https://github.com/Schroedinger-Hat/certo/commit/05745d4))
+- Address SEO and Meta ([7412c34](https://github.com/Schroedinger-Hat/certo/commit/7412c34))
+- Further address SEO and Meta ([e704476](https://github.com/Schroedinger-Hat/certo/commit/e704476))
+- **app.vue:** Add unnecesary space ([b508aed](https://github.com/Schroedinger-Hat/certo/commit/b508aed))
+- **app.vue:** Remove unnecesary space ([ffae7da](https://github.com/Schroedinger-Hat/certo/commit/ffae7da))
+
+### 🏡 Chore
+
+- **env:** Update example ([6a92796](https://github.com/Schroedinger-Hat/certo/commit/6a92796))
+- Doc for shared directory ([a702dfe](https://github.com/Schroedinger-Hat/certo/commit/a702dfe))
+- Update localhost CORS ([0e7a685](https://github.com/Schroedinger-Hat/certo/commit/0e7a685))
+- Remove nuxt from root ([d049028](https://github.com/Schroedinger-Hat/certo/commit/d049028))
+- **breaking:** Remove next frontend ([cc58ddc](https://github.com/Schroedinger-Hat/certo/commit/cc58ddc))
+- **breaking:** Removed unused shared folder ([7992424](https://github.com/Schroedinger-Hat/certo/commit/7992424))
+- Move frontend-una to frontend ([ad687df](https://github.com/Schroedinger-Hat/certo/commit/ad687df))
+- Env ([613ba2b](https://github.com/Schroedinger-Hat/certo/commit/613ba2b))
+- Add CORS support ([449b936](https://github.com/Schroedinger-Hat/certo/commit/449b936))
+- Update backend route ([38c71df](https://github.com/Schroedinger-Hat/certo/commit/38c71df))
+- Add static url in api frontend ([ec8941f](https://github.com/Schroedinger-Hat/certo/commit/ec8941f))
+- Cleaning log ([3c0c116](https://github.com/Schroedinger-Hat/certo/commit/3c0c116))
+- Cleaning logs ([adf33fc](https://github.com/Schroedinger-Hat/certo/commit/adf33fc))
+- Update docker to node20 ([fcda3af](https://github.com/Schroedinger-Hat/certo/commit/fcda3af))
+- Lint whole FE project ([d57d29d](https://github.com/Schroedinger-Hat/certo/commit/d57d29d))
+- Lint fix ([cf19190](https://github.com/Schroedinger-Hat/certo/commit/cf19190))
+- **app.vue:** Delete unnecesary imports ([a22d760](https://github.com/Schroedinger-Hat/certo/commit/a22d760))
+- **pages/issue:** Address build fails ([faa9bce](https://github.com/Schroedinger-Hat/certo/commit/faa9bce))
+- Add prod domain in cors for strapi ([67d10ca](https://github.com/Schroedinger-Hat/certo/commit/67d10ca))
+- **nuxt.config:** Implement svgo configuration ([5ef705d](https://github.com/Schroedinger-Hat/certo/commit/5ef705d))
+- Install nuxt icon package ([1d74dbb](https://github.com/Schroedinger-Hat/certo/commit/1d74dbb))
+- Rebase ([190c3ed](https://github.com/Schroedinger-Hat/certo/commit/190c3ed))
+- **github:** Add templates ([8db3a98](https://github.com/Schroedinger-Hat/certo/commit/8db3a98))
+- Address proper code owners ([376670f](https://github.com/Schroedinger-Hat/certo/commit/376670f))
+- **login.vue:** Fix login color ([96e08f4](https://github.com/Schroedinger-Hat/certo/commit/96e08f4))
+- **footer/header:** Fix accessibility colors ([5ba5908](https://github.com/Schroedinger-Hat/certo/commit/5ba5908))
+- **config, head:** Centralize lang attribute in nuxt config file ([97dfacd](https://github.com/Schroedinger-Hat/certo/commit/97dfacd))
+- **badgeVerifier.vue:** Change button text color for accessibility ([51eed3d](https://github.com/Schroedinger-Hat/certo/commit/51eed3d))
+- **CertificateCard, dashboard, forgot-password:** Update colors ([4d499c2](https://github.com/Schroedinger-Hat/certo/commit/4d499c2))
+- Remove useless page ([6d500ee](https://github.com/Schroedinger-Hat/certo/commit/6d500ee))
+- Add ci/cd ([f576bec](https://github.com/Schroedinger-Hat/certo/commit/f576bec))
+- Modify ci/cd ([08ad90c](https://github.com/Schroedinger-Hat/certo/commit/08ad90c))
+- Modify ci/cd ([bbcf198](https://github.com/Schroedinger-Hat/certo/commit/bbcf198))
+- Address piepline ([a322ba1](https://github.com/Schroedinger-Hat/certo/commit/a322ba1))
+- Address piepline ([36caf03](https://github.com/Schroedinger-Hat/certo/commit/36caf03))
+- Pipelines ([a0ef525](https://github.com/Schroedinger-Hat/certo/commit/a0ef525))
+- **ci:** Address pipeline ([8a4475f](https://github.com/Schroedinger-Hat/certo/commit/8a4475f))
+- **ci:** Address pipeline ([e7afc3a](https://github.com/Schroedinger-Hat/certo/commit/e7afc3a))
+- **ci:** Address pipeline ([31de879](https://github.com/Schroedinger-Hat/certo/commit/31de879))
+- **ci:** Address pipeline ([bd9de21](https://github.com/Schroedinger-Hat/certo/commit/bd9de21))
+- **ci:** Address pipeline ([570c157](https://github.com/Schroedinger-Hat/certo/commit/570c157))
+- **ci:** Address pipeline ([60c1e7a](https://github.com/Schroedinger-Hat/certo/commit/60c1e7a))
+- Lint & format ([6b61336](https://github.com/Schroedinger-Hat/certo/commit/6b61336))
+- **ci:** Revert auto merge ([4797384](https://github.com/Schroedinger-Hat/certo/commit/4797384))
+
+### ✅ Tests
+
+- **e2e:** Add extra line ([b5f62ad](https://github.com/Schroedinger-Hat/certo/commit/b5f62ad))
+
+### 🎨 Styles
+
+- **pages/index:** Address card styles ([d9318ae](https://github.com/Schroedinger-Hat/certo/commit/d9318ae))
+- **index.vue:** Manage mobile style of trusted by section ([c69f803](https://github.com/Schroedinger-Hat/certo/commit/c69f803))
+- **default.vue:** Restore main margin bottom after remove margin top from footer ([bd13502](https://github.com/Schroedinger-Hat/certo/commit/bd13502))
+- **about.vue:** Change colors and layout for support cards in about page ([2690416](https://github.com/Schroedinger-Hat/certo/commit/2690416))
+- **forgot-password.vue:** Change form positioning matching login one ([1974b58](https://github.com/Schroedinger-Hat/certo/commit/1974b58))
+- **HomeSection:** Fix title color in homepage sections ([eebd166](https://github.com/Schroedinger-Hat/certo/commit/eebd166))
+
+### ❤️ Contributors
+
+- Patrick Raedler <patrick.raedler@schroedinger-hat.org>
+- Miki Lombardi ([@TheJoin95](https://github.com/TheJoin95))
+- Marco <marco.giuliotti@gmail.com>
+
 ## v1.1.0
 
 
