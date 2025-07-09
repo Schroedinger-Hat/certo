@@ -77,8 +77,14 @@ jobs:
         # Push the branch
         git push origin $BRANCH_NAME
         
+        # Check if a release PR already exists
+        if gh pr list --state open --head $BRANCH_NAME --json number | grep -q "number"; then
+          echo "Release PR already exists for this branch, skipping creation"
+          exit 0
+        fi
+        
         # Create PR using GitHub CLI
-        PR_URL=$(gh pr create \
+        gh pr create \
           --title "v${NEW_VERSION} Update CHANGELOG and Version" \
           --body "This PR prepares a new frontend release based on recent changes.
           
@@ -91,6 +97,6 @@ jobs:
           2. Merge this PR to trigger the release
           3. The release will be automatically created with a GitHub tag" \
           --base main \
-          --head $BRANCH_NAME)
+          --head $BRANCH_NAME
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
