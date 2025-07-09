@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const pageDescription = ref('Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.')
+
 const pageTitle = ref('Certo - Digital Credential Platform')
 
 useHead({
