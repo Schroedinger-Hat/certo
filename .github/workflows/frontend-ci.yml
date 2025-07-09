@@ -48,6 +48,10 @@ jobs:
     - name: Create release preparation PR
       if: steps.check-changes.outputs.has-releaseable-changes == 'true'
       run: |
+        # Configure git user
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
         # Create a new branch for release preparation
         BRANCH_NAME="release/frontend-$(date +%Y%m%d-%H%M%S)"
         git checkout -b $BRANCH_NAME
