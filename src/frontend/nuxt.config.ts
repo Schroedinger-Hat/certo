@@ -85,7 +85,7 @@ export default defineNuxtConfig({
     }
   },
   imports: {
-    dirs: ['stores'],
+    dirs: ['stores', 'constants'],
   },
   css: [
     '~/assets/css/main.css',

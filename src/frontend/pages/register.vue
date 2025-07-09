@@ -1,27 +1,6 @@
 <script setup lang="ts">
-import { useHead } from '#imports'
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-
 definePageMeta({
-  title: 'Register - Certo',
   middleware: ['route-guard']
-})
-
-useHead({
-  title: 'Register | Certo',
-  meta: [
-    { name: 'description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
-    { name: 'og:title', property: 'og:title', content: 'Register | Certo' },
-    { name: 'og:description', property: 'og:description', content: 'Create a Certo account to issue, manage, and verify digital credentials.' },
-    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/register' }
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/register' }
-  ]
 })
 
 // Don't import useAuthStore directly
@@ -36,6 +15,7 @@ const validationError = ref('')
 const authStore = ref(null)
 const isStoreReady = ref(false)
 const isLoading = ref(false)
+const pageDescription = ref('Create a Certo account to issue, manage, and verify digital credentials.')
 
 onMounted(() => {
   // Safely initialize auth store with a delay
@@ -101,6 +81,19 @@ async function handleSubmit() {
     }
   }
 }
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/register`
+})
+
+useHead({
+  title: 'Register',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/register` }
+  ]
+})
 </script>
 
 <template>

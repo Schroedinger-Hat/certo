@@ -1,3 +1,20 @@
+<script setup lang="ts">
+const pageDescription = ref('Terms and conditions that apply whenever utilizing Certo')
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/terms-and-conditions`
+})
+
+useHead({
+  title: 'Terms and Conditions',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/terms-and-conditions` }
+  ]
+})
+</script>
+
 <template>
   <div class="min-h-screen py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

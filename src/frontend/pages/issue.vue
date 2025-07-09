@@ -1,5 +1,20 @@
 <script setup lang="ts">
-import type { Recipient } from '../composables/useApiClient'
+import type { Recipient } from '~/composables/useApiClient'
+
+const pageDescription = ref('Issue badges utilizing Certo software')
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/issue`
+})
+
+useHead({
+  title: 'Issue Badges',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/issue` }
+  ]
+})
 
 definePageMeta({
   middleware: ['auth']
@@ -313,6 +328,8 @@ function formatDate(date: string) {
     day: 'numeric'
   })
 }
+
+console.log('what')
 </script>
 
 <template>

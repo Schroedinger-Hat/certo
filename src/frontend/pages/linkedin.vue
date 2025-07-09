@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { useHead } from '#imports'
+const pageDescription = ref('Step-by-step guide to adding your Certo certificate to your LinkedIn profile')
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/linkedin`
+})
 
 useHead({
-  title: 'LinkedIn Guide | Certo',
-  meta: [
-    { name: 'description', content: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.' },
-    { name: 'og:title', property: 'og:title', content: 'LinkedIn Guide | Certo' },
-    { name: 'og:description', property: 'og:description', content: 'Step-by-step guide to adding your Certo certificate to your LinkedIn profile.' },
-    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/linkedin' }
-  ],
+  title: 'LinkedIn Guide',
   link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/linkedin' }
+    { rel: 'canonical', href: `${WEBSITE_URL}/linkedin` }
   ]
 })
-// No additional logic needed for this static instructional page
 </script>
 
 <template>

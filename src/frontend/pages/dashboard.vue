@@ -1,25 +1,5 @@
 <script setup lang="ts">
-import { useHead } from '#imports'
-import { onMounted, ref } from 'vue'
 import { apiClient } from '~/api/api-client'
-import CertificateCard from '~/components/CertificateCard.vue'
-import { useAuthStore } from '~/stores/auth'
-
-useHead({
-  title: 'Dashboard | Certo',
-  meta: [
-    { name: 'description', content: 'Your Certo dashboard: manage your issued and received digital credentials.' },
-    { name: 'og:title', property: 'og:title', content: 'Dashboard | Certo' },
-    { name: 'og:description', property: 'og:description', content: 'Your Certo dashboard: manage your issued and received digital credentials.' },
-    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/dashboard' }
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/dashboard' }
-  ]
-})
 
 definePageMeta({
   middleware: ['auth']
@@ -46,6 +26,7 @@ interface Certificate {
 const authStore = useAuthStore()
 const loading = ref(false)
 const error = ref<string | null>(null)
+const pageDescription = ref('Your Certo dashboard: manage your issued and received digital credentials')
 
 const receivedCertificates = ref<Certificate[]>([])
 const issuedCertificates = ref<Certificate[]>([])
@@ -64,8 +45,22 @@ function getLinkedInAddToProfileUrl(cert: Certificate) {
   return `https://www.linkedin.com/profile/add?${params.toString()}`
 }
 
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value
+})
+
+useHead({
+  title: 'Dashboard',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/dashboard` }
+  ]
+})
+
 onMounted(async () => {
-  if (!authStore.isAuthenticated) { return }
+  if (!authStore.isAuthenticated) {
+    return
+  }
 
   loading.value = true
   error.value = null
@@ -141,7 +136,7 @@ onMounted(async () => {
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium mt-2"
                 aria-label="Add this certificate to your LinkedIn profile"
               >
-                <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
+                <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
                 Add to LinkedIn
               </a>
             </template>
@@ -194,7 +189,7 @@ onMounted(async () => {
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium mt-2"
                 aria-label="Add this certificate to your LinkedIn profile"
               >
-                <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
+                <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
                 Add to LinkedIn
               </a>
             </template>

@@ -1,21 +1,5 @@
 <script setup lang="ts">
-import { useHead } from '#imports'
-
-useHead({
-  title: 'About | Certo',
-  meta: [
-    { name: 'description', content: 'Learn about Certo, our mission, and our open-source community.' },
-    { name: 'og:title', property: 'og:title', content: 'About | Certo' },
-    { name: 'og:description', property: 'og:description', content: 'Learn about Certo, our mission, and our open-source community.' },
-    { name: 'og:image', property: 'og:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:image', content: 'https://certo.schroedinger-hat.org/og-default.png' },
-    { property: 'og:url', content: 'https://certo.schroedinger-hat.org/about' }
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://certo.schroedinger-hat.org/about' }
-  ]
-})
+const pageDescription = ref('Learn about Certo, our mission, and our open-source community.')
 
 function handleSupportClick() {
   const subject = encodeURIComponent('Interested in Supporting Certo')
@@ -27,6 +11,19 @@ function handleSupportClick() {
   )
   window.location.href = `mailto:hello@schroedinger-hat.org?subject=${subject}&body=${body}`
 }
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogUrl: `${WEBSITE_URL}/about`
+})
+
+useHead({
+  title: 'About',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/about` }
+  ]
+})
 </script>
 
 <template>

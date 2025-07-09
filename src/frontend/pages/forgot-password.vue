@@ -1,22 +1,11 @@
 <script setup lang="ts">
-import { useHead, useRuntimeConfig } from '#imports'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
 const email = ref('')
 const isLoading = ref(false)
 const success = ref(false)
 const error = ref('')
-const router = useRouter()
 const config = useRuntimeConfig()
 const apiUrl = config.public.apiUrl
-
-useHead({
-  title: 'Forgot Password | Certo',
-  meta: [
-    { name: 'description', content: 'Reset your Certo account password.' }
-  ]
-})
+const pageDescription = ref('Reset your Certo account password')
 
 async function handleSubmit() {
   error.value = ''
@@ -41,6 +30,18 @@ async function handleSubmit() {
     isLoading.value = false
   }
 }
+
+useHead({
+  title: 'Forgot Password',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/forgot-password` }
+  ]
+})
+
+useSeoMeta({
+  ogDescription: pageDescription.value,
+  description: pageDescription.value,
+})
 </script>
 
 <template>

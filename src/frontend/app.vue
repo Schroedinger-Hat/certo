@@ -1,17 +1,20 @@
 <script setup lang="ts">
+const pageDescription = ref('Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.')
+const pageTitle = ref('Certo - Digital Credential Platform')
+
 useHead({
-  title: 'Certo - Digital Credential Platform',
+  title: 'Digital Credential Platform',
   titleTemplate: '%s | Certo',
 })
 
 useSeoMeta({
-  description: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.',
-  ogTitle: 'Certo - Digital Credential Platform',
-  ogDescription: 'Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.',
-  ogImage: 'https://certo.schroedinger-hat.org/og-default.png',
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+  ogImage: `${WEBSITE_URL}/og-default.png`,
+  ogTitle: pageTitle.value,
+  ogUrl: WEBSITE_URL,
   twitterCard: 'summary_large_image',
-  twitterImage: 'https://certo.schroedinger-hat.org/og-default.png',
-  url: 'https://certo.schroedinger-hat.org/'
+  twitterImage: `${WEBSITE_URL}/og-default.png`,
 })
 </script>
 

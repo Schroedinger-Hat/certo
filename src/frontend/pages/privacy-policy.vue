@@ -1,3 +1,19 @@
+<script setup lang="ts">
+const pageDescription = ref('Read everything regarding the Certo privacy and policy')
+
+useSeoMeta({
+  description: pageDescription.value,
+  ogDescription: pageDescription.value,
+})
+
+useHead({
+  title: 'Privacy and Policy',
+  link: [
+    { rel: 'canonical', href: `${WEBSITE_URL}/privacy-policy` }
+  ]
+})
+</script>
+
 <template>
   <div class="min-h-screen py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
