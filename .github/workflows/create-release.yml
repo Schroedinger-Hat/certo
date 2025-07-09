@@ -25,6 +25,7 @@ jobs:
       with:
         node-version: 22
         cache: pnpm
+        cache-dependency-path: 'src/frontend/pnpm-lock.yaml'
     
     - name: Install changelogen
       run: |
