@@ -67,6 +67,9 @@ jobs:
           exit 0
         fi
         
+        # Get the new version from package.json
+        NEW_VERSION=$(node -p "require('./package.json').version")
+        
         # Commit the changes
         git add CHANGELOG.md package.json
         git commit -m "chore:prepare frontend release"
@@ -75,19 +78,19 @@ jobs:
         git push origin $BRANCH_NAME
         
         # Create PR using GitHub CLI
-        gh pr create \
-          --title "🚀 Frontend Release Preparation" \
+        PR_URL=$(gh pr create \
+          --title "v${NEW_VERSION} Update CHANGELOG and Version" \
           --body "This PR prepares a new frontend release based on recent changes.
           
           ## Changes Included
           - Updated CHANGELOG.md with recent frontend changes
-          - Bumped version in frontend package.json
+          - Bumped version in frontend package.json to v${NEW_VERSION}
           
           ## Next Steps
           1. Review the changelog
           2. Merge this PR to trigger the release
           3. The release will be automatically created with a GitHub tag" \
           --base main \
-          --head $BRANCH_NAME
+          --head $BRANCH_NAME)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
