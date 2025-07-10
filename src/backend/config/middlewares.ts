@@ -17,23 +17,32 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      origin: [
-        'http://localhost:3000',
-        'http://[::1]:3000',
-        'http://localhost:3001',
-        'http://localhost:3002', 
-        'http://localhost:3003',
-        'http://localhost:3004',
-        'http://localhost:3005',
-        'http://localhost:1337',
-        'http://127.0.0.1:3000',
-        'http://127.0.0.1:3001',
-        'http://localhost:1337',
-        'https://bold-approval-5bde4fbd5d.strapiapp.com',
-        'https://certo.netlify.app',
-        'https://certo.schroedinger-hat.org',
-        'https://certo-strapi.schroedinger-hat.org',
-      ],
+      origin: (ctx) => {
+        const origin = ctx.request.header.origin
+        if (
+          origin &&
+          (
+            origin === 'http://localhost:3000' ||
+            origin === 'http://[::1]:3000' ||
+            origin === 'http://localhost:3001' ||
+            origin === 'http://localhost:3002' ||
+            origin === 'http://localhost:3003' ||
+            origin === 'http://localhost:3004' ||
+            origin === 'http://localhost:3005' ||
+            origin === 'http://localhost:1337' ||
+            origin === 'http://127.0.0.1:3000' ||
+            origin === 'http://127.0.0.1:3001' ||
+            origin === 'https://bold-approval-5bde4fbd5d.strapiapp.com' ||
+            origin === 'https://certo.netlify.app' ||
+            origin === 'https://certo.schroedinger-hat.org' ||
+            origin === 'https://certo-strapi.schroedinger-hat.org' ||
+            /^https:\/\/deploy-preview-\d+--certo\.netlify\.app$/.test(origin)
+          )
+        ) {
+          return origin
+        }
+        return false
+      },
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
       keepHeaderOnError: true,
