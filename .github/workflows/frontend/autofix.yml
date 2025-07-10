@@ -1,0 +1,42 @@
+name: autofix.ci
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/frontend/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - run: npm i -fg corepack && corepack enable
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+        cache-dependency-path: 'src/frontend/package-lock.json'
+    
+    - name: Install dependencies
+      run: |
+        cd src/frontend
+        npm install 
+    
+    - name: Lint & Format
+      run: |
+        cd src/frontend
+        npm run lint:fix
+    
+    - uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
+      with:
+        commit-message: 'chore: autofix'
