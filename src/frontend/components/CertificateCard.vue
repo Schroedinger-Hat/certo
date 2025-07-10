@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useRuntimeConfig } from '#app'
-import { computed, ref } from 'vue'
 import { apiClient } from '~/api/api-client'
-import { useSimpleToast } from '~/composables/useSimpleToast'
 
 defineOptions({
   name: 'CertificateCard'
@@ -22,8 +19,6 @@ const props = defineProps({
 const emit = defineEmits(['export', 'revoke', 'view', 'download'])
 
 const isMenuOpen = ref(false)
-const isRevoking = ref(false)
-const revocationReason = ref('')
 const isExporting = ref(false)
 
 // Extract properties from the certificate with fallbacks for different data structures
@@ -35,9 +30,6 @@ const {
   recipient,
   issuanceDate,
   issuedOn,
-  expirationDate,
-  expires,
-  revoked,
   image,
   description
 } = props.certificate
@@ -47,11 +39,12 @@ const achievementName = achievement?.name || props.certificate.name || 'Unknown 
 const achievementDescription = description || achievement?.description || props.certificate.description || 'No description available'
 const issuerName = issuer?.name || props.certificate.issuerName || 'Unknown Issuer'
 const formattedIssuanceDate = formatDate(issuanceDate || issuedOn)
-const formattedExpirationDate = expirationDate || expires ? formatDate(expirationDate || expires) : 'No expiration'
 
 // Helper function to format dates
 function formatDate(dateString: string) {
-  if (!dateString) { return 'Unknown' }
+  if (!dateString) {
+    return 'Unknown'
+  }
 
   try {
     const date = new Date(dateString)
@@ -107,7 +100,7 @@ async function handleExport() {
   try {
     const exportResponse = await apiClient.exportCertificate(id)
     const exportData = exportResponse?.data
-    if (process.client && exportData) {
+    if (import.meta.client && exportData) {
       // Create a download link for the exported credential data only
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
@@ -129,6 +122,7 @@ async function handleExport() {
   }
 }
 
+/*
 async function handleRevoke() {
   if (!revocationReason.value.trim()) { return }
 
@@ -145,27 +139,32 @@ async function handleRevoke() {
     revocationReason.value = ''
   }
 }
+*/
 
 function getCredentialUrl() {
   // Use the browser's window.location to get the base URL
-  const baseUrl = process.client
+  const baseUrl = import.meta.client
     ? `${window.location.protocol}//${window.location.host}`
     : ''
   return `${baseUrl}/credentials/${encodeURIComponent(credentialId || id)}`
 }
 
+/*
 function getVerificationUrl() {
   // Use the browser's window.location to get the base URL
-  const baseUrl = process.client
+  const baseUrl = import.meta.client
     ? `${window.location.protocol}//${window.location.host}`
     : ''
   return `${baseUrl}/verify?id=${encodeURIComponent(credentialId || id)}`
 }
+*/
 
 const toast = useSimpleToast()
 
 function copyToClipboard() {
-  if (!process.client) { return }
+  if (!import.meta.client) {
+    return
+  }
   try {
     const fullUrl = `${window.location.origin}/credentials/${encodeURIComponent(credentialId || id)}`
     navigator.clipboard.writeText(fullUrl)
@@ -179,7 +178,9 @@ function copyToClipboard() {
 }
 
 async function handleDownload() {
-  if (!process.client || !badgeImageUrl.value) { return }
+  if (!import.meta.client || !badgeImageUrl.value) {
+    return
+  }
 
   try {
     const a = document.createElement('a')
@@ -193,7 +194,6 @@ async function handleDownload() {
   }
   catch (error) {
     console.error('Error downloading certificate image:', error)
-    alert('Failed to download image.')
   }
 }
 
@@ -215,7 +215,7 @@ function getLinkedInAddToProfileUrl() {
     issueYear: issueDateValue ? new Date(issueDateValue).getFullYear().toString() : '',
     issueMonth: issueDateValue ? (new Date(issueDateValue).getMonth() + 1).toString() : '',
     certId: certIdValue,
-    certUrl: process.client ? `${window.location.origin}/credentials/${certIdValue}` : ''
+    certUrl: import.meta.client ? `${window.location.origin}/credentials/${certIdValue}` : ''
   })
   return `https://www.linkedin.com/profile/add?${params.toString()}`
 }
@@ -278,7 +278,7 @@ function getLinkedInAddToProfileUrl() {
               class="block w-full text-left px-4 py-2 text-sm text-[#0077b5] hover:bg-[#eaf4fb] font-medium"
               aria-label="Add this certificate to your LinkedIn profile"
             >
-              <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="inline h-4 w-auto mr-2 align-middle" />
+              <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="inline h-4 w-auto mr-2 align-middle">
               Add to LinkedIn
             </a>
             <a

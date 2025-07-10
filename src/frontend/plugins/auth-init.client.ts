@@ -10,7 +10,9 @@ export default defineNuxtPlugin({
 
     // Function to safely initialize auth
     const initAuth = async () => {
-      if (authInitialized) { return }
+      if (authInitialized) {
+        return
+      }
 
       try {
         const authStore = useAuthStore()

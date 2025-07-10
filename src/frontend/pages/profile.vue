@@ -115,17 +115,14 @@ async function handleSubmit() {
 
 function handleChangePassword() {
   // TODO: Implement password change flow
-  console.log('Change password clicked')
 }
 
 function handleExportData() {
   // TODO: Implement data export
-  console.log('Export data clicked')
 }
 
 function handleDeleteAccount() {
   // TODO: Implement account deletion
-  console.log('Delete account clicked')
 }
 
 function formatDate(date: string) {

@@ -1,22 +1,5 @@
 <script setup lang="ts">
-interface VerificationResult {
-  verified: boolean
-  error?: string
-  details?: {
-    issuer: string
-    issuedOn: string
-    recipient: string
-    badgeClass: {
-      name: string
-      description: string
-      image: string
-    }
-  }
-}
-
 const pageDescription = ref('Verify your badges with Certo')
-const verificationResult = ref<VerificationResult | null>(null)
-const isVerifying = ref(false)
 const faqs = ref([
   {
     question: 'How does certificate verification work?',
@@ -57,47 +40,6 @@ useHead({
     { rel: 'canonical', href: `${WEBSITE_URL}/verify` }
   ]
 })
-
-async function handleVerify() {
-  isVerifying.value = true
-  verificationResult.value = null
-
-  try {
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    verificationResult.value = {
-      verified: true,
-      details: {
-        issuer: 'Schroedinger Hat',
-        issuedOn: '2024-03-15',
-        recipient: 'john.doe@example.com',
-        badgeClass: {
-          name: 'Web Development Master',
-          description: 'Advanced certification in web development',
-          image: '/badges/web-dev-master.png'
-        }
-      }
-    }
-  }
-  catch (error) {
-    verificationResult.value = {
-      verified: false,
-      error: 'Failed to verify badge'
-    }
-  }
-  finally {
-    isVerifying.value = false
-  }
-}
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
-}
 </script>
 
 <template>

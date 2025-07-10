@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 interface Certificate {
   id: string
   title: string
@@ -14,74 +12,17 @@ interface Certificate {
   }
 }
 
-const fileInput = ref<HTMLInputElement | null>(null)
 const jsonInput = ref('')
-const isDragging = ref(false)
 const isLoading = ref(false)
 const importedCertificate = ref<Certificate | null>(null)
-
-function handleDragOver(e: DragEvent) {
-  e.preventDefault()
-  isDragging.value = true
-}
-
-function handleDragLeave(e: DragEvent) {
-  e.preventDefault()
-  isDragging.value = false
-}
-
-async function handleDrop(e: DragEvent) {
-  e.preventDefault()
-  isDragging.value = false
-
-  if (!e.dataTransfer?.files.length) { return }
-
-  const file = e.dataTransfer.files[0]
-  await handleFileUpload(file)
-}
-
-async function handleFileSelect(e: Event) {
-  const target = e.target as HTMLInputElement
-  if (!target.files?.length) { return }
-
-  await handleFileUpload(target.files[0])
-}
-
-async function handleFileUpload(file: File) {
-  if (file.type !== 'application/json') {
-    alert('Please upload a JSON file')
-    return
-  }
-
-  isLoading.value = true
-  try {
-    const text = await file.text()
-    const json = JSON.parse(text)
-    importedCertificate.value = json
-  }
-  catch (error) {
-    alert('Invalid JSON file')
-    importedCertificate.value = null
-  }
-  isLoading.value = false
-}
 
 function handleJsonPaste() {
   try {
     const json = JSON.parse(jsonInput.value)
     importedCertificate.value = json
   }
-  catch (error) {
-    alert('Invalid JSON format')
+  catch {
     importedCertificate.value = null
-  }
-}
-
-function clearImport() {
-  importedCertificate.value = null
-  jsonInput.value = ''
-  if (fileInput.value) {
-    fileInput.value.value = ''
   }
 }
 
@@ -112,7 +53,6 @@ function formatDate(date: string) {
         <button
           type="button"
           class="px-4 py-2 rounded-full text-sm font-medium transition-colors text-text-secondary hover:text-text-primary"
-          @click="handleFileSelect"
         >
           Upload File
         </button>
@@ -143,7 +83,6 @@ function formatDate(date: string) {
                 type="file"
                 class="sr-only"
                 accept=".json,.pdf"
-                @change="handleFileSelect"
               >
             </label>
             <p class="pl-1">

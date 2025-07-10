@@ -1,29 +1,31 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mockApiClient: any = {
+const mockApiClient = {
   post: vi.fn(),
   get: vi.fn(),
   setToken: vi.fn(),
   clearToken: vi.fn(),
   baseUrl: 'http://test.local'
-
 }
 
 globalThis.localStorage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
-  removeItem: vi.fn()
-} as any
+  removeItem: vi.fn(),
+  length: 0,
+  clear: vi.fn(),
+  key: vi.fn()
+} as Storage
 
 describe('authClient', () => {
-  let AuthClient: any
-  let authClient: any
-  let originalProcessClient: any
+  let AuthClient: typeof import('../auth-client').AuthClient
+  let authClient: InstanceType<typeof import('../auth-client').AuthClient>
+  let originalProcessClient: boolean | undefined
 
   beforeEach(async () => {
     vi.resetAllMocks()
     // Mock process.client to true
-    originalProcessClient = globalThis.process?.client
+    originalProcessClient = import.meta.client
     globalThis.process = { ...(globalThis.process || {}), client: true }
     vi.doMock('../api-client', () => ({ apiClient: mockApiClient }))
     vi.doMock('./api-client', () => ({ apiClient: mockApiClient }))
@@ -37,11 +39,11 @@ describe('authClient', () => {
     vi.resetModules()
     // Restore process.client
     if (originalProcessClient === undefined) {
-      // @ts-expect-error
-      delete globalThis.process.client
+      // @ts-expect-error We expect an error here
+      delete import.meta.client
     }
     else {
-      globalThis.process.client = originalProcessClient
+      globalThis.process = { ...(globalThis.process || {}), client: originalProcessClient }
     }
   })
 
@@ -73,12 +75,12 @@ describe('authClient', () => {
   })
 
   it('isAuthenticated returns true if token and user exist', () => {
-    ;(localStorage.getItem as any) = vi.fn(key => (key === 'token' ? 'token' : key === 'user' ? '{}' : null))
+    ;(localStorage.getItem as ReturnType<typeof vi.fn>) = vi.fn(key => (key === 'token' ? 'token' : key === 'user' ? '{}' : null))
     expect(authClient.isAuthenticated()).toBe(true)
   })
 
   it('isAuthenticated returns false if token or user missing', () => {
-    ;(localStorage.getItem as any) = vi.fn(() => null)
+    ;(localStorage.getItem as ReturnType<typeof vi.fn>) = vi.fn(() => null)
     expect(authClient.isAuthenticated()).toBe(false)
   })
 })

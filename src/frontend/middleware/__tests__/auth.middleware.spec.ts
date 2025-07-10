@@ -5,12 +5,22 @@ const mockNavigateTo = vi.fn()
 vi.stubGlobal('navigateTo', mockNavigateTo)
 
 function createMockTo(path: string) {
-  return { path }
+  return {
+    path,
+    name: undefined,
+    params: {},
+    query: {},
+    hash: '',
+    fullPath: path,
+    matched: [],
+    meta: {},
+    redirectedFrom: undefined
+  }
 }
 
 describe('auth middleware', () => {
-  let useAuthStoreMock: any
-  let originalProcessServer: any
+  let useAuthStoreMock: ReturnType<typeof vi.fn>
+  let originalProcessServer: boolean | undefined
 
   beforeEach(() => {
     mockNavigateTo.mockClear()
@@ -19,20 +29,18 @@ describe('auth middleware', () => {
       useAuthStore: useAuthStoreMock
     }))
     // Mock process.server to false
-    originalProcessServer = globalThis.process?.server
-    // @ts-ignore
+    originalProcessServer = import.meta.server
     globalThis.process = { ...(globalThis.process || {}), server: false }
   })
 
   afterEach(() => {
     // Restore process.server
     if (originalProcessServer === undefined) {
-      // @ts-ignore
-      delete globalThis.process.server
+      // @ts-expect-error We expect an error here
+      delete import.meta.server
     }
     else {
-      // @ts-ignore
-      globalThis.process.server = originalProcessServer
+      globalThis.process = { ...(globalThis.process || {}), server: originalProcessServer }
     }
   })
 
@@ -42,7 +50,7 @@ describe('auth middleware', () => {
       isAuthenticated: false,
       isIssuer: false
     })
-    await authMiddleware(createMockTo('/about'))
+    await authMiddleware(createMockTo('/about'), createMockTo('/dashboard'))
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 })

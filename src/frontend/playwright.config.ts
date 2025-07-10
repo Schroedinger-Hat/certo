@@ -1,6 +1,5 @@
 import type { ConfigOptions } from '@nuxt/test-utils/playwright'
 import { fileURLToPath } from 'node:url'
-// @ts-ignore: Could not find module '@playwright/test' types in dev environment
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig<ConfigOptions>({

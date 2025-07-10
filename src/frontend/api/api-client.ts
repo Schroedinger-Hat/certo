@@ -5,15 +5,6 @@ import type {
   VerificationResult,
 } from '../types/openbadges'
 
-let API_URL = '' // fallback, will be set by Nuxt plugin
-
-// This will be updated when the module is initialized in the browser
-export function updateApiUrl(url: string) {
-  if (url) { API_URL = url }
-  apiClient.setBaseUrl(url)
-  console.log('API URL set to:', API_URL)
-}
-
 /**
  * API client for interacting with the Strapi backend
  */
@@ -26,7 +17,7 @@ export class ApiClient {
     this.token = null
 
     // Initialize token from localStorage if available
-    if (process.client) {
+    if (import.meta.client) {
       const storedToken = localStorage.getItem('token')
       if (storedToken) {
         this.token = storedToken
@@ -41,7 +32,7 @@ export class ApiClient {
     this.token = token
 
     // Also store in localStorage for persistence
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.setItem('token', token)
     }
   }
@@ -52,7 +43,7 @@ export class ApiClient {
   clearToken() {
     this.token = null
 
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.removeItem('token')
     }
   }
@@ -69,7 +60,7 @@ export class ApiClient {
     // Get token from instance, localStorage, or cookie
     let token = this.token
 
-    if (!token && process.client) {
+    if (!token && import.meta.client) {
       // Try localStorage
       const localToken = localStorage.getItem('token')
       if (localToken) {
@@ -145,9 +136,9 @@ export class ApiClient {
         }
 
         const error = new Error(errorMessage)
-        // @ts-ignore - Add response data to error for debugging
+        // @ts-expect-error Add response data to error for debugging
         error.response = response
-        // @ts-ignore - Add parsed error data to error for debugging
+        // @ts-expect-error Add parsed error data to error for debugging
         error.data = errorData
         throw error
       }
@@ -300,7 +291,7 @@ export class ApiClient {
 
     try {
       // Ensure we have a valid token
-      const token = this.token || (process.client ? localStorage.getItem('token') : null)
+      const token = this.token || (import.meta.client ? localStorage.getItem('token') : null)
       if (!token) {
         throw new Error('Authentication required. Please log in to issue badges.')
       }
@@ -566,7 +557,9 @@ export class ApiClient {
    * This helps handle different data formats from Strapi
    */
   formatCredential(credential: any) {
-    if (!credential) { return null }
+    if (!credential) {
+      return null
+    }
 
     const formatted: any = {
       id: credential.id,
@@ -653,7 +646,9 @@ export class ApiClient {
    * Format an array of credentials
    */
   formatCredentials(credentials: any[]) {
-    if (!credentials || !Array.isArray(credentials)) { return [] }
+    if (!credentials || !Array.isArray(credentials)) {
+      return []
+    }
     return credentials.map(credential => this.formatCredential(credential))
   }
 
@@ -672,7 +667,7 @@ export class ApiClient {
       throw new Error('At least one recipient is required')
     }
     try {
-      const token = this.token || (process.client ? localStorage.getItem('token') : null)
+      const token = this.token || (import.meta.client ? localStorage.getItem('token') : null)
       if (!token) {
         throw new Error('Authentication required. Please log in to issue badges.')
       }
@@ -729,5 +724,10 @@ export class ApiClient {
 
 // Export a singleton instance
 export const apiClient = new ApiClient()
+
+// This will be updated when the module is initialized in the browser
+export function updateApiUrl(url: string) {
+  apiClient.setBaseUrl(url)
+}
 
 export default apiClient

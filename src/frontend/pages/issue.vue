@@ -66,7 +66,6 @@ const submissionError = ref<string | null>(null)
 const isLoadingTemplates = ref(false)
 const csvUploaded = ref(false)
 const batchResults = ref<any[]>([])
-const isDev = computed(() => process.env.NODE_ENV === 'development')
 
 // Load available badges
 async function loadTemplates() {
@@ -174,11 +173,9 @@ function getImageUrl(template: Template): string {
   // Check all possible image URL paths
   if (template.attributes?.image?.data?.attributes?.url) {
     url = template.attributes.image.data.attributes.url
-    console.log('Found URL in attributes.image:', url)
   }
   else if (template.image?.data?.attributes?.url) {
     url = template.image.data.attributes.url
-    console.log('Found URL in root image:', url)
   }
   else if (typeof template.image === 'string') {
     url = template.image
@@ -204,17 +201,11 @@ function getImageUrl(template: Template): string {
   return finalUrl
 }
 
-function addRecipient() {
-  recipients.value.push({ name: '', email: '', expirationDate: '' })
-}
-
-function removeRecipient(index: number) {
-  recipients.value.splice(index, 1)
-}
-
 function handleFileUpload(event: Event) {
   const input = event.target as HTMLInputElement
-  if (!input.files?.length) { return }
+  if (!input.files?.length) {
+    return
+  }
 
   const file = input.files[0]
   const reader = new FileReader()
@@ -222,7 +213,9 @@ function handleFileUpload(event: Event) {
     try {
       const content = reader.result as string
       const lines = content.split(/\r?\n/)
-      if (lines.length < 2) throw new Error('CSV file is empty or invalid.')
+      if (lines.length < 2) {
+        throw new Error('CSV file is empty or invalid.')
+      }
       const header = lines[0].split(',').map(h => h.trim().toLowerCase())
       const nameIdx = header.indexOf('name')
       const emailIdx = header.indexOf('email')
@@ -231,7 +224,9 @@ function handleFileUpload(event: Event) {
 
       const parsedRecipients: Recipient[] = []
       for (let i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue
+        if (!lines[i].trim()) {
+          continue
+        }
         const row = lines[i].split(',')
         const name = row[nameIdx]?.trim()
         const email = row[emailIdx]?.trim()
@@ -252,7 +247,8 @@ function handleFileUpload(event: Event) {
       recipients.value = parsedRecipients
       csvUploaded.value = true
       error.value = null
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Error parsing CSV:', err)
       error.value = err instanceof Error ? err.message : 'Failed to parse CSV file'
       recipients.value = [{ name: '', email: '', expirationDate: '' }]
@@ -291,7 +287,8 @@ async function handleIssue() {
     if (response && Array.isArray(response.results)) {
       batchResults.value = response.results
       isSuccess.value = response.results.every((r: { success: boolean }) => r.success)
-    } else {
+    }
+    else {
       isSuccess.value = true
     }
     clearForm()
@@ -328,8 +325,6 @@ function formatDate(date: string) {
     day: 'numeric'
   })
 }
-
-console.log('what')
 </script>
 
 <template>
@@ -566,24 +561,36 @@ console.log('what')
 
                 <!-- Batch Results Table -->
                 <div v-if="batchResults.length > 0" class="rounded-lg bg-gray-50 p-4">
-                  <h3 class="font-medium mb-2">Batch Issuance Results</h3>
+                  <h3 class="font-medium mb-2">
+                    Batch Issuance Results
+                  </h3>
                   <div class="overflow-x-auto">
                     <table class="min-w-full text-sm border rounded-lg">
                       <thead>
                         <tr class="bg-gray-100">
-                          <th class="px-4 py-2 text-left">Email</th>
-                          <th class="px-4 py-2 text-left">Status</th>
-                          <th class="px-4 py-2 text-left">Error</th>
+                          <th class="px-4 py-2 text-left">
+                            Email
+                          </th>
+                          <th class="px-4 py-2 text-left">
+                            Status
+                          </th>
+                          <th class="px-4 py-2 text-left">
+                            Error
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr v-for="(row, idx) in batchResults" :key="row.recipient ?? idx">
-                          <td class="px-4 py-2">{{ row.recipient }}</td>
+                          <td class="px-4 py-2">
+                            {{ row.recipient }}
+                          </td>
                           <td class="px-4 py-2">
                             <span v-if="row.success" class="text-green-600">Success</span>
                             <span v-else class="text-red-600">Failed</span>
                           </td>
-                          <td class="px-4 py-2 text-xs text-red-500">{{ row.error || '' }}</td>
+                          <td class="px-4 py-2 text-xs text-red-500">
+                            {{ row.error || '' }}
+                          </td>
                         </tr>
                       </tbody>
                     </table>

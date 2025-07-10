@@ -126,7 +126,6 @@ async function shareCredential() {
     }
     else {
       await navigator.clipboard.writeText(shareableUrl.value)
-      alert('Link copied to clipboard!')
     }
   }
   catch (error) {

@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useRuntimeConfig } from '#app'
-import { computed, onMounted, ref } from 'vue'
 import { apiClient } from '~/api/api-client'
-import type { Ref } from 'vue'
 
 interface StrapiImage {
   data?: {
@@ -118,7 +115,7 @@ const props = defineProps<{
   initialBadge?: Badge
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'submit', recipients: Recipient[]): void
   (e: 'error', message: string): void
 }>()
@@ -168,6 +165,7 @@ function getBadgeImageUrl(badge: Badge): string | undefined {
 }
 
 // Computed property to format badge data
+/*
 const formattedBadges = computed(() => {
   return badges.value.map((badge) => {
     const attrs = badge.attributes || {}
@@ -182,6 +180,7 @@ const formattedBadges = computed(() => {
     }
   })
 })
+*/
 
 onMounted(async () => {
   await loadBadges()
@@ -326,7 +325,9 @@ async function handleBatchSubmit(recipients: Recipient[]) {
 
 function handleFileUpload(event: Event) {
   const input = event.target as HTMLInputElement
-  if (!input.files?.length) { return }
+  if (!input.files?.length) {
+    return
+  }
 
   const file = input.files[0]
   csvFile.value = file
@@ -346,7 +347,9 @@ function handleFileUpload(event: Event) {
       const expIdx = header.indexOf('expirationdate')
 
       for (let i = 1; i < rows.length; i++) {
-        if (!rows[i].trim()) continue
+        if (!rows[i].trim()) {
+          continue
+        }
         const row = rows[i].split(',')
         const name = row[nameIdx]?.trim()
         const email = row[emailIdx]?.trim()
@@ -713,7 +716,7 @@ function handleCsvButtonClick() {
           <NButton size="xs" variant="outline" class="mt-2" @click="handleCsvButtonClick">
             Upload CSV File
           </NButton>
-          <input ref="csvInput" type="file" accept=".csv" class="hidden" @change="handleFileUpload" />
+          <input ref="csvInput" type="file" accept=".csv" class="hidden" @change="handleFileUpload">
         </p>
         <NAlert v-if="batchError" variant="error" class="mt-4">
           {{ batchError }}

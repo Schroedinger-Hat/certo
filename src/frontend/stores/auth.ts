@@ -1,6 +1,4 @@
 import Cookies from 'js-cookie'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 import { apiClient } from '~/api/api-client'
 import { authClient } from '~/api/auth-client'
 
@@ -47,9 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
+  const userRole = computed(() => user.value?.role?.name || null)
   const isAuthenticated = computed(() => !!user.value && !!token.value)
   const isIssuer = computed(() => (userRole.value && userRole.value.toLowerCase() === 'issuer'))
-  const userRole = computed(() => user.value?.role?.name || null)
 
   // Initialize auth state from localStorage/cookies
   async function init() {
@@ -62,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       // Check if running in browser
-      if (process.client) {
+      if (import.meta.client) {
         const savedToken = localStorage.getItem('token')
         if (savedToken) {
           token.value = savedToken
@@ -140,7 +138,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // Set token in cookie for server-side auth checks
-      if (process.client) {
+      if (import.meta.client) {
         Cookies.set('token', response.jwt, {
           expires: 7,
           path: '/',
@@ -196,7 +194,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // Set token in cookie for server-side auth checks
-      if (process.client) {
+      if (import.meta.client) {
         Cookies.set('token', response.jwt, { expires: 7 })
       }
 
@@ -213,7 +211,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
-    if (process.client) {
+    if (import.meta.client) {
       // Clear auth client state
       authClient.logout()
 

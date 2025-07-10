@@ -1,18 +1,28 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import routeGuard from '../route-guard'
 
-vi.stubGlobal('defineNuxtRouteMiddleware', (fn: any) => fn)
+vi.stubGlobal('defineNuxtRouteMiddleware', (fn: (...args: any[]) => any) => fn)
 
 const mockNavigateTo = vi.fn()
 vi.stubGlobal('navigateTo', mockNavigateTo)
 
 function createMockTo(path: string) {
-  return { path }
+  return {
+    path,
+    name: undefined,
+    params: {},
+    query: {},
+    hash: '',
+    fullPath: path,
+    matched: [],
+    meta: {},
+    redirectedFrom: undefined
+  }
 }
 
 describe('route-guard middleware', () => {
-  let useAuthStoreMock: any
-  let originalProcessServer: any
+  let useAuthStoreMock: ReturnType<typeof vi.fn>
+  let originalProcessServer: boolean | undefined
 
   beforeEach(() => {
     mockNavigateTo.mockClear()
@@ -21,26 +31,24 @@ describe('route-guard middleware', () => {
       useAuthStore: useAuthStoreMock
     }))
     // Mock process.server to false
-    originalProcessServer = globalThis.process?.server
-    // @ts-ignore
+    originalProcessServer = import.meta.server
     globalThis.process = { ...(globalThis.process || {}), server: false }
   })
 
   afterEach(() => {
     // Restore process.server
     if (originalProcessServer === undefined) {
-      // @ts-ignore
-      delete globalThis.process.server
+      // @ts-expect-error Expect error here
+      delete import.meta.server
     }
     else {
-      // @ts-ignore
-      globalThis.process.server = originalProcessServer
+      globalThis.process = { ...(globalThis.process || {}), server: originalProcessServer }
     }
   })
 
   it('allows access to public route', () => {
     useAuthStoreMock.mockReturnValue({ isAuthenticated: false })
-    routeGuard(createMockTo('/about'))
+    routeGuard(createMockTo('/about'), createMockTo('/dashboard'))
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 })
