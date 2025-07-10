@@ -14,10 +14,7 @@
     "test:unit:watch": "vitest",
     "test:e2e": "npx playwright test",
     "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "changelog": "changelogen --from HEAD~10 --to HEAD --output CHANGELOG.md",
-    "release:prepare": "changelogen --from $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD) --bump --no-commit --no-tag",
-    "release:create": "changelogen --release --push"
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@nuxt/icon": "^1.15.0",
