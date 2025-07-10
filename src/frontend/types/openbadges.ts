@@ -157,12 +157,16 @@ export interface StrapiResponse<T> {
   }
 }
 
+export interface StrapiMeta {
+  [key: string]: any
+}
+
 export interface StrapiSingleResponse<T> {
   data: {
     id: number
     attributes: T
   }
-  meta: {}
+  meta: StrapiMeta
 }
 
 export interface StrapiError {

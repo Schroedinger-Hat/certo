@@ -1,6 +1,3 @@
-import { useRuntimeConfig } from '#app'
-import { ref } from 'vue'
-
 interface AuthState {
   token: string | null
   user: any | null
@@ -16,8 +13,6 @@ const state = ref<AuthState>({
 export function useAuth() {
   const config = useRuntimeConfig()
   const apiUrl = config.public.apiUrl
-
-  console.log('API URL:', apiUrl)
 
   async function login(identifier: string, password: string): Promise<void> {
     try {

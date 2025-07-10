@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
 import { apiClient } from '~/api/api-client'
 
 const props = defineProps({
@@ -52,7 +51,9 @@ function setVerifyMode(mode) {
 async function handleFileUpload(event) {
   fileError.value = null
   const file = event.target.files && event.target.files[0]
-  if (!file) { return }
+  if (!file) {
+    return
+  }
   uploadedFileName.value = file.name
   if (file.type !== 'application/json') {
     fileError.value = 'Please upload a valid JSON file.'
@@ -64,7 +65,7 @@ async function handleFileUpload(event) {
     // Try to parse for preview
     JSON.parse(text)
   }
-  catch (e) {
+  catch {
     fileError.value = 'Invalid JSON file.'
     jsonInput.value = ''
   }
@@ -132,7 +133,7 @@ async function verifyByJson() {
     try {
       credentialData = JSON.parse(jsonInput.value)
     }
-    catch (e) {
+    catch {
       throw new Error('Invalid JSON format. Please check your input.')
     }
 
@@ -157,6 +158,7 @@ async function verifyByJson() {
   }
 }
 
+/*
 function handleShare() {
   if (!badge.value) { return }
 
@@ -181,6 +183,7 @@ function handleShare() {
     console.error('Error sharing:', err)
   }
 }
+*/
 </script>
 
 <template>

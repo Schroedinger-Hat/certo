@@ -1,9 +1,8 @@
-import { watch } from 'vue'
-import { useAuthStore } from '~/stores/auth'
-
 export default defineNuxtRouteMiddleware(async (to) => {
   // Skip middleware if it's a server route
-  if (process.server) { return }
+  if (import.meta.server) {
+    return
+  }
 
   const authStore = useAuthStore()
 

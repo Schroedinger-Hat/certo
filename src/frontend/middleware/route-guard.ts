@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware((to) => {
   // Skip middleware on server side
-  if (process.server) {
+  if (import.meta.client) {
     return
   }
 

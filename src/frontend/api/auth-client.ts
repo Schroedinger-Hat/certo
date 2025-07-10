@@ -113,7 +113,9 @@ export class AuthClient {
    * Check if a user is logged in
    */
   isAuthenticated(): boolean {
-    if (!process.client) { return false }
+    if (!import.meta.client) {
+      return false
+    }
     const token = this.getToken()
     const user = this.getCurrentUser()
     return !!(token && user)
@@ -123,11 +125,15 @@ export class AuthClient {
    * Get current authenticated user
    */
   getCurrentUser() {
-    if (!process.client) { return null }
+    if (!import.meta.client) {
+      return null
+    }
 
     try {
       const userJson = localStorage.getItem('user')
-      if (!userJson) { return null }
+      if (!userJson) {
+        return null
+      }
 
       return JSON.parse(userJson)
     }
@@ -141,7 +147,9 @@ export class AuthClient {
    * Get the stored authentication token
    */
   getToken(): string | null {
-    if (!process.client) { return null }
+    if (!import.meta.client) {
+      return null
+    }
     return localStorage.getItem('token')
   }
 
@@ -149,7 +157,7 @@ export class AuthClient {
    * Save token to localStorage
    */
   private saveToken(token: string): void {
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.setItem('token', token)
     }
   }
@@ -158,7 +166,7 @@ export class AuthClient {
    * Save user to localStorage
    */
   private saveUser(user: any): void {
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.setItem('user', JSON.stringify(user))
     }
   }
@@ -167,7 +175,7 @@ export class AuthClient {
    * Clear storage (token and user)
    */
   private clearStorage(): void {
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
     }
