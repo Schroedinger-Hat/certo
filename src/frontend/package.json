@@ -17,6 +17,7 @@
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
+    "@formkit/tempo": "^0.1.2",
     "@nuxt/icon": "^1.15.0",
     "@nuxt/image": "^1.10.0",
     "@nuxtjs/sitemap": "^7.4.2",
