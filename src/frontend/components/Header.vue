@@ -87,14 +87,6 @@ onUnmounted(() => {
   authStore.value = null
   isStoreReady.value = false
 })
-
-const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Issue Badges', href: '/issue' },
-  { name: 'Verify', href: '/verify' },
-]
 </script>
 
 <template>
@@ -116,7 +108,7 @@ const navLinks = [
         <!-- Desktop Navigation -->
         <div class="hidden lg:flex items-center gap-6">
           <NuxtLink
-            v-for="link in navLinks"
+            v-for="link in headerNavLinks"
             :key="link.name"
             :to="link.href"
             class="text-text-secondary hover:text-text-primary transition-colors font-medium"
@@ -194,7 +186,7 @@ const navLinks = [
     <div v-if="isMobileMenuOpen" class="lg:hidden bg-white border-t">
       <div class="px-4 py-2 space-y-1">
         <NuxtLink
-          v-for="link in navLinks"
+          v-for="link in headerNavLinks"
           :key="link.name"
           :to="link.href"
           class="block py-2 text-text-secondary hover:text-text-primary transition-colors"
