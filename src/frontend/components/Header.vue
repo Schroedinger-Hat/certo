@@ -114,7 +114,7 @@ const navLinks = [
         </NuxtLink>
 
         <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center gap-6">
+        <div class="hidden lg:flex items-center gap-6">
           <NuxtLink
             v-for="link in navLinks"
             :key="link.name"
@@ -181,7 +181,7 @@ const navLinks = [
         <!-- Mobile Menu Button -->
         <button
           aria-label="Toggle mobile menu"
-          class="md:hidden p-2 rounded-lg hover:bg-gray-100"
+          class="lg:hidden p-2 rounded-lg hover:bg-gray-100"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
         >
           <div v-if="!isMobileMenuOpen" class="w-6 h-6 i-heroicons-bars-3" />
@@ -191,7 +191,7 @@ const navLinks = [
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="isMobileMenuOpen" class="md:hidden bg-white border-t">
+    <div v-if="isMobileMenuOpen" class="lg:hidden bg-white border-t">
       <div class="px-4 py-2 space-y-1">
         <NuxtLink
           v-for="link in navLinks"
