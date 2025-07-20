@@ -7,13 +7,17 @@ const showUserMenu = ref(false)
 const isAuthenticated = ref(false)
 const authStore = ref<ReturnType<typeof useAuthStore> | null>(null)
 const userName = ref('')
-const isMobileMenuOpen = ref(false)
 const WINDOW_VERTICAL_SCROLL_THRESHOLD = 20
 const { y } = useWindowScroll()
 
 const hasWindowScrolled = computed(() => {
   return y.value > WINDOW_VERTICAL_SCROLL_THRESHOLD
 })
+
+const isMobileMenuOpen = shallowRef(false)
+const mobileMenuRef = useTemplateRef('mobile-menu')
+
+onClickOutside(mobileMenuRef, () => isMobileMenuOpen.value = false)
 
 watch(
   [isStoreReady, authStore],
@@ -31,13 +35,6 @@ watch(
   { immediate: true }
 )
 
-function handleClickOutside(event: MouseEvent) {
-  const target = event.target as HTMLElement
-  if (userMenuRef.value && !userMenuRef.value.contains(target)) {
-    showUserMenu.value = false
-  }
-}
-
 function handleLogout() {
   if (isStoreReady.value && authStore.value) {
     authStore.value.logout()
@@ -49,9 +46,6 @@ function handleLogout() {
 }
 
 onMounted(() => {
-  // Add click event listener for click-outside detection
-  document.addEventListener('click', handleClickOutside)
-
   // Safe initialization of auth store
   // Using setTimeout to ensure it runs after Pinia and plugins are initialized
   setTimeout(() => {
@@ -74,9 +68,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  // Remove event listeners
-  document.removeEventListener('click', handleClickOutside)
-
   // Clear auth store reference
   authStore.value = null
   isStoreReady.value = false
@@ -177,7 +168,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="isMobileMenuOpen" class="lg:hidden bg-white border-t">
+    <div v-if="isMobileMenuOpen" ref="mobile-menu" class="lg:hidden bg-white border-t">
       <div class="px-4 py-2 space-y-1">
         <NuxtLink
           v-for="link in HEADER_NAV_LINKS"
