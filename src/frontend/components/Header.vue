@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { headerLogo } = useHomeContent()
 const router = useRouter()
 const isScrolled = ref(false)
 const isStoreReady = ref(false)
@@ -95,9 +96,9 @@ onUnmounted(() => {
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-2">
-          <img
-            src="/certo-logo-text.png"
-            alt="Certo logo"
+          <NuxtImg
+            :src="headerLogo.img.src"
+            :alt="headerLogo.img.alt"
             class="h-10 w-auto"
           />
         </NuxtLink>
