@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const { headerLogo } = useHomeContent()
 const router = useRouter()
-const isScrolled = ref(false)
 const isStoreReady = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
 const showUserMenu = ref(false)
@@ -9,6 +8,12 @@ const isAuthenticated = ref(false)
 const authStore = ref<ReturnType<typeof useAuthStore> | null>(null)
 const userName = ref('')
 const isMobileMenuOpen = ref(false)
+const WINDOW_VERTICAL_SCROLL_THRESHOLD = 20
+const { y } = useWindowScroll()
+
+const hasWindowScrolled = computed(() => {
+  return y.value > WINDOW_VERTICAL_SCROLL_THRESHOLD
+})
 
 watch(
   [isStoreReady, authStore],
@@ -25,10 +30,6 @@ watch(
   },
   { immediate: true }
 )
-
-function updateScroll() {
-  isScrolled.value = window.scrollY > 20
-}
 
 function handleClickOutside(event: MouseEvent) {
   const target = event.target as HTMLElement
@@ -70,16 +71,11 @@ onMounted(() => {
       console.error('Could not access auth store in layout:', error)
     }
   }, 100)
-
-  // Initialize scroll event listener
-  window.addEventListener('scroll', updateScroll)
-  updateScroll() // Check initial scroll position
 })
 
 onUnmounted(() => {
   // Remove event listeners
   document.removeEventListener('click', handleClickOutside)
-  window.removeEventListener('scroll', updateScroll)
 
   // Clear auth store reference
   authStore.value = null
@@ -90,7 +86,7 @@ onUnmounted(() => {
 <template>
   <nav
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-    :class="{ 'bg-white/80 backdrop-blur-lg shadow-sm': isScrolled }"
+    :class="{ 'bg-white/80 backdrop-blur-lg shadow-sm': hasWindowScrolled }"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
