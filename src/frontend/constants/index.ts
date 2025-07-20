@@ -4,7 +4,7 @@
 
 export const WEBSITE_URL = 'https://certo.schroedinger-hat.org'
 
-export const headerNavLinks = [
+export const HEADER_NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Dashboard', href: '/dashboard' },

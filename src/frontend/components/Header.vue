@@ -105,7 +105,7 @@ onUnmounted(() => {
         <!-- Desktop Navigation -->
         <div class="hidden lg:flex items-center gap-6">
           <NuxtLink
-            v-for="link in headerNavLinks"
+            v-for="link in HEADER_NAV_LINKS"
             :key="link.name"
             :to="link.href"
             class="text-text-secondary hover:text-text-primary transition-colors font-medium"
@@ -183,7 +183,7 @@ onUnmounted(() => {
     <div v-if="isMobileMenuOpen" class="lg:hidden bg-white border-t">
       <div class="px-4 py-2 space-y-1">
         <NuxtLink
-          v-for="link in headerNavLinks"
+          v-for="link in HEADER_NAV_LINKS"
           :key="link.name"
           :to="link.href"
           class="block py-2 text-text-secondary hover:text-text-primary transition-colors"
