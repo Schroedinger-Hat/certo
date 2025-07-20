@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-
 const router = useRouter()
 const isScrolled = ref(false)
 const isStoreReady = ref(false)
