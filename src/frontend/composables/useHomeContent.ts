@@ -17,6 +17,13 @@ export interface Trustee {
   }
 }
 
+export interface HeaderLogo {
+  img: {
+    src: string
+    alt: string
+  }
+}
+
 export interface CardFeature {
   description: string
   icon: string
@@ -114,9 +121,17 @@ export default () => {
     }
   ]
 
+  const headerLogo: HeaderLogo = {
+    img: {
+      src: '/certo-logo-text.png',
+      alt: 'Certo Logo'
+    }
+  }
+
   return {
     features,
     sections,
-    trustees
+    trustees,
+    headerLogo
   }
 }
