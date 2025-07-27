@@ -142,3 +142,45 @@ This project is licensed under the GNU Affero General Public License v3.0 - see 
 - [Nuxt 3](https://nuxt.com/)
 - [Una UI](https://una-ui.vercel.app/)
 - [Schrödinger Hat](https://www.schrodinger-hat.it/)
+
+## Maintainers
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/TheJoin95">
+          <img src="https://github.com/TheJoin95.png" width="100px;" alt="Miki Lombardi"/>
+          <br />
+          <sub>
+            <b>Miki Lombardi</b>
+          </sub>
+        </a>
+        <br />
+        <span>💻 Maintainer</span>
+      </td>
+      <td align="center">
+        <a href="https://github.com/Readpato">
+          <img src="https://github.com/Readpato.png" width="100px;" alt="Patrick Raedler"/>
+          <br />
+          <sub>
+            <b>Patrick Raedler</b>
+          </sub>
+        </a>
+        <br />
+        <span>💻 Maintainer</span>
+      </td>
+      <td align="center">
+        <a href="https://github.com/MarcoJul">
+          <img src="https://github.com/MarcoJul.png" width="100px;" alt="Lorenzo Bugli"/>
+          <br />
+          <sub>
+            <b>Marco Giuliotti</b>
+          </sub>
+        </a>
+        <br />
+        <span>💻 Maintainer</span>
+      </td>
+    </tr>
+  </table>
+</div>
