@@ -11,3 +11,4 @@ export const HEADER_NAV_LINKS = [
   { name: 'Issue Badges', href: '/issue' },
   { name: 'Verify', href: '/verify' },
 ]
+export const HELLO_SH_MAIL = 'mailto:hello@schroedinger-hat.org'
