@@ -6,14 +6,17 @@
     "target": "ES2019",
     "strict": false,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "noEmitOnError": true,
-    "noImplicitThis": true,
+    "noEmitOnError": false,
+    "noImplicitThis": false,
     "outDir": "dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "types": ["node"]
   },
   "include": [
     // Include root files

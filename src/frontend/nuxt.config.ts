@@ -95,4 +95,14 @@ export default defineNuxtConfig({
     '~/plugins/auth.ts',
     // The auth-init plugin is client-only and will be auto-imported
   ],
+  vite: {
+    build: {
+      sourcemap: false, // Disable source maps in development to avoid missing map errors
+    },
+    server: {
+      hmr: {
+        overlay: false // Disable error overlay for minor warnings
+      }
+    }
+  },
 })

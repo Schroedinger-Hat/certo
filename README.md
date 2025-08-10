@@ -61,6 +61,27 @@ certo/
 
 ## Development Setup
 
+### Quick Start (Recommended)
+
+Use our fresh install script for the easiest setup:
+
+```bash
+git clone https://github.com/schrodinger-hat/certo.git
+cd certo
+npm run fresh-install
+```
+
+This will automatically:
+- ✅ Check system requirements
+- 🔧 Generate secure environment variables  
+- 📝 Set up sample data
+- 📜 Display license and contribution info
+- 🚀 Provide next steps
+
+📖 **For detailed setup instructions, see [Fresh Install Guide](docs/FRESH_INSTALL.md)**
+
+### Manual Setup (Alternative)
+
 1. Clone the repository:
 
 ```bash
@@ -109,6 +130,32 @@ cd src/frontend
 npm install
 npm run dev
 ```
+
+## Troubleshooting
+
+### Common Development Issues
+
+**Workspace Dependency Resolution**
+
+If you encounter errors like `Cannot find module '@strapi/strapi/package.json'`, this is a known issue with npm workspaces and Strapi 5.x:
+
+```bash
+# Recommended: Use Docker for development
+docker-compose up -d
+
+# Alternative: Run services from their directories
+cd src/backend && npm run develop  # Terminal 1
+cd src/frontend && npm run dev     # Terminal 2
+```
+
+**Port Already in Use**
+```bash
+lsof -i :1337  # Check backend port
+lsof -i :3000  # Check frontend port
+kill -9 <PID>  # Kill process
+```
+
+**For more troubleshooting help, see the [Fresh Install Guide](docs/FRESH_INSTALL.md#troubleshooting)**
 
 ## API Documentation
 

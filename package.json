@@ -1,0 +1,47 @@
+{
+  "name": "certo",
+  "version": "1.0.0",
+  "description": "Digital certificate platform for issuing, managing, and verifying badges and credentials",
+  "scripts": {
+    "fresh-install": "node scripts/fresh-install.js",
+    "setup": "node scripts/fresh-install.js",
+    "install:backend": "cd src/backend && npm install",
+    "install:frontend": "cd src/frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "cd src/backend && npm run develop",
+    "dev:frontend": "cd src/frontend && npm run dev",
+    "build:backend": "cd src/backend && npm run build",
+    "build:frontend": "cd src/frontend && npm run build",
+    "start:backend": "cd src/backend && npm start",
+    "start:frontend": "cd src/frontend && npm start",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "keywords": [
+    "digital-certificates",
+    "badges",
+    "credentials",
+    "open-badges",
+    "strapi",
+    "nuxt",
+    "vue"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schrodinger-hat/certo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/schrodinger-hat/certo/issues"
+  },
+  "homepage": "https://github.com/schrodinger-hat/certo#readme",
+  "license": "AGPL-3.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=6.0.0"
+  },
+  "workspaces": [
+    "src/backend",
+    "src/frontend"
+  ]
+}

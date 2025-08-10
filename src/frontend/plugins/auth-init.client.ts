@@ -4,7 +4,6 @@ import { useAuthStore } from '~/stores/auth'
 // This plugin runs on the client side only and initializes auth
 export default defineNuxtPlugin({
   name: 'auth-init',
-  enforce: 'default', // Run after pinia-init.client.ts
   setup(nuxtApp) {
     let authInitialized = false
 
@@ -26,17 +25,12 @@ export default defineNuxtPlugin({
       }
     }
 
-    // First try at the "app:created" hook
+    // Use app:created hook (async is safe here)
     nuxtApp.hook('app:created', async () => {
       await initAuth()
     })
 
-    // Try again at "vue:setup"
-    nuxtApp.hook('vue:setup', async () => {
-      await initAuth()
-    })
-
-    // Final attempt at "app:mounted"
+    // Use app:mounted for client-side initialization (async is safe here)
     nuxtApp.hook('app:mounted', async () => {
       await initAuth()
     })
