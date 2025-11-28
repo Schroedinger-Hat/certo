@@ -109,7 +109,7 @@ export default () => {
       url: 'https://schroedinger-hat.org',
       img: {
         src: '/schroedinger-hat.png',
-        alt: 'Schroedinger Hat Logo'
+        alt: 'Schrödinger Hat Logo'
       }
     },
     {
