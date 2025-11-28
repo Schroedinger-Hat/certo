@@ -4,7 +4,7 @@ const pageDescription = ref('Learn about Certo, our mission, and our open-source
 function handleSupportClick() {
   const subject = encodeURIComponent('Interested in Supporting Certo')
   const body = encodeURIComponent(
-    'Hello Schroedinger Hat team,\n\n'
+    'Hello Schrödinger Hat team,\n\n'
     + 'I am interested in becoming a supporter of the Certo project.\n\n'
     + 'Please let me know how I can contribute and support the project.\n\n'
     + 'Best regards'
@@ -75,7 +75,7 @@ useHead({
       </div>
     </section>
 
-    <!-- Schroedinger Hat Section -->
+    <!-- Schrödinger Hat Section -->
     <section class="py-16 bg-gradient-to-b from-[#FFE5AE]/20 to-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-16 items-start">
@@ -107,11 +107,11 @@ useHead({
           <!-- Right Column -->
           <div>
             <h2 class="text-4xl font-bold text-gray-900 mb-8">
-              Schroedinger Hat
+              Schrödinger Hat
             </h2>
             <div class="space-y-6">
               <p class="text-lg text-gray-600 leading-relaxed">
-                Schroedinger Hat is a non-profit organization dedicated to advancing open-source technology and fostering a vibrant tech community. We believe in the power of collaboration, knowledge sharing, and accessible technology for all.
+                Schrödinger Hat is a non-profit organization dedicated to advancing open-source technology and fostering a vibrant tech community. We believe in the power of collaboration, knowledge sharing, and accessible technology for all.
               </p>
               <p class="text-lg text-gray-600 leading-relaxed">
                 Through our various initiatives, including Certo, we work to create innovative solutions that make a positive impact on society while maintaining the highest standards of transparency and community involvement.

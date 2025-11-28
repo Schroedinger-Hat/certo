@@ -173,7 +173,7 @@
       <!-- Copyright -->
       <div class="text-center text-text-secondary pt-8 border-t border-gray-200">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>Certo © {{ new Date().getFullYear() }}. Made with ❤️ by Schroedinger Hat. All rights reserved.</p>
+          <p>Certo © {{ new Date().getFullYear() }}. Made with ❤️ by Schrödinger Hat. All rights reserved.</p>
           <div class="flex space-x-6">
             <a
               href="/privacy-policy"
