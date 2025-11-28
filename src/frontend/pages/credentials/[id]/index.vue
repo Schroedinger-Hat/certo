@@ -324,7 +324,7 @@ onMounted(async () => {
           class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium"
           aria-label="Add this certificate to your LinkedIn profile"
         >
-          <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
+          <NuxtImg src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
           Add to LinkedIn
         </a>
       </div>
@@ -415,12 +415,12 @@ onMounted(async () => {
           v-if="displayImageUrl && !imageLoadError"
           class="relative aspect-video bg-gray-100"
         >
-          <img
+          <NuxtImg
             :src="displayImageUrl"
             :alt="credential.name || 'Credential Image'"
             class="w-full h-full object-contain"
             @error="handleImageError"
-          >
+          />
           <div class="absolute bottom-4 right-4 flex gap-2">
             <button
               class="p-2 rounded-lg bg-white/90 hover:bg-white shadow-lg transition-colors"
@@ -486,12 +486,12 @@ onMounted(async () => {
                 Issued By
               </div>
               <div class="flex items-center">
-                <img
+                <NuxtImg
                   v-if="typeof credential.issuer.image === 'string'"
                   :src="credential.issuer.image"
                   :alt="credential.issuer.name"
                   class="w-10 h-10 rounded-full object-cover mr-3"
-                >
+                />
                 <div>
                   <div class="font-medium">
                     {{ credential.issuer.name }}

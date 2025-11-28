@@ -435,12 +435,12 @@ function handleCsvButtonClick() {
           <div class="flex flex-col sm:flex-row gap-6">
             <!-- Badge Image -->
             <div class="w-32 h-32 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center">
-              <img
+              <NuxtImg
                 v-if="getBadgeImageUrl(selectedBadge)"
                 :src="getBadgeImageUrl(selectedBadge)"
                 :alt="selectedBadge.attributes?.name || selectedBadge.name || 'Selected Badge'"
                 class="max-w-full max-h-full object-contain"
-              >
+              />
               <div v-else class="i-lucide-award text-primary-400 w-16 h-16" />
             </div>
 
@@ -533,13 +533,13 @@ function handleCsvButtonClick() {
             <div class="flex flex-col items-center">
               <!-- Image -->
               <div class="w-24 h-24 mb-3 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center">
-                <img
+                <NuxtImg
                   v-if="getBadgeImageUrl(badge)"
                   :src="getBadgeImageUrl(badge)"
                   :alt="badge.attributes?.name || badge.name || 'Badge'"
                   class="max-w-full max-h-full object-contain"
                   loading="lazy"
-                >
+                />
                 <div v-else class="i-lucide-award text-primary-400 w-12 h-12" />
               </div>
 

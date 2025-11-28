@@ -136,7 +136,7 @@ onMounted(async () => {
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium mt-2"
                 aria-label="Add this certificate to your LinkedIn profile"
               >
-                <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
+                <NuxtImg src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
                 Add to LinkedIn
               </a>
             </template>
@@ -189,7 +189,7 @@ onMounted(async () => {
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium mt-2"
                 aria-label="Add this certificate to your LinkedIn profile"
               >
-                <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
+                <NuxtImg src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto" />
                 Add to LinkedIn
               </a>
             </template>

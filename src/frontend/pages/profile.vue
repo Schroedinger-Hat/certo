@@ -173,11 +173,11 @@ useHead({
                 </label>
                 <div class="flex items-center">
                   <div class="relative">
-                    <img
+                    <NuxtImg
                       :src="profilePicture || '/default-avatar.png'"
                       alt="Profile picture"
                       class="w-20 h-20 rounded-full object-cover"
-                    >
+                    />
                     <button
                       type="button"
                       class="absolute bottom-0 right-0 w-8 h-8 bg-[#00E5C5] rounded-full flex items-center justify-center shadow-lg"

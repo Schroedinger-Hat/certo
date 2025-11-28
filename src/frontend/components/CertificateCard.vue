@@ -278,7 +278,7 @@ function getLinkedInAddToProfileUrl() {
               class="block w-full text-left px-4 py-2 text-sm text-[#0077b5] hover:bg-[#eaf4fb] font-medium"
               aria-label="Add this certificate to your LinkedIn profile"
             >
-              <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="inline h-4 w-auto mr-2 align-middle">
+              <NuxtImg src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="inline h-4 w-auto mr-2 align-middle" />
               Add to LinkedIn
             </a>
             <a
@@ -321,7 +321,7 @@ function getLinkedInAddToProfileUrl() {
 
     <!-- Badge Image Preview (Achievement Image) -->
     <div class="mt-4 aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-      <img :src="badgeImageUrl" alt="Credential Badge Image" class="w-full h-full object-contain">
+      <NuxtImg :src="badgeImageUrl" alt="Credential Badge Image" class="w-full h-full object-contain" />
     </div>
   </div>
 </template>
