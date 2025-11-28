@@ -229,22 +229,24 @@ useHead({
           Be part of our growing community and help shape the future of digital credentials.
         </p>
         <div class="flex justify-center gap-4">
-          <a
-            href="https://github.com/schroedinger-hat/certo"
+          <NuxtLink
+            to="https://github.com/schroedinger-hat/certo"
+            external
             target="_blank"
             rel="noopener noreferrer"
             class="py-3 px-6 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-colors"
           >
             Star on GitHub
-          </a>
-          <a
-            href="https://discord.gg/schroedinger-hat"
+          </NuxtLink>
+          <NuxtLink
+            to="https://discord.gg/schroedinger-hat"
+            external
             target="_blank"
             rel="noopener noreferrer"
             class="py-3 px-6 rounded-full bg-[#5AB69F] text-black hover:bg-[#5AB69F]/90 transition-colors"
           >
             Join Discord
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </section>

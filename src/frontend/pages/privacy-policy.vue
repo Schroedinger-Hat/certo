@@ -89,9 +89,9 @@ useHead({
         <p>
           Your information may be processed outside your country. We use appropriate safeguards for international transfers as required by law.
         </p>
-        <h2>13. Contact</h2>
+          <h2>13. Contact</h2>
         <p>
-          If you have questions or requests regarding this Privacy Policy, contact us at <a href="mailto:dpo@schroedinger-hat.org">dpo@schroedinger-hat.org</a> or Via Pino Arpioni 1, Pelago (FI).
+          If you have questions or requests regarding this Privacy Policy, contact us at <NuxtLink to="mailto:dpo@schroedinger-hat.org" external>dpo@schroedinger-hat.org</NuxtLink> or Via Pino Arpioni 1, Pelago (FI).
         </p>
       </div>
     </div>

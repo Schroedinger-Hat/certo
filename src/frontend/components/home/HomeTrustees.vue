@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLink :href="trustee.url" target="_blank">
+  <NuxtLink :to="trustee.url" external target="_blank">
     <NuxtImg :src="trustee.img.src" :alt="trustee.img.alt" class="h-8 md:h-12 w-auto grayscale" />
   </NuxtLink>
 </template>
