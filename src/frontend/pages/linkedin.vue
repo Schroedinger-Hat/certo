@@ -43,13 +43,13 @@ useHead({
             </p>
           </div>
           <div class="flex justify-center">
-            <img src="/linkedin-guide/step-1.svg" alt="Go to LinkedIn profile" class="rounded-xl shadow-lg max-w-full w-80">
+            <NuxtImg src="/linkedin-guide/step-1.svg" alt="Go to LinkedIn profile" class="rounded-xl shadow-lg max-w-full w-80" />
           </div>
         </div>
         <!-- Step 2 -->
         <div class="grid md:grid-cols-2 gap-10 items-center">
           <div class="order-2 md:order-1 flex justify-center">
-            <img src="/linkedin-guide/step-2.svg" alt="Add profile section" class="rounded-xl shadow-lg max-w-full w-80">
+            <NuxtImg src="/linkedin-guide/step-2.svg" alt="Add profile section" class="rounded-xl shadow-lg max-w-full w-80" />
           </div>
           <div class="order-1 md:order-2">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">
@@ -75,13 +75,13 @@ useHead({
             </ul>
           </div>
           <div class="flex justify-center">
-            <img src="/linkedin-guide/step-3.svg" alt="Fill in certificate details" class="rounded-xl shadow-lg max-w-full w-80">
+            <NuxtImg src="/linkedin-guide/step-3.svg" alt="Fill in certificate details" class="rounded-xl shadow-lg max-w-full w-80" />
           </div>
         </div>
         <!-- Step 4 -->
         <div class="grid md:grid-cols-2 gap-10 items-center">
           <div class="order-2 md:order-1 flex justify-center">
-            <img src="/linkedin-guide/step-4.svg" alt="Save certification" class="rounded-xl shadow-lg max-w-full w-80">
+            <NuxtImg src="/linkedin-guide/step-4.svg" alt="Save certification" class="rounded-xl shadow-lg max-w-full w-80" />
           </div>
           <div class="order-1 md:order-2">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">
