@@ -271,8 +271,9 @@ function getLinkedInAddToProfileUrl() {
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
           >
             <!-- LinkedIn Add to Profile Button -->
-            <a
-              :href="getLinkedInAddToProfileUrl()"
+            <NuxtLink
+              :to="getLinkedInAddToProfileUrl()"
+              external
               target="_blank"
               rel="noopener noreferrer"
               class="block w-full text-left px-4 py-2 text-sm text-[#0077b5] hover:bg-[#eaf4fb] font-medium"
@@ -280,14 +281,15 @@ function getLinkedInAddToProfileUrl() {
             >
               <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="inline h-4 w-auto mr-2 align-middle">
               Add to LinkedIn
-            </a>
-            <a
-              :href="getCredentialUrl()"
+            </NuxtLink>
+            <NuxtLink
+              :to="getCredentialUrl()"
+              external
               target="_blank"
               class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               View Certificate
-            </a>
+            </NuxtLink>
             <button
               class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               @click="handleDownload"

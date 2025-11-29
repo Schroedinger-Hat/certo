@@ -469,7 +469,7 @@ function formatDate(date: string) {
                         </p>
                       </div>
                       <p class="text-xs text-text-secondary mt-2">
-                        Download our <a href="/recipients-template.csv" download class="text-[#00E5C5] hover:text-[#00E5C5]/80">CSV template</a>
+                        Download our <NuxtLink to="/recipients-template.csv" external download class="text-[#00E5C5] hover:text-[#00E5C5]/80">CSV template</NuxtLink>
                       </p>
                     </div>
                   </div>

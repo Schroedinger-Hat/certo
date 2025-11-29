@@ -34,7 +34,14 @@ const lastUpdated = format(termsContent.lastUpdated, 'long')
           <h2 class="text-lg font-medium">
             {{ section.title }}
           </h2>
-          <p v-if="section.type === 'paragraph'" v-html="section.content" />
+          <div v-if="section.type === 'paragraph'">
+            <p v-if="section.contactEmail">
+              For questions about these Terms, contact us at
+              <NuxtLink :to="`mailto:${section.contactEmail}`" external class="text-[#00E5C5] underline">{{ section.contactEmail }}</NuxtLink>
+              or Via Pino Arpioni 1, Pelago (FI).
+            </p>
+            <p v-else v-html="section.content" />
+          </div>
           <ul v-else="section.type === 'list'" class="list-disc list-inside">
             <li v-for="item in section.content as string[]" :key="item">
               {{ item }}

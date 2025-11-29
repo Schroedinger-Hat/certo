@@ -473,14 +473,15 @@ function handleCsvButtonClick() {
                   <p class="mt-1 pl-4">
                     {{ selectedBadge.attributes?.criteria?.narrative || selectedBadge.criteria?.narrative }}
                   </p>
-                  <a
+                  <NuxtLink
                     v-if="selectedBadge.attributes?.criteria?.url || selectedBadge.criteria?.url"
-                    :href="selectedBadge.attributes?.criteria?.url || selectedBadge.criteria?.url"
+                    :to="selectedBadge.attributes?.criteria?.url || selectedBadge.criteria?.url"
+                    external
                     target="_blank"
                     class="text-primary-600 hover:text-primary-700 mt-1 inline-block"
                   >
                     View Detailed Criteria
-                  </a>
+                  </NuxtLink>
                 </div>
 
                 <!-- Skills -->

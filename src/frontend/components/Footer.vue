@@ -16,33 +16,36 @@
             Create, manage and issue digital certificates with ease. Open source and built for everyone.
           </p>
           <div class="flex space-x-4 mt-6">
-            <a
-              href="https://github.com/schroedinger-hat/certo"
+            <NuxtLink
+              to="https://github.com/schroedinger-hat/certo"
+              external
               target="_blank"
               rel="noopener noreferrer"
               class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700]  text-white hover:opacity-80 transition-opacity"
               title="GitHub"
             >
               <div class="i-lucide-github w-4 h-4 color-[#000]" />
-            </a>
-            <a
-              href="https://discord.gg/schroedinger-hat"
+            </NuxtLink>
+            <NuxtLink
+              to="https://discord.gg/schroedinger-hat"
+              external
               target="_blank"
               rel="noopener noreferrer"
               class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700] text-white hover:opacity-80 transition-opacity"
               title="Discord"
             >
               <div class="i-lucide-message-circle w-4 h-4 color-[#000]" />
-            </a>
-            <a
-              href="https://twitter.com/schroedinger_hat"
+            </NuxtLink>
+            <NuxtLink
+              to="https://twitter.com/schroedinger_hat"
+              external
               target="_blank"
               rel="noopener noreferrer"
               class="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFD700] text-white hover:opacity-80 transition-opacity"
               title="Twitter"
             >
               <div class="i-lucide-twitter w-4 h-4 color-[#000]" />
-            </a>
+            </NuxtLink>
           </div>
         </div>
 
@@ -102,34 +105,37 @@
           </h3>
           <ul class="space-y-2">
             <li>
-              <a
-                href="https://github.com/schroedinger-hat/certo"
+              <NuxtLink
+                to="https://github.com/schroedinger-hat/certo"
+                external
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-text-secondary hover:text-text-primary transition-colors"
               >
                 Documentation
-              </a>
+              </NuxtLink>
             </li>
             <li>
-              <a
-                href="https://github.com/schroedinger-hat/certo/blob/main/CONTRIBUTING.md"
+              <NuxtLink
+                to="https://github.com/schroedinger-hat/certo/blob/main/CONTRIBUTING.md"
+                external
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-text-secondary hover:text-text-primary transition-colors"
               >
                 Contributing
-              </a>
+              </NuxtLink>
             </li>
             <li>
-              <a
-                href="https://github.com/schroedinger-hat/certo/issues"
+              <NuxtLink
+                to="https://github.com/schroedinger-hat/certo/issues"
+                external
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-text-secondary hover:text-text-primary transition-colors"
               >
                 Report an Issue
-              </a>
+              </NuxtLink>
             </li>
             <li>
               <NuxtLink
@@ -149,22 +155,24 @@
           </h3>
           <ul class="space-y-2">
             <li>
-              <a
-                href="mailto:info@schroedinger-hat.org"
+              <NuxtLink
+                to="mailto:info@schroedinger-hat.org"
+                external
                 class="text-text-secondary hover:text-text-primary transition-colors"
               >
                 info@schroedinger-hat.org
-              </a>
+              </NuxtLink>
             </li>
             <li>
-              <a
-                href="https://www.schroedinger-hat.org"
+              <NuxtLink
+                to="https://www.schroedinger-hat.org"
+                external
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-text-secondary hover:text-text-primary transition-colors"
               >
                 www.schroedinger-hat.org
-              </a>
+              </NuxtLink>
             </li>
           </ul>
         </div>
@@ -175,24 +183,24 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
           <p>Certo © {{ new Date().getFullYear() }}. Made with ❤️ by Schrödinger Hat. All rights reserved.</p>
           <div class="flex space-x-6">
-            <a
-              href="/privacy-policy"
+            <NuxtLink
+              to="/privacy-policy"
               class="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
               Privacy Policy
-            </a>
-            <a
-              href="/terms-and-conditions"
+            </NuxtLink>
+            <NuxtLink
+              to="/terms-and-conditions"
               class="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
               Terms and Conditions
-            </a>
-            <a
-              href="/linkedin"
+            </NuxtLink>
+            <NuxtLink
+              to="/linkedin"
               class="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
               LinkedIn Guide
-            </a>
+            </NuxtLink>
           </div>
         </div>
       </div>

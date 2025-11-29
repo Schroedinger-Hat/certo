@@ -2,6 +2,8 @@ interface TermsSection {
   title: string
   type: 'paragraph' | 'list'
   content: string | string[]
+  // optional structured contact email used so callers can render a NuxtLink
+  contactEmail?: string
 }
 
 interface TermsContent {
@@ -72,7 +74,8 @@ export function useTermsContent() {
       {
         title: '11. Contact',
         type: 'paragraph',
-        content: 'For questions about these Terms, contact us at <a style="color: blue;" href="mailto:dpo@schroedinger-hat.org">dpo@schroedinger-hat.org</a> or Via Pino Arpioni 1, Pelago (FI).'
+        content: 'For questions about these Terms, contact us at dpo@schroedinger-hat.org or Via Pino Arpioni 1, Pelago (FI).',
+        contactEmail: 'dpo@schroedinger-hat.org'
       }
     ]
   }

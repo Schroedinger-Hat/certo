@@ -35,7 +35,7 @@ useHead({
       <GetStartedList :list />
     </div>
     <div class="flex justify-center mb-8">
-      <NuxtLink :href="HELLO_SH_MAIL" class="inline-flex items-center px-6 py-3 rounded-xl bg-[#FFE5AE] text-gray-900 font-semibold text-lg shadow hover:bg-[#FFD580] transition-colors">
+      <NuxtLink :to="HELLO_SH_MAIL" external class="inline-flex items-center px-6 py-3 rounded-xl bg-[#FFE5AE] text-gray-900 font-semibold text-lg shadow hover:bg-[#FFD580] transition-colors">
         Contact Us
         <span class="i-heroicons-arrow-right ml-2 w-5 h-5" />
       </NuxtLink>

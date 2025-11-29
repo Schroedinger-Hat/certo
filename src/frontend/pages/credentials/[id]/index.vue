@@ -317,8 +317,9 @@ onMounted(async () => {
     <div v-else-if="credential" class="max-w-4xl mx-auto">
       <!-- LinkedIn Add to Profile Button at the Top -->
       <div class="flex flex-wrap gap-4 mb-6">
-        <a
-          :href="getLinkedInAddToProfileUrl()"
+        <NuxtLink
+          :to="getLinkedInAddToProfileUrl()"
+          external
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium"
@@ -326,7 +327,7 @@ onMounted(async () => {
         >
           <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
           Add to LinkedIn
-        </a>
+        </NuxtLink>
       </div>
 
       <!-- Verification Status -->
@@ -496,15 +497,16 @@ onMounted(async () => {
                   <div class="font-medium">
                     {{ credential.issuer.name }}
                   </div>
-                  <a
+                  <NuxtLink
                     v-if="credential.issuer.url"
-                    :href="credential.issuer.url"
+                    :to="credential.issuer.url"
+                    external
                     target="_blank"
                     rel="noopener noreferrer"
                     class="text-sm text-primary-500 hover:text-primary-600"
                   >
                     Visit Website
-                  </a>
+                  </NuxtLink>
                 </div>
               </div>
             </div>
@@ -554,14 +556,15 @@ onMounted(async () => {
                   {{ alignment.targetDescription }}
                 </p>
                 <div class="mt-2">
-                  <a
-                    :href="alignment.targetUrl"
+                  <NuxtLink
+                    :to="alignment.targetUrl"
+                    external
                     target="_blank"
                     rel="noopener noreferrer"
                     class="text-sm text-primary-500 hover:text-primary-600"
                   >
                     Learn More
-                  </a>
+                  </NuxtLink>
                 </div>
               </div>
             </div>

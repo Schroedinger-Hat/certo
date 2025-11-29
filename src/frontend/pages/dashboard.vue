@@ -129,8 +129,9 @@ onMounted(async () => {
             :show-recipient="false"
           >
             <template #actions>
-              <a
-                :href="getLinkedInAddToProfileUrl(cert)"
+              <NuxtLink
+                :to="getLinkedInAddToProfileUrl(cert)"
+                external
                 target="_blank"
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium mt-2"
@@ -138,7 +139,7 @@ onMounted(async () => {
               >
                 <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
                 Add to LinkedIn
-              </a>
+              </NuxtLink>
             </template>
           </CertificateCard>
         </div>
@@ -182,8 +183,9 @@ onMounted(async () => {
             :certificate="cert"
           >
             <template #actions>
-              <a
-                :href="getLinkedInAddToProfileUrl(cert)"
+              <NuxtLink
+                :to="getLinkedInAddToProfileUrl(cert)"
+                external
                 target="_blank"
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] text-white rounded hover:bg-[#005983] transition-colors text-sm font-medium mt-2"
@@ -191,7 +193,7 @@ onMounted(async () => {
               >
                 <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
                 Add to LinkedIn
-              </a>
+              </NuxtLink>
             </template>
           </CertificateCard>
         </div>

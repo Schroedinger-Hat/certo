@@ -102,7 +102,7 @@ useHead({
           Need Help?
         </h2>
         <p class="text-xl text-text-secondary max-w-2xl mx-auto mb-8">
-          If you have any questions or need assistance, feel free to <a href="mailto:hello@schroedinger-hat.org" class="text-[#00E5C5] underline">contact us</a>.
+          If you have any questions or need assistance, feel free to <NuxtLink to="mailto:hello@schroedinger-hat.org" external class="text-[#00E5C5] underline">contact us</NuxtLink>.
         </p>
       </div>
     </section>
