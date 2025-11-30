@@ -390,12 +390,12 @@ function formatDate(date: string) {
                   >
                     <div class="flex items-start">
                       <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center overflow-hidden">
-                        <img
+                        <NuxtImg
                           v-if="getImageUrl(template)"
                           :src="getImageUrl(template)"
                           :alt="template.title"
                           class="max-w-full max-h-full object-contain"
-                        >
+                        />
                         <div v-else class="w-8 h-8 i-heroicons-document-text text-[#00E5C5]" />
                       </div>
                       <div class="ml-4">
@@ -644,13 +644,13 @@ function formatDate(date: string) {
 
             <div v-if="selectedTemplate" class="space-y-4">
               <div class="aspect-[3/4] bg-white rounded-lg shadow-md p-4 flex items-center justify-center">
-                <img
+                <NuxtImg
                   :src="getImageUrl(selectedTemplate)"
                   :alt="selectedTemplate.title"
                   class="max-w-full max-h-full object-contain"
                   @error="(e) => console.error('Image failed to load:', (e.target as HTMLImageElement)?.src)"
                   @load="() => console.log('Image loaded successfully')"
-                >
+                />
               </div>
 
               <div class="space-y-2">

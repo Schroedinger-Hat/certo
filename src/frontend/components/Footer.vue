@@ -9,7 +9,7 @@
         <!-- Logo Column -->
         <div class="md:col-span-2">
           <div class="flex items-center gap-3">
-            <img src="/certo-logo-text.png" alt="Certo logo" class="h-14 w-auto">
+            <NuxtImg src="/certo-logo-text.png" alt="Certo logo" class="h-14 w-auto" />
           </div>
           <span class="text-sm ml-2 text-text-secondary">Open Source Certifier</span>
           <p class="mt-4 text-text-secondary max-w-sm">
