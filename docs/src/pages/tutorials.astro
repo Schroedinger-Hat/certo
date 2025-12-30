@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.vue';
+---
+
+<Layout>
+  <main style="max-width:800px;margin:3rem auto;padding:2rem;">
+    <Card>
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size:2.5rem;color: #2D3436;margin-bottom:2rem; font-weight: 700;">Tutorials</h1>
+      <ol style="font-size:1.05rem;color: #495265;padding-left:0; list-style: none;">
+        <li style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.08);">
+          <strong style="color: #5AB69F; font-size: 1.15rem;">Getting Started with Certo (Local Development)</strong>
+          <ul style="margin-top: 1rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.5rem;">Clone the repo: <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">git clone https://github.com/Schroedinger-Hat/certo.git</code></li>
+            <li style="margin-bottom: 0.5rem;">Set up environment variables as described in the README.</li>
+            <li style="margin-bottom: 0.5rem;">Start with <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">docker-compose up -d</code> for a full stack (backend, frontend, database).</li>
+            <li>Access the backend at <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">http://localhost:1337/admin</code> and the frontend at <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">http://localhost:3000</code>.</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.08);">
+          <strong style="color: #5AB69F; font-size: 1.15rem;">Issuing a Digital Badge</strong>
+          <ul style="margin-top: 1rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.5rem;">Log in as an issuer (default: <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">admin@certo.com</code> / <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">certo</code>).</li>
+            <li style="margin-bottom: 0.5rem;">Go to the dashboard and select "Issue Badge".</li>
+            <li style="margin-bottom: 0.5rem;">Fill in recipient details, achievement, and issue the badge.</li>
+            <li>The recipient will receive a verifiable credential.</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.08);">
+          <strong style="color: #5AB69F; font-size: 1.15rem;">Verifying a Credential</strong>
+          <ul style="margin-top: 1rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.5rem;">Go to the verification page on the frontend.</li>
+            <li style="margin-bottom: 0.5rem;">Paste the credential ID or upload the JSON file.</li>
+            <li>Click "Verify" to check authenticity and status.</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(0,0,0,0.08);">
+          <strong style="color: #5AB69F; font-size: 1.15rem;">Adding a New Documentation Page</strong>
+          <ul style="margin-top: 1rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.5rem;">Create a new <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">.md</code> or <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">.astro</code> file in <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">docs/src/pages/</code>.</li>
+            <li style="margin-bottom: 0.5rem;">Link it in the navigation in <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">index.astro</code>.</li>
+            <li>Use Markdown for content, Astro for custom layouts.</li>
+          </ul>
+        </li>
+        <li>
+          <strong style="color: #5AB69F; font-size: 1.15rem;">Deploying the Documentation</strong>
+          <ul style="margin-top: 1rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.5rem;">Connect your repo to Netlify, Vercel, or GitHub Pages.</li>
+            <li>Set the build command to <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">npm run build</code> and publish directory to <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">docs/dist</code>.</li>
+          </ul>
+        </li>
+      </ol>
+    </Card>
+  </main>
+</Layout>

@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.vue';
+import PageHeader from '../components/PageHeader.vue';
+---
+
+<Layout>
+	<div style="max-width: 900px; margin: 3rem auto; padding: 0 2rem;">
+		<Card>
+			<PageHeader
+				title="Welcome to Certo Documentation"
+				description="The complete guide to Certo - an open-source platform for creating, issuing, and verifying digital badges and certificates using the Open Badges 3.0 standard."
+			/>
+
+			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+				<div>
+					<h3 style="font-family: 'Space Grotesk', sans-serif; color: #5AB69F; margin-bottom: 1rem; font-size: 1.3rem;">Getting Started</h3>
+					<p style="color: #495265; line-height: 1.6;">Learn how to set up Certo and start issuing credentials in minutes.</p>
+					<a href="/getting-started" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #5AB69F; color: white; border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">Start →</a>
+				</div>
+				<div>
+					<h3 style="font-family: 'Space Grotesk', sans-serif; color: #5AB69F; margin-bottom: 1rem; font-size: 1.3rem;">Explore Features</h3>
+					<p style="color: #495265; line-height: 1.6;">Discover tutorials, API docs, and best practices for using Certo.</p>
+					<a href="/tutorials" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #5AB69F; color: white; border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">Learn →</a>
+				</div>
+			</div>
+		</Card>
+
+		<section style="margin-bottom: 3rem;">
+			<h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: #2D3436; margin-bottom: 2rem; font-weight: 700;">Quick Links</h3>
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+				<a href="/faq" style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(90, 182, 159, 0.1); padding: 1.5rem; border-radius: 16px; text-decoration: none; transition: all 0.3s ease; color: #2D3436;">
+					<h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; color: #5AB69F; margin: 0 0 0.5rem 0;">❓ FAQ</h4>
+					<p style="color: #495265; margin: 0; font-size: 0.95rem;">Common questions and answers</p>
+				</a>
+				<a href="/api-reference" style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(90, 182, 159, 0.1); padding: 1.5rem; border-radius: 16px; text-decoration: none; transition: all 0.3s ease; color: #2D3436;">
+					<h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; color: #5AB69F; margin: 0 0 0.5rem 0;">📚 API Reference</h4>
+					<p style="color: #495265; margin: 0; font-size: 0.95rem;">Complete API documentation</p>
+				</a>
+				<a href="/guidelines" style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(90, 182, 159, 0.1); padding: 1.5rem; border-radius: 16px; text-decoration: none; transition: all 0.3s ease; color: #2D3436;">
+					<h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; color: #5AB69F; margin: 0 0 0.5rem 0;">📖 Guidelines</h4>
+					<p style="color: #495265; margin: 0; font-size: 0.95rem;">Contributing guidelines</p>
+				</a>
+			</div>
+		</section>
+	</div>
+</Layout>

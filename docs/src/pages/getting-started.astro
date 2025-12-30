@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.vue';
+import PageHeader from '../components/PageHeader.vue';
+import SectionTitle from '../components/SectionTitle.vue';
+import InfoBox from '../components/InfoBox.vue';
+---
+
+<Layout>
+  <main style="max-width: 800px; margin: 3rem auto; padding: 2rem;">
+    <Card>
+      <PageHeader
+        title="Getting Started with Certo"
+        description="Set up Certo locally and start issuing digital credentials in minutes."
+      />
+
+      <SectionTitle title="Quick Start" />
+      <ol style="font-size: 1.05rem; color: #495265; padding-left: 1.5rem; line-height: 1.8;">
+        <li style="margin-bottom: 1rem;">Clone the repository: <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px; color: #5AB69F;">git clone https://github.com/Schroedinger-Hat/certo.git</code></li>
+        <li style="margin-bottom: 1rem;">Set up environment variables per the README</li>
+        <li style="margin-bottom: 1rem;">Run <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px; color: #5AB69F;">docker-compose up -d</code> to start all services</li>
+        <li>Access the app at <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px; color: #5AB69F;">http://localhost:3000</code></li>
+      </ol>
+
+      <InfoBox type="tip" title="💡 Tip">
+        The default admin account is <code style="background: rgba(0,0,0,0.08); padding: 0.2rem 0.4rem; border-radius: 3px;">admin@certo.com</code> / <code style="background: rgba(0,0,0,0.08); padding: 0.2rem 0.4rem; border-radius: 3px;">certo</code>
+      </InfoBox>
+
+      <SectionTitle title="Next Steps" />
+      <ul style="font-size: 1.05rem; color: #495265; padding-left: 1.5rem; line-height: 1.8;">
+        <li><a href="/tutorials" style="color: #5AB69F;">View Tutorials</a> for step-by-step guides</li>
+        <li><a href="/api-reference" style="color: #5AB69F;">Explore the API Reference</a></li>
+        <li><a href="/faq" style="color: #5AB69F;">Check the FAQ</a> for common questions</li>
+      </ul>
+    </Card>
+  </main>
+</Layout>

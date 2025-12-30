@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.vue';
+---
+
+<Layout>
+  <main style="max-width: 800px; margin: 3rem auto; padding: 2rem;">
+    <Card>
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; color: #2D3436; margin-bottom: 1.5rem; font-weight: 700;">API Reference</h1>
+      <p style="font-size: 1.1rem; color: #495265; line-height: 1.7;">Certo exposes a RESTful API for managing digital credentials, profiles, and achievements, following the Open Badges 3.0 standard.</p>
+
+      <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; color: #5AB69F; margin-top: 2.5rem;">Key Endpoints</h2>
+      <ul style="font-size: 1.05rem; color: #495265; padding-left: 0; list-style: none;">
+        <li style="margin-bottom: 1.5rem;">
+          <strong style="color: #5AB69F;">Credentials</strong>
+          <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /api/credentials</code> - List all credentials (authenticated)</li>
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">POST /api/credentials</code> - Create a new credential</li>
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /api/credentials/:id/verify</code> - Verify a credential's authenticity</li>
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">POST /api/credentials/import</code> - Import a credential</li>
+            <li><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">POST /api/credentials/:id/revoke</code> - Revoke a credential</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 1.5rem;">
+          <strong style="color: #5AB69F;">Profiles</strong>
+          <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /api/profiles/me</code> - Get the current user's profile</li>
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /api/profiles/:id/issued-credentials</code> - Credentials issued by a profile</li>
+            <li><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /api/profiles/:id/received-credentials</code> - Credentials received by a profile</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 1.5rem;">
+          <strong style="color: #5AB69F;">Achievements</strong>
+          <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: #495265;">
+            <li style="margin-bottom: 0.3rem;"><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /api/achievements</code> - List all achievements</li>
+            <li><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">POST /api/achievements</code> - Create a new achievement</li>
+          </ul>
+        </li>
+        <li>
+          <strong style="color: #5AB69F;">Revocation</strong>
+          <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: #495265;">
+            <li><code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">GET /credentials/:credentialId/status</code> - Check if a credential has been revoked</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; color: #5AB69F; margin-top: 2.5rem;">Usage Example</h2>
+      <pre style="background: rgba(90, 182, 159, 0.08); color: #2D3436; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; border-left: 4px solid #5AB69F; line-height: 1.6;">{`// Fetch all credentials (authenticated)
+fetch('http://localhost:1337/api/credentials', {
+  headers: { Authorization: 'Bearer YOUR_TOKEN' }
+})
+  .then(res => res.json())
+  .then(data => console.log(data));`}</pre>
+
+      <p style="margin-top: 2rem; font-size: 1.05rem; color: #495265; line-height: 1.7;">
+        For full API details, see the backend <a href="https://github.com/Schroedinger-Hat/certo/blob/main/src/backend/README.md" target="_blank" style="color: #5AB69F;">README</a> or the Strapi API docs at <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">http://localhost:1337/documentation</code> (after enabling Swagger).
+      </p>
+    </Card>
+  </main>
+</Layout>

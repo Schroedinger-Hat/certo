@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.vue';
+---
+
+<Layout>
+  <main style="max-width: 800px; margin: 3rem auto; padding: 2rem;">
+    <Card>
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; color: #2D3436; margin-bottom: 1.5rem; font-weight: 700;">Documentation Guidelines</h1>
+      <p style="font-size: 1.1rem; color: #495265; line-height: 1.7;">This documentation follows the rules and guidelines of the Certo repository. Please read and respect the following:</p>
+
+      <h2 style="margin-top: 2.5rem; color: #5AB69F; font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;">Code of Conduct</h2>
+      <ul style="font-size: 1.05rem; color: #495265; padding-left: 1.5rem; line-height: 1.8;">
+        <li style="margin-bottom: 0.8rem;">Be respectful and considerate in all interactions.</li>
+        <li style="margin-bottom: 0.8rem;">Use welcoming and inclusive language.</li>
+        <li style="margin-bottom: 0.8rem;">Avoid demeaning, discriminatory, or harassing behavior and speech.</li>
+        <li>See the <a href="https://github.com/Schroedinger-Hat/certo/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener" style="color: #5AB69F;">Code of Conduct</a> for full details.</li>
+      </ul>
+
+      <h2 style="margin-top: 2.5rem; color: #5AB69F; font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;">Contributing to Documentation</h2>
+      <ul style="font-size: 1.05rem; color: #495265; padding-left: 1.5rem; line-height: 1.8;">
+        <li style="margin-bottom: 0.8rem;">Follow the <a href="https://github.com/Schroedinger-Hat/certo/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener" style="color: #5AB69F;">Contributing Guide</a> for reporting issues, proposing changes, and submitting pull requests.</li>
+        <li style="margin-bottom: 0.8rem;">Use clear, imperative commit messages (prefer Conventional Commits).</li>
+        <li style="margin-bottom: 0.8rem;">Keep documentation changes focused and atomic.</li>
+        <li>Add or update documentation tests/examples where applicable.</li>
+      </ul>
+
+      <h2 style="margin-top: 2.5rem; color: #5AB69F; font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;">Structure & Best Practices</h2>
+      <ul style="font-size: 1.05rem; color: #495265; padding-left: 1.5rem; line-height: 1.8;">
+        <li style="margin-bottom: 0.8rem;">Organize documentation in logical sections and use clear headings.</li>
+        <li style="margin-bottom: 0.8rem;">Provide examples, code snippets, and screenshots where helpful.</li>
+        <li style="margin-bottom: 0.8rem;">Link to relevant API docs, guides, and external resources.</li>
+        <li>Keep documentation up to date with code changes.</li>
+      </ul>
+
+      <h2 style="margin-top: 2.5rem; color: #5AB69F; font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;">License</h2>
+      <p style="font-size: 1.05rem; color: #495265; line-height: 1.7;">By contributing to documentation, you agree that your contributions will be licensed under the project's license. See the <a href="https://github.com/Schroedinger-Hat/certo/blob/main/LICENSE" target="_blank" rel="noopener" style="color: #5AB69F;">LICENSE</a> file for details.</p>
+
+      <h2 style="margin-top: 2.5rem; color: #5AB69F; font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;">Thank You</h2>
+      <p style="font-size: 1.05rem; color: #495265; line-height: 1.7;">We appreciate every contribution, from bug reports to documentation fixes. If you want help getting started, comment on an issue or open a discussion and we'll point you to a good first task.</p>
+    </Card>
+  </main>
+</Layout>

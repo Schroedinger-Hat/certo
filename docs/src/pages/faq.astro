@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.vue';
+---
+
+<Layout>
+  <main style="max-width:800px;margin:3rem auto;padding:2rem;">
+    <Card>
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size:2.5rem;color: #2D3436;margin-bottom:2rem; font-weight: 700;">Frequently Asked Questions</h1>
+      <ul style="font-size:1.05rem;color: #495265;padding-left:0; list-style: none;">
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">What is Certo?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Certo is an open-source platform for issuing, managing, and verifying digital certificates and badges using the Open Badges 3.0 standard.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">Who can use Certo?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Certo is designed for course organizers, workshop leaders, event managers, and anyone who needs to issue verifiable credentials.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">How do I issue a badge or certificate?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Log in as an issuer, navigate to the dashboard, and use the badge issuance form to create and award credentials.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">How can recipients verify their credentials?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Recipients (or third parties) can use the Certo verification page to check the authenticity of a badge or certificate using its unique identifier or JSON file.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">Can I share my badge on LinkedIn?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Yes! Certo provides easy sharing options for LinkedIn and other social platforms.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">How do I contribute to Certo?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">See the <a href="/guidelines" style="color: #5AB69F;">Documentation Guidelines</a> and the <a href="https://github.com/Schroedinger-Hat/certo/blob/main/CONTRIBUTING.md" target="_blank" style="color: #5AB69F;">Contributing Guide</a>.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">Where is my data stored?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">All data is stored securely in a PostgreSQL database managed by the Certo backend (Strapi). Credentials are cryptographically signed for security.</span>
+        </li>
+        <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);"><strong style="color: #5AB69F; font-size: 1.1rem;">How do I reset the database or seed data?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Use <code style="background: rgba(90, 182, 159, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px;">docker-compose down -v</code> to remove volumes and restart the stack. See the README for details.</span>
+        </li>
+        <li style="margin-bottom: 0;"><strong style="color: #5AB69F; font-size: 1.1rem;">Is Certo free and open source?</strong><br />
+          <span style="color: #495265; line-height: 1.6;">Yes! Certo is licensed under the GNU AGPL v3.0. See the LICENSE file for details.</span>
+        </li>
+      </ul>
+    </Card>
+  </main>
+</Layout>
