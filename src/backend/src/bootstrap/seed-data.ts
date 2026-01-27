@@ -126,9 +126,50 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
 
     // 5. Create a sample credential (badge award) granted to the admin user
     const credentialId = `urn:uuid:${randomUUID()}`;
+    const baseUrl = strapi.config.get('server.url', 'http://localhost:1337');
+    
+    // Generate cryptographic proof for the credential
+    let proof;
+    try {
+      const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8;
+      if (pkcs8) {
+        const { importPKCS8, SignJWT } = await import('jose');
+        const credentialPayload = {
+          credentialId,
+          name: sampleAchievement.name,
+          description: sampleAchievement.description,
+          type: ['VerifiableCredential', 'OpenBadgeCredential'],
+          achievement: sampleAchievement.id,
+          issuer: adminProfile.id,
+          recipient: adminProfile.id,
+          issuanceDate: new Date().toISOString(),
+        };
+        const privateKey = await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA');
+        const jws = await new SignJWT(credentialPayload)
+          .setProtectedHeader({ alg: 'EdDSA' })
+          .sign(privateKey);
+        proof = {
+          type: 'Ed25519Signature2020',
+          created: new Date().toISOString(),
+          verificationMethod: `${baseUrl}/api/profiles/${adminProfile.id}/keys`,
+          proofPurpose: 'assertionMethod',
+          jws
+        };
+      }
+    } catch (proofError) {
+      strapi.log.warn('[Seed] Could not generate cryptographic proof, using placeholder:', proofError);
+      proof = {
+        type: 'Ed25519Signature2020',
+        created: new Date().toISOString(),
+        verificationMethod: `${baseUrl}/api/profiles/${adminProfile.id}/keys`,
+        proofPurpose: 'assertionMethod',
+        proofValue: 'z' + randomUUID().replace(/-/g, '')
+      };
+    }
+    
     const sampleCredential = await strapi.entityService.create('api::credential.credential', {
       data: {
-        credentialId: credentialId,
+        credentialId,
         name: 'Welcome to Certo',
         description: 'Congratulations! You have been awarded the Welcome to Certo badge for setting up your development environment.',
         type: ['VerifiableCredential', 'OpenBadgeCredential'],
@@ -138,6 +179,7 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
         achievement: sampleAchievement.id,
         issuer: adminProfile.id,
         recipient: adminProfile.id,
+        proof: [proof],
         publishedAt: new Date(),
       },
     });
@@ -153,7 +195,8 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
     strapi.log.info('='.repeat(60));
 
   } catch (error) {
-    strapi.log.error('[Seed] Error seeding development data:', error instanceof Error ? error.message : error);
+    strapi.log.error('[Seed] Error seeding development data:', error instanceof Error ? error.message : String(error));
+    strapi.log.error('[Seed] Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
     if (error instanceof Error && error.stack) {
       strapi.log.error('[Seed] Stack:', error.stack);
     }

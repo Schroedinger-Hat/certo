@@ -344,7 +344,7 @@ export class ApiClient {
    * Verify a badge assertion by ID
    */
   async verifyBadge(id: string): Promise<VerificationResult> {
-    return this.get<VerificationResult>(`/api/credentials/${id}/verify`)
+    return this.get<VerificationResult>(`/api/credentials/${encodeURIComponent(id)}/verify`)
   }
 
   /**
@@ -447,7 +447,7 @@ export class ApiClient {
    * Export a certificate by ID
    */
   async exportCertificate(id: number | string) {
-    return this.get<any>(`/api/credentials/${id}/export`)
+    return this.get<any>(`/api/credentials/${encodeURIComponent(id)}/export`)
   }
 
   /**
@@ -461,7 +461,7 @@ export class ApiClient {
    * Revoke a certificate
    */
   async revokeCertificate(id: number | string, reason: string) {
-    return this.post<any>(`/api/credentials/${id}/revoke`, { reason })
+    return this.post<any>(`/api/credentials/${encodeURIComponent(id)}/revoke`, { reason })
   }
 
   /**
@@ -475,14 +475,14 @@ export class ApiClient {
    * Get the public URL for a certificate
    */
   getCertificateUrl(id: number | string): string {
-    return `${this.baseUrl}/api/credentials/${id}/certificate`
+    return `${this.baseUrl}/api/credentials/${encodeURIComponent(id)}/certificate`
   }
 
   /**
    * Get certificate by ID
    */
   async getCertificate(id: number | string) {
-    return this.get<any>(`/api/credentials/${id}?populate=*`)
+    return this.get<any>(`/api/credentials/${encodeURIComponent(id)}?populate=*`)
   }
 
   /**
