@@ -174,7 +174,7 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
         description: 'Congratulations! You have been awarded the Welcome to Certo badge for setting up your development environment.',
         type: ['VerifiableCredential', 'OpenBadgeCredential'],
         issuanceDate: new Date(),
-        narrative: 'This credential was automatically issued upon first setup of the Certo development environment.',
+        narrative: 'This credential was automatically issued upon first setup of the Certo development environment. It serves as a sample credential to help you explore the platform features.',
         revoked: false,
         achievement: sampleAchievement.id,
         issuer: adminProfile.id,
