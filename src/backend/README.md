@@ -93,6 +93,24 @@ In a production environment, make sure to set:
 - `DATABASE_URL` - Database connection URL (for postgres/mysql)
 - `FRONTEND_URL` - URL to the frontend application (for email links)
 - `EMAIL_PROVIDER` - Email provider configuration (for sending certificate notifications)
+- `ED25519_PRIVATE_KEY_PKCS8` - Ed25519 private key in PKCS8 format (base64 encoded) for signing credentials
+
+#### Generating an Ed25519 Key Pair
+
+The application requires an Ed25519 private key to sign verifiable credentials. To generate one:
+
+```bash
+node -e "
+const { generateKeyPairSync } = require('crypto');
+const { privateKey } = generateKeyPairSync('ed25519');
+const pkcs8 = privateKey.export({ type: 'pkcs8', format: 'pem' });
+console.log(Buffer.from(pkcs8).toString('base64'));
+"
+```
+
+Set the output as the `ED25519_PRIVATE_KEY_PKCS8` environment variable.
+
+> **Note:** The docker-compose.yml includes a development key by default. **Never use the default key in production!**
 
 ## Working with Open Badges 3.0
 
