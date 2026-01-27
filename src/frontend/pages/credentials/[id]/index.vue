@@ -4,65 +4,208 @@ import type {
   Evidence,
   VerificationResult
 } from '~/types/openbadges'
+import { apiClient } from '~/api/api-client'
 
 const route = useRoute()
 const config = useRuntimeConfig()
 
-// Get the credential ID from the route params (works on both server and client)
-const credentialId = computed(() => {
-  if (!route.params.id) return ''
-  try {
-    return decodeURIComponent(route.params.id.toString())
-  }
-  catch {
-    return route.params.id.toString()
-  }
-})
+// ============================================================================
+// 1. ROUTE PARAMS & STATIC URLs
+// ============================================================================
+const rawId = route.params.id
+const credentialId = rawId
+  ? decodeURIComponent(Array.isArray(rawId) ? rawId[0] : rawId)
+  : ''
 
-// Generate shareable URL (SSR-compatible)
-const shareableUrl = computed(() => {
-  if (!credentialId.value) return WEBSITE_URL
-  return `${WEBSITE_URL}/credentials/${encodeURIComponent(credentialId.value)}`
-})
+const shareableUrl = `${WEBSITE_URL}/credentials/${encodeURIComponent(credentialId)}`
+const ogImageUrl = `${WEBSITE_URL}/.netlify/functions/og-credential?id=${encodeURIComponent(credentialId)}`
 
-// Generate OG image URL using Netlify function (SSR-compatible)
-const ogImageUrl = computed(() => {
-  if (!credentialId.value) return `${WEBSITE_URL}/og-default.png`
-  return `${WEBSITE_URL}/.netlify/functions/og-credential?id=${encodeURIComponent(credentialId.value)}`
-})
+// ============================================================================
+// 2. DATA FETCHING
+// ============================================================================
+// For SSR meta tags to work, the API must be reachable from the Nuxt server process.
+// In local dev: set NUXT_PUBLIC_API_URL to your backend (e.g., http://127.0.0.1:1337)
+// In production: set to your production API URL
 
-// Server-side data fetching for credential verification
-const { data: verificationData, error: fetchError, status } = await useAsyncData(
-  `credential-${credentialId.value}`,
+const apiUrl = config.public.apiUrl || ''
+
+// useAsyncData fetches on server (SSR) and hydrates on client
+// We catch errors to prevent page crash, but data will be null if fetch fails
+const { data: verificationData, error: fetchError, status, refresh } = await useAsyncData<VerificationResult | null>(
+  `credential-${credentialId}`,
   async () => {
-    if (!credentialId.value) return null
+    if (!credentialId) return null
 
-    const apiUrl = config.public.apiUrl || ''
+    const url = `${apiUrl}/api/credentials/${encodeURIComponent(credentialId)}/verify`
+    console.log(`[${import.meta.server ? 'SSR' : 'Client'}] Fetching: ${url}`)
 
     try {
-      // Fetch verification data from the API
-      const response = await $fetch<VerificationResult>(`${apiUrl}/api/credentials/${credentialId.value}/verify`)
-      return response
+      const result = await $fetch<VerificationResult>(url)
+      console.log(`[${import.meta.server ? 'SSR' : 'Client'}] Fetch success:`, result?.credential?.name || result?.rawCredential?.name)
+      return result
     }
     catch (err) {
-      console.error('Error fetching credential:', err)
+      console.error(`[${import.meta.server ? 'SSR' : 'Client'}] Fetch failed:`, err)
+      // Return null instead of throwing - page will render with fallback meta tags
       return null
     }
   },
   {
-    watch: [credentialId]
+    // Nuxt 3.10+ options
+    server: true,   // Fetch on server for SSR
+    lazy: false,    // Block render until fetch completes (needed for SEO)
+    default: () => null,
   }
 )
 
-// Computed values for credential data
-const verificationResult = computed(() => verificationData.value)
-const credential = computed<AchievementCredential | null>(() => {
-  if (!verificationData.value) return null
-  return verificationData.value.credential || verificationData.value.rawCredential as AchievementCredential || null
+// Client-side retry if SSR fetch failed (e.g., localhost not reachable from server)
+onMounted(async () => {
+  if (!verificationData.value && credentialId) {
+    console.log('[Client] SSR data missing, retrying with apiClient...')
+    try {
+      verificationData.value = await apiClient.verifyBadge(credentialId)
+      console.log('[Client] Retry success:', verificationData.value?.credential?.name)
+    }
+    catch (err) {
+      console.error('[Client] Retry failed:', err)
+    }
+  }
 })
 
+// ============================================================================
+// 3. COMPUTED DATA EXTRACTION
+// ============================================================================
+const credential = computed<AchievementCredential | null>(() => {
+  const data = verificationData.value
+  if (!data) return null
+  return data.credential || data.rawCredential as AchievementCredential || null
+})
+
+const verificationResult = computed(() => verificationData.value)
 const loading = computed(() => status.value === 'pending')
-const error = computed(() => fetchError.value?.message || (status.value === 'error' ? 'Failed to verify or fetch credential details' : null))
+const error = computed(() => {
+  if (fetchError.value) return fetchError.value.message
+  if (status.value === 'error' && !verificationData.value && credentialId) {
+    return 'Failed to verify or fetch credential details'
+  }
+  return null
+})
+
+// ============================================================================
+// 4. SEO METADATA
+// Per Nuxt 3 docs: use getter functions () => value for reactive meta tags
+// https://nuxt.com/docs/api/composables/use-seo-meta
+// ============================================================================
+
+// Helper functions to extract data (keeps useSeoMeta clean)
+function getCredentialName(): string {
+  const cred = verificationData.value?.credential || verificationData.value?.rawCredential
+  return cred?.name || cred?.title || ''
+}
+
+function getCredentialDescription(): string {
+  const cred = verificationData.value?.credential || verificationData.value?.rawCredential
+  return cred?.description || ''
+}
+
+function getIssuerName(): string {
+  const cred = verificationData.value?.credential || verificationData.value?.rawCredential
+  return cred?.issuer?.name || 'Certo'
+}
+
+function getRecipientName(): string {
+  return verificationData.value?.rawCredential?.recipient?.name || ''
+}
+
+// SEO with getter functions (Nuxt 3 documented pattern)
+useSeoMeta({
+  // Title
+  title: () => {
+    const name = getCredentialName()
+    return name ? `${name} | Certo` : 'Credential Details | Certo'
+  },
+
+  // Description
+  description: () => {
+    const desc = getCredentialDescription()
+    if (desc) return desc
+
+    const name = getCredentialName()
+    if (name) {
+      const issuer = getIssuerName()
+      const recipient = getRecipientName()
+      return recipient
+        ? `View and verify "${name}" awarded to ${recipient}, issued by ${issuer} via Certo.`
+        : `View and verify "${name}" issued by ${issuer} via Certo.`
+    }
+    return 'View and verify this digital credential issued via Certo.'
+  },
+
+  // Open Graph
+  ogType: 'website',
+  ogSiteName: 'Certo',
+  ogUrl: shareableUrl,
+  ogTitle: () => {
+    const name = getCredentialName()
+    return name ? `${name} | Certo` : 'Credential Details | Certo'
+  },
+  ogDescription: () => {
+    const desc = getCredentialDescription()
+    if (desc) return desc
+    const name = getCredentialName()
+    if (name) return `View and verify "${name}" issued by ${getIssuerName()} via Certo.`
+    return 'View and verify this digital credential issued via Certo.'
+  },
+  ogImage: ogImageUrl,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
+  ogImageAlt: () => {
+    const name = getCredentialName()
+    return name ? `${name} - verified credential` : 'Certo credential'
+  },
+
+  // Twitter
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => {
+    const name = getCredentialName()
+    return name ? `${name} | Certo` : 'Credential Details | Certo'
+  },
+  twitterDescription: () => {
+    const desc = getCredentialDescription()
+    if (desc) return desc
+    const name = getCredentialName()
+    if (name) return `View and verify "${name}" issued by ${getIssuerName()} via Certo.`
+    return 'View and verify this digital credential issued via Certo.'
+  },
+  twitterImage: ogImageUrl,
+  twitterImageAlt: () => {
+    const name = getCredentialName()
+    return name ? `${name} - verified credential` : 'Certo credential'
+  },
+
+  // Author
+  author: () => getIssuerName(),
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: shareableUrl }],
+})
+
+// ============================================================================
+// 5. UI HELPERS
+// ============================================================================
+async function refreshCredentialDetails() {
+  await refresh()
+  // If useAsyncData refresh failed, try apiClient (client-side only)
+  if (!verificationData.value && credentialId && import.meta.client) {
+    try {
+      verificationData.value = await apiClient.verifyBadge(credentialId)
+    }
+    catch (err) {
+      console.error('Refresh retry failed:', err)
+    }
+  }
+}
 
 // Client-side only state for image handling
 const currentImageIndex = ref(0)
@@ -90,7 +233,7 @@ const imageUrlOptions = computed(() => {
 
   const options = [
     // Option 1: Direct certificate endpoint URL
-    config.public.apiUrl ? `${config.public.apiUrl}/api/credentials/${cred.id}/certificate` : null,
+    apiClient.getCertificateUrl(cred.id),
 
     // Option 2: Raw credential achievement image URL (Strapi format)
     rawCred?.achievement?.image?.url,
@@ -154,11 +297,11 @@ async function shareCredential() {
       await navigator.share({
         title: credential.value?.name || 'Credential',
         text: `View my credential: ${credential.value?.name}`,
-        url: shareableUrl.value
+        url: shareableUrl
       })
     }
     else {
-      await navigator.clipboard.writeText(shareableUrl.value)
+      await navigator.clipboard.writeText(shareableUrl)
     }
   }
   catch (err) {
@@ -187,10 +330,6 @@ async function downloadCredential() {
   }
 }
 
-async function refreshCredentialDetails() {
-  await refreshNuxtData(`credential-${credentialId.value}`)
-}
-
 function getLinkedInAddToProfileUrl() {
   if (!credential.value) return '#'
 
@@ -202,63 +341,10 @@ function getLinkedInAddToProfileUrl() {
     issueYear: cert.issuanceDate ? new Date(cert.issuanceDate).getFullYear().toString() : '',
     issueMonth: cert.issuanceDate ? (new Date(cert.issuanceDate).getMonth() + 1).toString() : '',
     certId: cert.id,
-    certUrl: shareableUrl.value
+    certUrl: shareableUrl
   })
   return `https://www.linkedin.com/profile/add?${params.toString()}`
 }
-
-// SEO Meta tags - These run on the server for social media crawlers
-// Use computed values that work during SSR
-const pageTitle = computed(() =>
-  credential.value?.name
-    ? `${credential.value.name} | Certo`
-    : 'Credential Details | Certo'
-)
-
-const pageDescription = computed(() =>
-  credential.value?.description
-    || `View and verify this digital credential issued via Certo - the open source credential platform.`
-)
-
-const issuerName = computed(() =>
-  credential.value?.issuer?.name || 'Certo'
-)
-
-// Set up SEO meta tags for social sharing
-useSeoMeta({
-  title: pageTitle,
-  description: pageDescription,
-  // Open Graph tags
-  ogType: 'website',
-  ogTitle: pageTitle,
-  ogDescription: pageDescription,
-  ogImage: ogImageUrl,
-  ogImageWidth: 1200,
-  ogImageHeight: 630,
-  ogImageAlt: () => credential.value?.name ? `${credential.value.name} credential badge` : 'Certo credential badge',
-  ogUrl: shareableUrl,
-  ogSiteName: 'Certo',
-  // Twitter Card tags
-  twitterCard: 'summary_large_image',
-  twitterTitle: pageTitle,
-  twitterDescription: pageDescription,
-  twitterImage: ogImageUrl,
-  twitterImageAlt: () => credential.value?.name ? `${credential.value.name} credential badge` : 'Certo credential badge',
-  // Additional meta
-  author: issuerName,
-})
-
-useHead({
-  title: pageTitle,
-  link: [
-    { rel: 'canonical', href: shareableUrl }
-  ],
-  meta: [
-    // Additional structured data hints
-    { name: 'credential:issuer', content: issuerName },
-    { name: 'credential:type', content: 'OpenBadges' }
-  ]
-})
 </script>
 
 <template>
