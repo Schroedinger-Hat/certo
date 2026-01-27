@@ -85,7 +85,28 @@ docker-compose up -d
 
 This will start the backend (Strapi), frontend (Nuxt 3), and PostgreSQL database.
 
-4. Access the applications:
+4. Wait for the containers to initialize. On first run, the backend will automatically:
+   - Create sample data for testing
+   - Configure all necessary API permissions
+
+**Default login credentials (same for admin panel and frontend):**
+- Email: `admin@certo.com`
+- Password: `certo`
+
+**Sample data includes:**
+- A Strapi admin user (for the admin panel at `/admin`)
+- An API user (for frontend authentication)
+- A profile (configured as both Issuer and Recipient)
+- A sample achievement ("Welcome to Certo")
+- A sample credential/badge awarded to the admin user
+
+**Permissions automatically configured:**
+- Authenticated users can access all API endpoints (profiles, achievements, credentials, etc.)
+- Public users can read and verify badges
+
+> Note: Seed data is only created on the first run. If you need to reset the database, run `docker-compose down -v` to remove volumes, then start again.
+
+5. Access the applications:
 
 - Backend (Strapi Admin): http://localhost:1337/admin
 - Frontend (Nuxt 3): http://localhost:3000
