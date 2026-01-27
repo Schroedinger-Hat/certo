@@ -71,7 +71,7 @@ services:
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:1337
+      NUXT_PUBLIC_API_URL: http://localhost:1337
     ports:
       - "3000:3000"
     networks:

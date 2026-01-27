@@ -78,6 +78,34 @@ This is a Strapi TypeScript backend for the Certo application, a digital certifi
 
 4. Access the admin panel at: http://localhost:1337/admin
 
+### Sample Data & Permissions (Development)
+
+When running in development mode, the application automatically:
+1. **Seeds the database** with sample data on first startup
+2. **Configures permissions** for authenticated and public roles
+
+**Default login credentials (same for admin panel and frontend):**
+- Email: `admin@certo.com`
+- Password: `certo`
+
+**Sample data includes:**
+- A Strapi admin user (for the admin panel at `/admin`)
+- An API user (for frontend authentication)
+- A profile (configured as both Issuer and Recipient)
+- A sample achievement ("Welcome to Certo")
+- A sample credential/badge awarded to the admin user
+
+**Permissions automatically configured:**
+- Authenticated users can access all profile, achievement, credential, evidence, and endorsement endpoints
+- Public users can read profiles, achievements, credentials, and verify badges
+
+The seed data and permissions are only created if the admin user doesn't already exist. To reset and reseed:
+1. Stop the application
+2. Delete the database (or remove Docker volumes with `docker-compose down -v`)
+3. Restart the application
+
+> Note: Seeding is disabled in production (`NODE_ENV=production`).
+
 ### Environment Variables
 
 The application uses various environment variables for configuration. 
