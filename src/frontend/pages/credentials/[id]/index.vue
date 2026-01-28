@@ -375,32 +375,89 @@ onMounted(async () => {
 
         <!-- Verification Checks -->
         <div v-if="verificationResult?.checks?.length" class="mt-6">
-          <h4 class="font-medium mb-3">
+          <h4 class="font-medium mb-4 text-gray-700">
             Verification Checks
           </h4>
-          <div class="space-y-2">
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <div
               v-for="check in verificationResult.checks"
               :key="check.check"
-              class="flex items-center p-3 rounded-lg bg-gray-50"
+              class="group relative overflow-hidden rounded-xl p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+              :class="{
+                'bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200/60': check.result === 'success',
+                'bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200/60': check.result === 'warning',
+                'bg-gradient-to-br from-red-50 to-rose-50 border border-red-200/60': check.result === 'error',
+              }"
             >
+              <!-- Background decoration -->
               <div
-                class="w-6 h-6 mr-3"
+                class="absolute -right-4 -top-4 h-20 w-20 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-30"
                 :class="{
-                  'i-lucide-check-circle text-green-500': check.result === 'success',
-                  'i-lucide-alert-triangle text-amber-500': check.result === 'warning',
-                  'i-lucide-x-circle text-red-500': check.result === 'error',
+                  'bg-green-400': check.result === 'success',
+                  'bg-amber-400': check.result === 'warning',
+                  'bg-red-400': check.result === 'error',
                 }"
               />
-              <div>
-                <div class="font-medium">
-                  {{ check.check }}
-                </div>
+
+              <div class="relative flex items-start gap-3">
+                <!-- Icon container with ring -->
                 <div
-                  v-if="check.message"
-                  class="text-sm"
+                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full ring-4 transition-transform group-hover:scale-110"
+                  :class="{
+                    'bg-green-100 ring-green-200/50': check.result === 'success',
+                    'bg-amber-100 ring-amber-200/50': check.result === 'warning',
+                    'bg-red-100 ring-red-200/50': check.result === 'error',
+                  }"
                 >
-                  {{ check.message }}
+                  <div
+                    class="h-5 w-5"
+                    :class="{
+                      'i-lucide-shield-check text-green-600': check.check === 'not_revoked' && check.result === 'success',
+                      'i-lucide-calendar-check text-green-600': check.check === 'not_expired' && check.result === 'success',
+                      'i-lucide-file-check-2 text-green-600': check.check === 'proof' && check.result === 'success',
+                      'i-lucide-check-circle text-green-600': check.result === 'success' && !['not_revoked', 'not_expired', 'proof'].includes(check.check),
+                      'i-lucide-alert-triangle text-amber-600': check.result === 'warning',
+                      'i-lucide-x-circle text-red-600': check.result === 'error',
+                    }"
+                  />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <!-- Status badge -->
+                  <div class="mb-1.5 flex items-center gap-2">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide"
+                      :class="{
+                        'bg-green-100 text-green-700': check.result === 'success',
+                        'bg-amber-100 text-amber-700': check.result === 'warning',
+                        'bg-red-100 text-red-700': check.result === 'error',
+                      }"
+                    >
+                      {{ check.result === 'success' ? 'Passed' : check.result === 'warning' ? 'Warning' : 'Failed' }}
+                    </span>
+                  </div>
+
+                  <!-- Check name with friendly label -->
+                  <div class="font-semibold text-gray-800">
+                    {{
+                      check.check === 'not_revoked' ? 'Not Revoked' :
+                      check.check === 'not_expired' ? 'Not Expired' :
+                      check.check === 'proof' ? 'Valid Signature' :
+                      check.check.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                    }}
+                  </div>
+
+                  <!-- Description based on check type and result -->
+                  <p class="mt-1 text-xs text-gray-500">
+                    {{
+                      check.result === 'error' || check.result === 'warning'
+                        ? (check.message || 'Verification check failed')
+                        : check.check === 'not_revoked' ? 'This credential has not been revoked by the issuer'
+                        : check.check === 'not_expired' ? 'This credential is within its validity period'
+                        : check.check === 'proof' ? 'Cryptographic signature verified successfully'
+                        : 'Verification check completed'
+                    }}
+                  </p>
                 </div>
               </div>
             </div>
