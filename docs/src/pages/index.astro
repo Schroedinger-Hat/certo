@@ -1,0 +1,26 @@
+---
+import Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout>
+  <header style="background: #1a202c; color: #fff; padding: 2rem 0; text-align: center;">
+	 <h1 style="margin: 0; font-size: 2.5rem; letter-spacing: 1px;">Project Documentation</h1>
+	 <p style="margin-top: 0.5rem; font-size: 1.2rem; color: #cbd5e1;">Your guide to using and contributing to this project</p>
+  </header>
+  <nav style="background: #f7fafc; border-bottom: 1px solid #e2e8f0; padding: 1rem 0; text-align: center;">
+	 <ul style="list-style: none; margin: 0; padding: 0; display: inline-flex; gap: 2rem;">
+		<li><a href="/getting-started" style="color: #2b6cb0; text-decoration: none; font-weight: 500;">Getting Started</a></li>
+		<li><a href="/guidelines" style="color: #2b6cb0; text-decoration: none; font-weight: 500;">Documentation Guidelines</a></li>
+	 </ul>
+  </nav>
+  <main style="max-width: 700px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.06);">
+	 <section>
+		<h2 style="font-size: 2rem; color: #2d3748; margin-bottom: 1rem;">Welcome!</h2>
+		<p style="font-size: 1.1rem; color: #4a5568;">This site contains documentation for the project. Select a page from the navigation above to get started.</p>
+	 </section>
+  </main>
+</Layout>
