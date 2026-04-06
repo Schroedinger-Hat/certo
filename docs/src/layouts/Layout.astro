@@ -3,141 +3,138 @@
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Certo Documentation</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-		<style>
-			:root {
-				--primary: #5AB69F;
-				--text-primary: #2D3436;
-				--text-secondary: #495265;
-				--bg-light: #FFFFFF;
-			}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Certo Documentation</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <style>
+            :root {
+                --primary: #5AB69F;
+                --text-primary: #2D3436;
+                --text-secondary: #495265;
+                --bg-light: #FFFFFF;
+            }
 
-			html {
-				margin: 0;
-				width: 100%;
-			}
+            html {
+                margin: 0;
+                width: 100%;
+            }
 
-			body {
-				margin: 0;
-				width: 100%;
-				min-height: 100vh;
-				font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-				background: linear-gradient(to bottom, var(--bg-light), rgba(255, 229, 174, 0.05));
-				color: var(--text-primary);
-			}
+            body {
+                margin: 0;
+                width: 100%;
+                min-height: 100vh;
+                font-family: 'Space Grotesk', 'Segoe UI', Arial, sans-serif;
+                background: linear-gradient(to bottom, var(--bg-light), rgba(255, 229, 174, 0.05));
+                color: var(--text-primary);
+            }
 
-			a {
-				color: var(--primary);
-				text-decoration: none;
-				transition: color 0.2s ease;
-			}
+            a {
+                color: var(--primary);
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
 
-			a:hover {
-				text-decoration: underline;
-			}
+            a:hover {
+                text-decoration: underline;
+            }
 
-			h1, h2, h3, h4, h5, h6 {
-				font-family: 'Space Grotesk', sans-serif;
-				font-weight: 600;
-				color: var(--text-primary);
-			}
+            h1, h2, h3, h4, h5, h6 {
+                font-family: 'Space Grotesk', sans-serif;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
 
-			.site-header {
-				background: linear-gradient(135deg, rgba(90, 182, 159, 0.95) 0%, #5AB69F 100%);
-				color: #fff;
-				padding: 3rem 2rem;
-				text-align: center;
-				box-shadow: 0 4px 20px rgba(90, 182, 159, 0.15);
-			}
+            .site-header {
+                background: linear-gradient(135deg, rgba(90, 182, 159, 0.95) 0%, #5AB69F 100%);
+                color: #fff;
+                padding: 3rem 2rem;
+                text-align: center;
+                box-shadow: 0 4px 20px rgba(90, 182, 159, 0.15);
+            }
 
-			.site-header h1 {
-				margin: 0;
-				font-family: 'Space Grotesk', sans-serif;
-				font-size: 2.8rem;
-				font-weight: 700;
-				letter-spacing: -0.5px;
-			}
+            .site-header h1 {
+                margin: 0;
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 2.8rem;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+            }
 
-			.site-header p {
-				margin-top: 0.75rem;
-				font-size: 1.1rem;
-				color: rgba(255, 255, 255, 0.95);
-				font-weight: 400;
-			}
+            .site-header p {
+                margin-top: 0.75rem;
+                font-size: 1.1rem;
+                color: rgba(255, 255, 255, 0.95);
+                font-weight: 400;
+            }
 
-			.site-nav {
-				background: rgba(255, 255, 255, 0.8);
-				backdrop-filter: blur(12px);
-				border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-				padding: 1.2rem 0;
-				text-align: center;
-				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-			}
+            .site-nav {
+                background: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+                padding: 1.2rem 0;
+                text-align: center;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            }
 
-			.site-nav ul {
-				list-style: none;
-				margin: 0;
-				padding: 0 2rem;
-				display: flex;
-				gap: 2.5rem;
-				font-size: 1rem;
-				justify-content: center;
-				flex-wrap: wrap;
-			}
+            .site-nav ul {
+                list-style: none;
+                margin: 0;
+                padding: 0 2rem;
+                display: flex;
+                gap: 2.5rem;
+                font-size: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
 
-			.site-nav a {
-				font-weight: 500;
-				color: var(--text-secondary);
-				transition: color 0.2s ease;
-			}
+            .site-nav a {
+                font-weight: 500;
+                color: var(--text-secondary);
+                transition: color 0.2s ease;
+            }
 
-			.site-nav a:hover {
-				color: var(--primary);
-				text-decoration: none;
-			}
+            .site-nav a:hover {
+                color: var(--primary);
+                text-decoration: none;
+            }
 
-			@media (max-width: 768px) {
-				.site-header h1 {
-					font-size: 1.8rem;
-				}
+            @media (max-width: 768px) {
+                .site-header h1 {
+                    font-size: 1.8rem;
+                }
 
-				.site-nav ul {
-					gap: 1.5rem;
-					padding: 0 1rem;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<header class="site-header">
-			<h1>Certo Documentation</h1>
-			<p>Your complete guide to the open-source digital credential platform</p>
-		</header>
-		<nav class="site-nav">
-			<ul>
-				<li><a href="/">Home</a></li>
-				<li><a href="/getting-started">Getting Started</a></li>
-				<li><a href="/guidelines">Guidelines</a></li>
-				<li><a href="/faq">FAQ</a></li>
-				<li><a href="/tutorials">Tutorials</a></li>
-				<li><a href="/api-reference">API Reference</a></li>
-			</ul>
-		</nav>
-		<main style="min-height: calc(100vh - 300px);">
-			<slot />
-		</main>
-		<footer style="background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(12px); padding: 3rem 2rem; margin-top: 4rem; text-align: center; border-top: 1px solid rgba(0, 0, 0, 0.08);">
-			<p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
-				© 2026 <a href="https://github.com/Schroedinger-Hat/certo" target="_blank" style="color: var(--primary);">Certo</a> - Open source digital credentials platform
-			</p>
-		</footer>
-	</body>
+                .site-nav ul {
+                    gap: 1.5rem;
+                    padding: 0 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="site-header">
+            <h1>Certo Documentation</h1>
+            <p>Your complete guide to the open-source digital credential platform</p>
+        </header>
+        <nav class="site-nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/getting-started">Getting Started</a></li>
+                <li><a href="/guidelines">Guidelines</a></li>
+                <li><a href="/faq">FAQ</a></li>
+                <li><a href="/tutorials">Tutorials</a></li>
+                <li><a href="/api-reference">API Reference</a></li>
+            </ul>
+        </nav>       
+        <slot />
+        <footer style="background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(12px); padding: 3rem 2rem; margin-top: 4rem; text-align: center; border-top: 1px solid rgba(0, 0, 0, 0.08);">
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+                © 2026 <a href="https://github.com/Schroedinger-Hat/certo" target="_blank" style="color: var(--primary);">Certo</a> - Open source digital credentials platform
+            </p>
+        </footer>
+    </body>
 </html>
