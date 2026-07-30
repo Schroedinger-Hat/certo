@@ -128,34 +128,33 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
     const credentialId = `urn:uuid:${randomUUID()}`;
     const baseUrl = strapi.config.get('server.url', 'http://localhost:1337');
     
-    // Generate cryptographic proof for the credential
+    // Generate cryptographic proof for the credential, signed with the
+    // admin profile's own issuer keypair (generated on first use).
     let proof;
     try {
-      const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8;
-      if (pkcs8) {
-        const { importPKCS8, SignJWT } = await import('jose');
-        const credentialPayload = {
-          credentialId,
-          name: sampleAchievement.name,
-          description: sampleAchievement.description,
-          type: ['VerifiableCredential', 'OpenBadgeCredential'],
-          achievement: sampleAchievement.id,
-          issuer: adminProfile.id,
-          recipient: adminProfile.id,
-          issuanceDate: new Date().toISOString(),
-        };
-        const privateKey = await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA');
-        const jws = await new SignJWT(credentialPayload)
-          .setProtectedHeader({ alg: 'EdDSA' })
-          .sign(privateKey);
-        proof = {
-          type: 'Ed25519Signature2020',
-          created: new Date().toISOString(),
-          verificationMethod: `${baseUrl}/api/profiles/${adminProfile.id}/keys`,
-          proofPurpose: 'assertionMethod',
-          jws
-        };
-      }
+      const { SignJWT } = await import('jose');
+      const credentialPayload = {
+        credentialId,
+        name: sampleAchievement.name,
+        description: sampleAchievement.description,
+        type: ['VerifiableCredential', 'OpenBadgeCredential'],
+        achievement: sampleAchievement.id,
+        issuer: adminProfile.id,
+        recipient: adminProfile.id,
+        issuanceDate: new Date().toISOString(),
+      };
+      const issuerKeys = strapi.service('api::profile.issuer-keys');
+      const { privateKey } = await issuerKeys.getOrCreateKeyPair(adminProfile.id);
+      const jws = await new SignJWT(credentialPayload)
+        .setProtectedHeader({ alg: 'EdDSA' })
+        .sign(privateKey);
+      proof = {
+        type: 'Ed25519Signature2020',
+        created: new Date().toISOString(),
+        verificationMethod: `${baseUrl}/api/profiles/${adminProfile.id}/keys`,
+        proofPurpose: 'assertionMethod',
+        jws
+      };
     } catch (proofError) {
       strapi.log.warn('[Seed] Could not generate cryptographic proof, using placeholder:', proofError);
       proof = {
