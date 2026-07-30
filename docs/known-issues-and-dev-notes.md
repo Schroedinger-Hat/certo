@@ -176,7 +176,8 @@ several of them are the kind of thing that tends to silently regress.
 
 14. **[Fixed] `CONTRIBUTING.md` referenced a `frontend/` directory**
     that doesn't exist (it's `src/frontend/`) and a backend `npm test` script
-    that didn't exist at the time (it does now — see #19). Both corrected.
+    that doesn't exist either (the backend has no test script — see #19).
+    Both corrected.
 
 15. **`.cursorrules` (repo root) describes an unrelated Next.js 15/React 19/
     Vercel AI SDK stack** — it's an unedited generic template, not real
