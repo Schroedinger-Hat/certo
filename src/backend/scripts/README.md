@@ -162,7 +162,7 @@ You can modify the `CONFIG` object in `fresh-install.js` to customize:
 
 ### License Information
 
-This project is licensed under the MIT License. If you make any changes to the codebase, please consider contributing back to the repository:
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) — see the root `LICENSE` file. If you make any changes to the codebase, please consider contributing back to the repository:
 
 - Repository: https://github.com/Schroedinger-Hat/certo
 - Issues: https://github.com/Schroedinger-Hat/certo/issues

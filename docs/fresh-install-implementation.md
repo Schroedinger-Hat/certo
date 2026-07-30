@@ -130,7 +130,7 @@ The script creates a default `.env` file with development values. In production:
 
 The script includes license information and contribution guidelines as requested in the issue:
 
-- **License**: MIT License
+- **License**: GNU Affero General Public License v3.0 (AGPL-3.0) — see the root `LICENSE` file
 - **Repository**: https://github.com/Schroedinger-Hat/certo
 - **Contribution**: Encourages users to contribute back to the repository
 

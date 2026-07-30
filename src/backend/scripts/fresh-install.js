@@ -446,7 +446,7 @@ function displaySetupInfo() {
   console.log('   • Achievements: http://localhost:1337/api/achievements');
   console.log('');
   console.log('📝 License Information:');
-  console.log('   This project is licensed under the MIT License.');
+  console.log('   This project is licensed under the GNU AGPL-3.0 License.');
   console.log('   If you make any changes, please consider contributing back to this repository.');
   console.log('   Repository: https://github.com/Schroedinger-Hat/certo');
   console.log('');
