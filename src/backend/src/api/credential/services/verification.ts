@@ -158,53 +158,70 @@ export default {
   },
 
   /**
-   * Verify a credential's cryptographic proof
-   * This is a placeholder for the actual cryptographic verification
-   * In a production environment, this would use a library like jsonld-signatures
+   * Verify a credential's cryptographic proof: structural checks first,
+   * then an actual Ed25519/JWS signature check against the issuer's
+   * public key (api::profile.issuer-keys).
    */
   async verifyProof(credential: CredentialWithRelations): Promise<{ valid: boolean; message?: string }> {
     try {
-      // In a real implementation, we would:
-      // 1. Fetch the issuer's public key using the verificationMethod in the proof
-      // 2. Verify the signature using the appropriate algorithm (e.g., Ed25519, JsonWebSignature2020)
-      // 3. Check that the proof was created by the expected issuer
-      
       // Check if the credential has proofs
       if (!credential.proof || credential.proof.length === 0) {
         return { valid: false, message: 'No proof found on credential' };
       }
-      
+
       // Get the first proof (in a production system, you might verify multiple proofs)
       const proof = credential.proof[0];
-      
+
       // Check that the proof has all required fields
       if (!proof.type || !proof.created || !proof.verificationMethod || !proof.proofPurpose) {
         return { valid: false, message: 'Proof is missing required fields' };
       }
-      
+
       // Check that the proof has a value (either proofValue or jws)
       if (!proof.proofValue && !proof.jws) {
         return { valid: false, message: 'Proof is missing value (proofValue or jws)' };
       }
-      
+
       // Check that the proofPurpose is valid
-      if (proof.proofPurpose !== 'assertionMethod' && 
-          proof.proofPurpose !== 'authentication' && 
+      if (proof.proofPurpose !== 'assertionMethod' &&
+          proof.proofPurpose !== 'authentication' &&
           proof.proofPurpose !== 'keyAgreement') {
         return { valid: false, message: `Invalid proof purpose: ${proof.proofPurpose}` };
       }
-      
+
       // Check that the proof isn't too old (e.g., created more than 10 years ago)
       const proofDate = new Date(proof.created);
       const tenYearsAgo = new Date();
       tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 10);
-      
+
       if (proofDate < tenYearsAgo) {
         return { valid: false, message: 'Proof is too old' };
       }
-      
-      // For now, since we're not implementing actual cryptographic verification,
-      // we'll accept any proof that passes the above checks
+
+      // A proofValue (rather than jws) means this credential was signed
+      // before per-issuer keys existed, or signing failed and fell back to
+      // a placeholder - either way there's no real signature to check.
+      if (!proof.jws) {
+        return { valid: false, message: 'Proof has no JWS to verify (proofValue-only proofs are not cryptographically verifiable)' };
+      }
+
+      if (!credential.issuer?.id) {
+        return { valid: false, message: 'Credential has no issuer to verify the proof against' };
+      }
+
+      const issuerKeys = strapi.service('api::profile.issuer-keys');
+      const publicKey = await issuerKeys.getPublicKey(credential.issuer.id);
+      if (!publicKey) {
+        return { valid: false, message: 'Issuer has no signing key on record' };
+      }
+
+      const { jwtVerify } = await import('jose');
+      try {
+        await jwtVerify(proof.jws, publicKey);
+      } catch (verifyError) {
+        return { valid: false, message: `Signature verification failed: ${verifyError.message}` };
+      }
+
       return { valid: true };
     } catch (error) {
       console.error('Error verifying proof:', error);
