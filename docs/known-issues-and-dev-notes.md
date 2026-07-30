@@ -10,31 +10,44 @@ several of them are the kind of thing that tends to silently regress.
 
 ## Security-relevant
 
-1. **Credential proof verification is not cryptographic.**
-   `verification.ts`'s `verifyProof()` only checks structural fields (type,
-   dates, presence of a value) — it never actually verifies the JWS signature
-   against the issuer's public key. The code comments say so explicitly. A
-   structurally well-formed but fake/unsigned proof currently passes
-   verification. See [open-badges.md](./open-badges.md#verification).
+1. **[Fixed] Credential proof verification is now cryptographic
+   for locally-issued credentials.** `verification.ts`'s `verifyProof()` used
+   to only check structural fields, never the actual signature. It now fetches
+   the issuer's public key (`api::profile.issuer-keys`' `getPublicKey()`) and
+   calls `jose.jwtVerify(proof.jws, publicKey)`, failing on any mismatch,
+   missing key, or malformed JWS. See
+   [open-badges.md](./open-badges.md#verification). This does **not** cover
+   externally-submitted credentials — see item 4.
 
-2. **Signing silently degrades if the key is missing.**
-   `credential.ts`'s `generateProof()` catches any signing error (including a
-   missing `ED25519_PRIVATE_KEY_PKCS8`) and falls back to a fake proof
-   (`proofValue: "z" + <random>`) instead of failing the issuance. A credential
-   issued in this state has no real signature but looks the same as one that
-   does, and issuance succeeds either way.
+2. **[Fixed] Signing no longer silently degrades if the key is
+   missing.** `credential.ts`'s `generateProof()` used to catch any signing
+   error and fall back to a fake `proofValue` instead of failing the
+   issuance. Now that keys are generated automatically per issuer
+   (`api::profile.issuer-keys`), the original failure mode (a missing global
+   env var) can't happen, and any other signing error now propagates and
+   fails the issuance instead of silently producing an unsigned "signed"
+   credential.
 
-3. **A real Ed25519 dev private key is committed to the repo**
-   (`ed25519-private.pem` / `ed25519-public.pem` at the repo root), and
-   `docker-compose.yml` hardcodes a default base64 PKCS8 value for
-   `ED25519_PRIVATE_KEY_PKCS8` directly in the compose file. Fine for local dev,
-   but make sure any real deployment generates its own key and never reuses
-   these values.
+3. **[Partially superseded] The old global Ed25519 dev keypair
+   committed to the repo** (`ed25519-private.pem` / `ed25519-public.pem` at
+   the repo root) and `docker-compose.yml`'s hardcoded default for
+   `ED25519_PRIVATE_KEY_PKCS8` are now **unused** — signing uses per-issuer
+   keys generated automatically (see item 1/2 and
+   [open-badges.md](./open-badges.md#signing)) and encrypted at rest via a
+   new `ENCRYPTION_KEY`-derived AES-256-GCM key (`utils/key-encryption.ts`).
+   The `.pem` files and the `ED25519_PRIVATE_KEY_PKCS8` var were left in
+   place (not deleted) to keep this change's diff scoped to signing/
+   verification — cleaning up the now-dead files is a good small follow-up.
+   `ENCRYPTION_KEY` itself has the same "make sure production generates its
+   own, don't reuse the dev default" caveat the old key had.
 
-4. **External-credential proof verification is a stub too.**
+4. **External-credential proof verification is still a stub.**
    `open-badge.ts`'s `validateExternalCredential()` sets
    `const proofVerified = true` unconditionally — importing/validating a
-   third-party OBv3 credential doesn't actually check its signature either.
+   third-party OBv3 credential doesn't check its signature. Deliberately not
+   addressed here: that work covers *our own* issuers' keys; verifying
+   an arbitrary external issuer needs DID resolution or fetching a remote
+   key, a separate, larger interoperability feature.
 
 5. **Several controller actions bypass Strapi's permission system in code**
    rather than through the role/permission model — e.g. `credential.issue` sets
@@ -152,8 +165,7 @@ several of them are the kind of thing that tends to silently regress.
 
 14. **[Fixed] `CONTRIBUTING.md` referenced a `frontend/` directory**
     that doesn't exist (it's `src/frontend/`) and a backend `npm test` script
-    that doesn't exist either (the backend has no test script — see #19).
-    Both corrected.
+    that didn't exist at the time (it does now — see #19). Both corrected.
 
 15. **`.cursorrules` (repo root) describes an unrelated Next.js 15/React 19/
     Vercel AI SDK stack** — it's an unedited generic template, not real
@@ -175,7 +187,13 @@ several of them are the kind of thing that tends to silently regress.
 18. `nuxt-gtag` ships with a hardcoded GA4 measurement ID and a `TODO` comment
     to replace it — flag before treating analytics as configured per-deployment.
 
-19. Backend has **no automated test suite** at all (no Jest/Vitest config, no
-    spec files) and the only CI workflow
-    (`.github/workflows/frontend/autofix.yml`) just runs `eslint --fix` on the
-    frontend — nothing builds, type-checks, or tests either app in CI today.
+19. **[Fixed] Backend now has a Jest suite and both apps run in
+    CI.** Coverage is intentionally narrow (unit tests for the new/changed
+    crypto logic — `key-encryption.ts`, `issuer-keys.ts`,
+    `verification.ts`'s `verifyProof()` — not a full Strapi-integration test
+    suite; see [architecture.md](./architecture.md#testing)).
+    `.github/workflows/ci.yml` runs backend type-check/test/build and
+    frontend test/build on push/PR to `main`, alongside the pre-existing
+    `frontend/autofix.yml`. Playwright E2E still isn't run in CI. Broader
+    backend test coverage (controllers, other services) remains a good
+    follow-up.

@@ -88,12 +88,14 @@ currently starts Strapi in **dev mode** even for the "production" image — see
 
 ## CI/CD
 
-There is exactly one GitHub Actions workflow:
-`.github/workflows/frontend/autofix.yml`, which runs `eslint --fix` on the
-frontend and auto-commits the result. Nothing builds, type-checks, tests, or
-produces a Docker image in CI today.
+Two GitHub Actions workflows: `.github/workflows/frontend/autofix.yml` (runs
+`eslint --fix` on the frontend and auto-commits the result), and
+`.github/workflows/ci.yml` (two jobs on push/PR to `main` — `backend`:
+type-check, `npm test`, `npm run build`; `frontend`: `npm run test:unit`,
+`npm run build`). Playwright E2E isn't run in CI (needs a browser install,
+heavier — not yet added). No workflow produces a Docker image.
 
 ## Testing
 
 - **Frontend**: Vitest + `@vue/test-utils` + `@nuxt/test-utils` for component/unit specs (`src/frontend/components/__tests__/`, plus specs for the API clients and middleware), and Playwright E2E specs (`src/frontend/e2e/`).
-- **Backend**: no automated test suite at all — no test runner configured, no spec files. The only verification tooling is `scripts/test-fresh-install.js`, a manual script that checks the seed data was created correctly.
+- **Backend**: Jest (`npm test`, `jest.config.js`), unit-level only — no full Strapi bootstrap/DB, just the highest-risk crypto logic tested directly: `utils/key-encryption.ts`, `api/profile/services/issuer-keys.ts`, and `api/credential/services/verification.ts`'s `verifyProof()`. `jose` ships ESM-only, so Jest needs a babel transform (`babel.config.js`, Jest-only — the app itself is built by Strapi, not Babel) to load it. `scripts/test-fresh-install.js` remains a separate manual script that checks seed data was created correctly.

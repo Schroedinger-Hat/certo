@@ -49,6 +49,7 @@ permissions on first run) and `generate-test-email.js`; see
 | `evidence` | Evidence attached to a credential | `credential`→credential |
 | `endorsement` | Third-party attestation (OBv3 Endorsement) | `endorser`→profile, `endorsedObject` (URI string), `claim` (json), `proof` component |
 | `revocation-list` | StatusList2021-style revocation registry | `issuer`→profile, `encodedList` — see caveat in [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md), it isn't actually wired into the verify flow |
+| `issuer-key` | Per-issuer Ed25519 signing keypair (private key encrypted at rest) | `profile`→profile (oneToOne). **Has no routes/controllers/services — no REST endpoint exists for it at all**, so it's reachable only from server-side code (`strapi.db.query`/`entityService`), never through any role's permissions. See [open-badges.md](./open-badges.md#signing). |
 
 Components (`src/backend/src/components/badge/*.json`): `criteria`, `alignment`,
 `public-key`, `skill`, `proof` — these directly model Open Badges 3.0

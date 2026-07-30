@@ -25,14 +25,15 @@ see [frontend.md](./frontend.md)) → Strapi's `credential` controller → the
    hand-rolled UUID v4 generator (`Math.random()`-based), not Node's built-in
    `crypto.randomUUID()`.
 4. **Sign the payload** (`generateProof(issuerId, credentialPayload)`):
-   - Loads `ED25519_PRIVATE_KEY_PKCS8` from env (base64-encoded PKCS8).
+   - Gets (or generates, on first use) the issuer's own Ed25519 keypair via
+     `api::profile.issuer-keys`' `getOrCreateKeyPair(issuerId)` — see
+     [open-badges.md](./open-badges.md#signing).
    - Signs the credential payload (minus `proof`) as a JWS using `jose`'s
      `SignJWT` with `alg: 'EdDSA'`.
    - Returns a `proof` object: `{ type: 'Ed25519Signature2020', created, verificationMethod: '<baseUrl>/api/profiles/<issuerId>/keys', proofPurpose: 'assertionMethod', jws }`.
-   - **If the env var is missing, this silently falls back** to a fake proof —
-     `proofValue: "z" + <uuid without dashes>` — rather than failing the
-     issuance. A credential issued this way looks structurally valid but carries
-     no real signature at all.
+   - **This now throws rather than falling back to a fake proof** if key
+     generation/signing fails — an unsigned "signed" credential defeats the
+     point of signing at all, so issuance fails loudly instead.
 5. **Persist** the `credential` row (with `proof: [proof]` attached) via
    `strapi.entityService.create`.
 6. **Link back to the recipient's profile** (`receivedCredentials.connect`) and
