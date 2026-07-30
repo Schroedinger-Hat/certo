@@ -51,43 +51,32 @@ see [frontend.md](./frontend.md)) → Strapi's `credential` controller → the
    caller — email failures are caught and reported back as `notification.error`
    rather than failing the whole request.
 
-## The email provider is effectively hardcoded
+## The email provider now reads from env
 
-`config/plugins.ts`'s `email` config hardcodes Ethereal (a disposable test SMTP
-sink) directly in source:
+`config/plugins.ts`'s `email` config used to hardcode Ethereal (a disposable
+test SMTP sink) directly in source, ignoring `env('SMTP_HOST')` etc. — meaning
+`docker-compose.yml`'s `SMTP_HOST=mailhog`/`SMTP_PORT=1025` (intended to route
+dev email through the Mailhog container) silently had no effect. This is now
+fixed: `host`/`port`/`auth.user`/`auth.pass`/`secure`/`requireTLS` and the
+`defaultFrom`/`defaultReplyTo` settings all read from
+`SMTP_HOST`/`SMTP_PORT`/`SMTP_USERNAME`/`SMTP_PASSWORD`/`SMTP_SECURE`/
+`SMTP_REQUIRE_TLS`/`SMTP_FROM`/`SMTP_REPLY_TO` (matching `.env.example`'s
+existing names), falling back to the old hardcoded Ethereal values as defaults
+if unset. `requireTLS` now defaults to `false` instead of `true`, since
+Mailhog doesn't support STARTTLS. See
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 7.
 
-```ts
-email: {
-  config: {
-    provider: 'nodemailer',
-    providerOptions: {
-      host: 'smtp.ethereal.email',
-      auth: { user: 'gw7t4cqccle4qv53@ethereal.email', pass: 'VxnCkssx2Yw2kTfQfz' },
-      ...
-    },
-  },
-},
-```
+## The second, unused email code path was removed
 
-This does **not** read `env('SMTP_HOST')` etc. — meaning the `SMTP_*` variables
-in `.env.example`, and `docker-compose.yml`'s `SMTP_HOST=mailhog` /
-`SMTP_PORT=1025` (intended to route dev email through the Mailhog container),
-currently have **no effect**. Whichever of Ethereal/Mailhog actually receives
-mail depends on this mismatch, not on the env vars a developer would reasonably
-expect to control it. If you're debugging "why isn't email showing up in
-Mailhog," this is why. See
-[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md).
-
-## A second, unused email code path exists
-
-`src/backend/src/api/credential/services/notification.ts` defines
-`sendBadgeIssuedEmail(credential, recipient, achievement)`, which builds a
-richer email that embeds the rendered certificate as an inline base64 image
-(via `certificate.ts`'s `generateCertificateDataUri`). **It is never called
-anywhere else in the codebase** (confirmed by search) — the real issuance flow
-only uses `credential.ts`'s plain-text/HTML template. Treat `notification.ts` as
-dead/legacy code, not as a currently-active second notification path, unless
-you're the one wiring it in.
+`src/backend/src/api/credential/services/notification.ts` used to define
+`sendBadgeIssuedEmail(credential, recipient, achievement)`, a richer email
+that embedded the rendered certificate as an inline base64 image. It was
+never called anywhere in the codebase (confirmed by search), so the file was
+deleted as dead code rather than being wired in — reviving that richer
+template is a deliberate design decision better made as part of a future
+notification-provider effort, not this cleanup pass.
+The real issuance flow continues to use `credential.ts`'s plainer
+`templates/credential-issuance.ts` template.
 
 ## Certificates
 
@@ -111,14 +100,15 @@ models a StatusList2021-style bitstring registry, but
 `checkStatusInList` is a simplified comma-separated-indices implementation, and
 **it isn't wired into the main verify flow** — `verifyCredential` only ever
 checks the credential's own `revoked` boolean, never consults a
-`revocation-list`. If you build the "real" revocation registry described in
-ROADMAP.md Phase 3/Future Features, this is the seam to close.
+`revocation-list`. If you build the "real" revocation registry
 
 ## Bootstrap-time permissions
 
-Every server start, `bootstrap.ts` force-enables broad public/authenticated
-Strapi permissions on `achievement`, `profile`, `credential`, `evidence`, etc.
-(see [backend.md](./backend.md#permission-bootstrapping)) — this is why a fresh
+Every server start, `src/index.ts`'s `bootstrap` hook calls
+`bootstrap/permissions-setup.ts`'s `setupPermissions()`, which enables broad
+public/authenticated (and issuer) Strapi permissions on
+`achievement`, `profile`, `credential`, `evidence`, etc. (see
+[backend.md](./backend.md#permission-bootstrapping)) — this is why a fresh
 Docker Compose install "just works" without manually configuring Strapi's admin
 permissions UI, but it also means permission changes made by hand in the admin
 panel get partially re-asserted on every restart.

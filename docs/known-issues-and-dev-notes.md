@@ -4,6 +4,10 @@ Things found while documenting the system that are broken, stubbed, inconsistent
 or otherwise worth knowing before making claims (production-readiness,
 security, "how does X work") elsewhere. Grouped by severity/theme, not by file.
 
+Items marked **[Fixed]** were corrected after this was first written — kept
+here (rather than deleted) so the history/rationale isn't lost, since
+several of them are the kind of thing that tends to silently regress.
+
 ## Security-relevant
 
 1. **Credential proof verification is not cryptographic.**
@@ -47,33 +51,58 @@ security, "how does X work") elsewhere. Grouped by severity/theme, not by file.
 
 ## Correctness / config bugs
 
-7. **`SMTP_*` env vars have no effect.** `config/plugins.ts` hardcodes Ethereal
-   SMTP credentials directly in source instead of reading `env('SMTP_HOST')`
-   etc. This means `docker-compose.yml`'s `SMTP_HOST=mailhog` /
-   `SMTP_PORT=1025` — intended to route dev email through the Mailhog
-   container — currently does nothing; mail goes to Ethereal regardless. See
-   [strapi-and-credentials.md](./strapi-and-credentials.md#the-email-provider-is-effectively-hardcoded).
+7. **[Fixed] `SMTP_*` env vars had no effect.**
+   `src/backend/config/plugins.ts` hardcoded Ethereal SMTP credentials
+   directly in source instead of reading from env, so
+   `docker-compose.yml`'s `SMTP_HOST=mailhog`/`SMTP_PORT=1025` silently did
+   nothing. Fixed by reading `SMTP_HOST`/`SMTP_PORT`/`SMTP_USERNAME`/
+   `SMTP_PASSWORD`/`SMTP_FROM`/`SMTP_REPLY_TO`/`SMTP_SECURE`/`SMTP_REQUIRE_TLS`
+   from env (matching the names already used in `.env.example`), with the
+   previous hardcoded Ethereal values kept as defaults for anyone who hasn't
+   set the vars. `requireTLS` now defaults to `false` rather than `true`,
+   since Mailhog (the Docker Compose dev SMTP target) doesn't support
+   STARTTLS — Ethereal still works fine with it unset since nodemailer
+   upgrades to STARTTLS opportunistically when the server offers it. The
+   pre-existing (separately hardcoded) `SMTP_FROM_EMAIL` env var name used by
+   `users-permissions.advanced.email_reset_password` was also corrected to
+   `SMTP_FROM`, matching `.env.example`.
 
-8. **Backend Dockerfile boots in dev mode.** `src/backend/Dockerfile` builds
-   with `npm run build` but starts the container with `CMD ["npm", "run", "develop"]`
-   (Strapi dev mode), not `npm run start`. It also overwrites
-   `config/middlewares.js` with a minimal placeholder during the build step,
-   discarding the real CORS/CSP config from `config/middlewares.ts` in the
-   built image. Don't treat this Dockerfile as production-ready without fixing
-   both.
+8. **[Fixed] Backend Dockerfile booted in dev mode.**
+   `src/backend/Dockerfile` built with `npm run build` but started the
+   container with `CMD ["npm", "run", "develop"]` (Strapi dev mode), and
+   overwrote `config/middlewares.js` with a minimal placeholder during the
+   build step, discarding the real CORS/CSP config from
+   `config/middlewares.ts`. Fixed: the middlewares-overwrite step was removed
+   and `CMD` now runs `npm run start`.
 
-9. **Two parallel permission-bootstrap implementations**: `src/bootstrap.ts`
-   and `src/bootstrap/permissions-setup.ts`/`.js` do overlapping work. Neither
-   appears to call the other — likely redundant, worth consolidating rather
-   than treating as two intentional layers.
+9. **[Fixed] `src/bootstrap.ts` was entirely dead code, not a
+   second active implementation.** The original note here described this as
+   "two parallel permission-bootstrap implementations." On closer inspection,
+   Strapi 5 only auto-loads `src/index.ts` as the app's `register`/`bootstrap`
+   lifecycle hooks — and `index.ts` only imports from
+   `./bootstrap/seed-data` and `./bootstrap/permissions-setup`. The
+   standalone `src/bootstrap.ts` (with `setupPublicPermissions`,
+   `setupAuthenticatedPermissions`, `forceEnableEndpoints`,
+   `enableAllAuthenticatedPermissions`, `setupIssuerPermissions`) was never
+   imported by anything and never ran. Its one piece of functionality nothing
+   else covered — issuer-role permissions — was ported into
+   `bootstrap/permissions-setup.ts` as a new `ISSUER_PERMISSIONS` list, wired
+   through the existing `setupRolePermissions(strapi, 'issuer', ...)` call.
+   `src/bootstrap.ts` was then deleted. Also deleted:
+   `src/backend/src/bootstrap/permissions-setup.js`, a stale, incomplete
+   (public-permissions-only) JS duplicate of `permissions-setup.ts` that
+   wasn't the file `index.ts` actually imports — `permissions-setup.ts` is now
+   the single source of truth for permission bootstrapping.
 
-10. **`notification.ts`'s `sendBadgeIssuedEmail` is dead code.** It builds a
-    richer email (with an inline certificate image) but is never called
-    anywhere in the codebase — confirmed by search. The real issuance flow
-    (`credential.ts`) uses a plainer template
-    (`templates/credential-issuance.ts`). If you're trying to find "why doesn't
-    the certificate image show up in the issuance email," this is why — that
-    code path never runs.
+10. **[Fixed] `notification.ts`'s `sendBadgeIssuedEmail` was dead
+    code.** It built a richer email (with an inline certificate image) but
+    was never called anywhere in the codebase — confirmed by search. The real
+    issuance flow (`credential.ts`) uses a plainer template
+    (`templates/credential-issuance.ts`). The file was deleted rather than
+    wired in, since reviving it is a design decision (which template should
+    "win," and whether embedding a base64 certificate image in every
+    issuance email is desirable) better made deliberately later, not as
+    part of this cleanup.
 
 11. **Routing overlap in the credential API.** `credential-public.ts` defines
     `GET /api/credentials/:id`, which Strapi's core router would already
@@ -81,30 +110,57 @@ security, "how does X work") elsewhere. Grouped by severity/theme, not by file.
     explicitly "as a last resort" for public listing. Signs of prior
     permission/routing struggles rather than a single clean source of truth per
     route — check both files before assuming which one actually serves a given
-    request.
+    request. Not addressed yet.
 
 ## Doc / metadata inconsistencies
 
-12. **License conflict**: root `LICENSE` is AGPL-3.0 (and the README says so),
-    but `docs/fresh-install-implementation.md` claims MIT. Needs reconciling —
-    don't copy the MIT claim forward.
+12. **[Fixed] License conflict.** Root `LICENSE` is AGPL-3.0 (and
+    the README agrees) — confirmed as the correct license going forward.
+    `docs/fresh-install-implementation.md`, `scripts/fresh-install.sh`,
+    `src/backend/scripts/fresh-install.js`, and
+    `src/backend/scripts/README.md` all previously claimed MIT (including two
+    places where the *running script itself* printed "This project is
+    licensed under the MIT License" to the console) — all four were corrected
+    to reference AGPL-3.0.
 
-13. **Default seed credentials differ between docs**: README says
-    `admin@certo.com` / `certo`; `docs/fresh-install-implementation.md` says
-    `admin@certo.com` / `Admin123!` (plus a separate
-    `issuer@certo.com` / `Issuer123!`). Check `scripts/fresh-install.sh` /
-    `src/backend/scripts/fresh-install.js` directly if you need the actual
-    current values rather than trusting either doc.
+13. **Not actually a conflict: two different scripts create two different
+    sets of seed credentials, on purpose.** The original note here treated
+    README's `admin@certo.com`/`certo` and
+    `docs/fresh-install-implementation.md`'s `admin@certo.com`/`Admin123!` +
+    `issuer@certo.com`/`Issuer123!` as inconsistent docs. They're not — they
+    describe two separate, independent seeding mechanisms:
+    - `src/backend/src/bootstrap/seed-data.ts`'s `seedDevelopmentData()` runs
+      automatically on every `docker-compose up` (via `src/index.ts`'s
+      `bootstrap` hook, skipped in production, no-ops if the admin already
+      exists) and creates `admin@certo.com`/`certo` — this is what the README
+      describes.
+    - `scripts/fresh-install.sh` → `src/backend/scripts/fresh-install.js` is a
+      separate, manually-invoked script (written for
+      [issue #57](https://github.com/Schroedinger-Hat/certo/issues/57)) that
+      creates a *different* admin (`admin@certo.com`/`Admin123!`) plus a
+      distinct issuer user (`issuer@certo.com`/`Issuer123!`) and a richer set
+      of sample data. This is what `docs/fresh-install-implementation.md`
+      describes.
 
-14. **`CONTRIBUTING.md` references a `frontend/` directory** that doesn't exist
-    (it's `src/frontend/`).
+    Worth flagging to the team as a UX footgun even though it's not a doc
+    bug: running both against the same database means `admin@certo.com`
+    ends up governed by whichever script ran first (the automatic
+    `seedDevelopmentData` no-ops if that email already exists), so the
+    "current" admin password depends on order of operations. Not fixed here
+    since resolving it means a product decision (should there be one seeding
+    mechanism, not two?) rather than a docs/config bug.
+
+14. **[Fixed] `CONTRIBUTING.md` referenced a `frontend/` directory**
+    that doesn't exist (it's `src/frontend/`) and a backend `npm test` script
+    that doesn't exist either (the backend has no test script — see #19).
+    Both corrected.
 
 15. **`.cursorrules` (repo root) describes an unrelated Next.js 15/React 19/
     Vercel AI SDK stack** — it's an unedited generic template, not real
     architecture guidance for this project. `.cursor/rules/vue.mdc` is the
     relevant one (Nuxt3/Vue3/UnoCSS/UnaUI/Strapi5), though it also ends
     mid-sentence, suggesting it too was assembled from a template and never
-    finished.
+    finished. Not addressed here (low priority, no functional impact).
 
 ## Minor / cleanup
 

@@ -1,9 +1,6 @@
 # Becoming Tool-Agnostic
 
-ROADMAP.md states "No Vendor Lock-in" and "Extensible by Design" as guiding
-principles, and Phase 4 envisions a plugin system where `strapi` is listed as
-just *one* of several possible backend plugins (alongside `moodle`, `directus`,
-`wordpress`, etc.). This doc is an honest assessment of the gap between that
+This doc is an honest assessment of the gap between
 vision and the current code, so future work can be scoped realistically.
 
 ## Bottom line
@@ -44,14 +41,14 @@ only "provider" concept in the codebase).
 4. **Auth is Strapi's `users-permissions` plugin**, its specific endpoints
    (`/api/auth/local`, `/api/auth/local/register`, `/api/users/me`), and its
    role model (`public`/`authenticated`/custom `issuer`). No OAuth2/OIDC
-   abstraction exists (that's ROADMAP Phase 2).
+   abstraction exists.
 
 5. **Email is Strapi's plugin system**
    (`strapi.plugins.email.services.email.send`), configured with a single
    hardcoded nodemailer/Ethereal provider (see
    [strapi-and-credentials.md](./strapi-and-credentials.md)) — no
    notification-provider abstraction. Slack/Teams/multi-provider email are
-   ROADMAP Phase 2/4 aspirations only.
+   aspirations only.
 
 6. **Signing uses one global env-var key**, not a pluggable KMS/HSM/DID-resolver
    abstraction — despite `profile.publicKey`/`did` schema fields hinting at a
@@ -76,16 +73,16 @@ natural seams to insert interfaces at are:
   callers.
 - **Notification port**: an interface like `sendCredentialIssued(recipient, credential)`
   with the current Strapi-email implementation as one provider, matching
-  ROADMAP Phase 2's "Notification Providers" (Slack/Teams/Email) and "Email
+  "Notification Providers" (Slack/Teams/Email) and "Email
   Providers" (SMTP/SES/Mailgun/SendGrid) sections.
 - **API client contract on the frontend**: a stable, backend-agnostic response
   shape that `ApiClient` normalizes *to*, decoupling `formatCredential()`'s
   Strapi-v4/v5-aware logic from the rest of the frontend.
-- **Auth provider abstraction**: matching ROADMAP Phase 2's OAuth2/OIDC/LDAP/SCIM
+- **Auth provider abstraction**: matching OAuth2/OIDC/LDAP/SCIM
   goals — today this would require introducing an auth-provider interface
   Strapi's `users-permissions` satisfies as the default.
 
 None of this exists yet. Treat "tool agnostic" as a multi-phase architectural
-project (matching the roadmap's own phased structure), not a small refactor —
+project, not a small refactor —
 the coupling isn't superficial (e.g. just import paths), it's baked into the
 data model, the service layer, and the frontend client all at once.

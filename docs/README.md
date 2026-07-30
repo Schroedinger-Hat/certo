@@ -1,8 +1,7 @@
 # Certo Documentation
 
 This folder contains developer-facing documentation for Certo, generated to give
-contributors a shared, accurate picture of the system as it exists today (as opposed
-to [ROADMAP.md](../ROADMAP.md), which describes where the project wants to go).
+contributors a shared, accurate picture of the system as it exists today.
 
 | Doc | Contents |
 |---|---|
@@ -20,7 +19,7 @@ to [ROADMAP.md](../ROADMAP.md), which describes where the project wants to go).
 
 - Start with `overview.md` and `architecture.md` for orientation.
 - `strapi-and-credentials.md` and `open-badges.md` are the two most detailed/technical docs — read them together, since credential issuance and Open Badges serialization are implemented in the same service files.
-- `known-issues-and-dev-notes.md` intentionally documents things that are broken, stubbed, or inconsistent. It exists so future work (including the roadmap) is scoped against reality, not against what the code *looks* like it does at a glance.
+- `known-issues-and-dev-notes.md` intentionally documents things that are broken, stubbed, or inconsistent. It exists so future work (including a roadmap) is scoped against reality, not against what the code *looks* like it does at a glance.
 
 These docs reflect the codebase as of 2026-07-30. Strapi, Nuxt, and the credential
 services change quickly early in the project's life — if something here disagrees

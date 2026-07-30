@@ -7,9 +7,9 @@ recipients, and lets anyone **verify** a credential later. It implements the
 itself built on the [W3C Verifiable Credentials Data Model](https://www.w3.org/TR/vc-data-model/).
 
 Maintained by [Schrödinger Hat](https://www.schrodinger-hat.it/), an Italian tech
-community. Repo: `Schroedinger-Hat/certo`. License: AGPL-3.0 (see note in
-[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) about a conflicting
-MIT mention elsewhere in the docs).
+community. Repo: `Schroedinger-Hat/certo`. License: AGPL-3.0 — confirmed as
+correct; a stray MIT mention in a few scripts/docs was fixed, see
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 12.
 
 ## What it does today
 
@@ -27,8 +27,7 @@ MIT mention elsewhere in the docs).
 
 These are current gaps, not just "future features" — see
 [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) for the
-stubs/placeholders in the code, and [ROADMAP.md](../ROADMAP.md) for the longer-term
-plan:
+stubs/placeholders in the code and for the long term plan:
 
 - No real cryptographic verification of a credential's signature (structural checks only).
 - No webhooks, event bus, or pluggable notification providers.

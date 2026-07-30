@@ -8,7 +8,7 @@ side under `src/`, tied together only by `docker-compose.yml`:
 
 ```
 certo/
-├── ROADMAP.md, README.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
+├── README.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
 ├── docker-compose.yml            # postgres + mailhog + backend + frontend
 ├── ed25519-private.pem / ed25519-public.pem   # dev signing key (see known-issues)
 ├── docs/                         # this folder
@@ -32,22 +32,18 @@ project setup, not referenced by `nuxt.config.ts`. Safe to ignore (or clean up).
 
 ## High-level component diagram
 
-```
-┌─────────────────────┐        REST (fetch)        ┌──────────────────────────┐
-│  Nuxt 3 frontend     │ ───────────────────────────▶│  Strapi 5 backend        │
-│  (Vue 3 + Pinia)     │◀─────────────────────────── │  (content API + custom   │
-│                      │        JSON / JWT            │   controllers/services)  │
-└──────────┬───────────┘                              └──────────┬───────────────┘
-           │ one Nitro server route proxies                      │
-           │ POST /api/credentials/issue → backend                │
-           ▼                                                      ▼
-   (browser calls Strapi                                  Postgres / SQLite
-    directly for almost                                   (via Strapi's query
-    everything else)                                       engine, no separate ORM)
-                                                                   │
-                                                                   ▼
-                                                        Strapi email plugin
-                                                        (nodemailer → SMTP)
+```mermaid
+flowchart LR
+    FE["**Nuxt 3 Frontend**<br/>(Vue 3 + Pinia)"]
+    BE["**Strapi 5 Backend**<br/>(Content API + Custom Controllers & Services)"]
+    DB[("Postgres / SQLite")]
+    EMAIL["Strapi Email Plugin<br/>(Nodemailer → SMTP)"]
+
+    FE <-->|"REST (fetch)<br/>JSON / JWT"| BE
+    FE -.->|"Nitro proxy:<br/>POST /api/credentials/issue"| BE
+
+    BE -->|"Strapi Query Engine"| DB
+    BE --> EMAIL
 ```
 
 Most frontend → backend calls go **directly from the browser** to Strapi
@@ -86,7 +82,7 @@ it's PaaS-hosted, not the Docker Compose stack:
 - **OG image generation**: a standalone Netlify Function (`netlify/functions/og-credential/`) using `satori`, called for social-share previews (e.g. LinkedIn), fetching credential data from `CERTO_API_URL`.
 
 There are no Kubernetes manifests, Helm charts, or Terraform yet (all listed as
-future work in [ROADMAP.md](../ROADMAP.md) Phase 1/4). The backend Dockerfile
+future work). The backend Dockerfile
 currently starts Strapi in **dev mode** even for the "production" image — see
 [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md).
 

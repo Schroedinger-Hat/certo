@@ -25,8 +25,8 @@ src/backend/src/
 │   ├── revocation-list/     # StatusList2021-style revocation registry
 │   └── upload/services/enhanced-upload.ts   # permission override on Strapi's upload API
 ├── components/badge/        # reusable sub-schemas: criteria, alignment, public-key, skill, proof
-├── bootstrap.ts             # runs on every server start (see "Permission bootstrapping" below)
-├── bootstrap/                # a SEPARATE bootstrap dir: seed-data.ts, permissions-setup.ts(/.js)
+├── index.ts                 # Strapi's actual register/bootstrap lifecycle entry point
+├── bootstrap/                # seed-data.ts, permissions-setup.ts (see "Permission bootstrapping" below)
 ├── config/                  # admin.ts, api.ts, database.ts, middlewares.ts, plugins.ts, frontend.ts, server.ts
 ├── extensions/users-permissions/content-types/user/schema.json   # Strapi's built-in User type, no custom fields added
 ├── middlewares/             # cors-header.ts, request-logger.ts, global/badges-redirect.js, global/request-logger.js
@@ -71,7 +71,7 @@ before adding new credential routes.
 
 No GraphQL plugin. Swagger/OpenAPI is **not enabled** in `config/plugins.ts`
 despite the README mentioning it ("after enabling the Swagger plugin") — OpenAPI
-generation is a ROADMAP Phase 1 item, not yet real.
+generation is scheduled to be supported.
 
 ## Database
 
@@ -98,29 +98,36 @@ strict RBAC model in downstream docs — see
 
 ## Permission bootstrapping
 
-`bootstrap.ts` runs on **every** server start (not gated to first-run only) and
-aggressively force-enables broad public/authenticated Strapi permissions across
-all content types, via five sub-steps: `setupPublicPermissions`,
-`setupAuthenticatedPermissions`, `forceEnableEndpoints`,
-`enableAllAuthenticatedPermissions`, `setupIssuerPermissions`. There is a
-**second, separate** implementation of similar logic in
-`src/bootstrap/permissions-setup.ts`/`.js` — the two appear to duplicate/overlap
-rather than one calling the other. Treat this as tech debt to consolidate, not
-as two intentionally different mechanisms.
+`src/index.ts` is Strapi's actual `register`/`bootstrap` lifecycle entry
+point. Its `bootstrap({ strapi })` runs on **every** server start and calls
+`bootstrap/seed-data.ts`'s `seedDevelopmentData()` (creates sample data on
+first run, no-op after — see
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 13 for
+how this relates to the separate `scripts/fresh-install.js`), then
+`bootstrap/permissions-setup.ts`'s `setupPermissions()`, which force-enables
+public/authenticated/issuer Strapi permissions across all content types.
+
+There used to be a second, unreferenced implementation of similar logic at
+`src/bootstrap.ts` (Strapi 5 only auto-loads `src/index.ts`, not a standalone
+`src/bootstrap.ts`, so it never ran) plus a stale duplicate
+`bootstrap/permissions-setup.js`. Both were dead code and have been removed;
+the one piece of unique logic they contained (issuer-role permissions) was
+ported into `bootstrap/permissions-setup.ts`'s `ISSUER_PERMISSIONS` list. See
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 9.
 
 ## Config
 
 - `config/database.ts` — multi-client (`sqlite`/`mysql`/`postgres` via `DATABASE_CLIENT`).
 - `config/middlewares.ts` — custom CORS allow-list (see [architecture.md](./architecture.md#deployment-topology) for what it reveals about the real deployment) and CSP.
-- `config/plugins.ts` — `users-permissions` JWT config, `upload` = local provider, `email` = nodemailer **hardcoded to Ethereal test SMTP credentials in source** (see [strapi-and-credentials.md](./strapi-and-credentials.md) for why this ignores the `SMTP_*` env vars that `.env.example`/Docker Compose otherwise expect to matter).
+- `config/plugins.ts` — `users-permissions` JWT config, `upload` = local provider, `email` = nodemailer, reading `SMTP_*` env vars (`.env.example`'s names) with the old hardcoded Ethereal test credentials kept only as fallback defaults — see [strapi-and-credentials.md](./strapi-and-credentials.md) for detail on this fix.
 - `config/frontend.ts` — a custom `custom.frontendUrl` value, used by the email/notification services to build links back to the frontend.
 
 ## Deployment
 
 `src/backend/Dockerfile`: `node:20-alpine`, `npm ci`, installs `pg` explicitly,
-**overwrites `config/middlewares.js`** with a minimal inline placeholder during
-the build (this strips out the real CORS/CSP config from `config/middlewares.ts`
-in the built image), then runs `npm run build` — but starts the container with
-`npm run develop` (Strapi **dev** mode), not `npm run start`. See
-[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) before treating
-this Dockerfile as production-ready as-is.
+runs `npm run build`, then starts the container with `npm run start` (Strapi
+production mode). It used to overwrite `config/middlewares.js` with a minimal
+inline placeholder during the build (silently stripping the real CORS/CSP
+config from `config/middlewares.ts`) and start with `npm run develop` instead
+— both fixed, see
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 8.
