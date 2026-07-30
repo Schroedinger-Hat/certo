@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "issuer_keys",
+  "info": {
+    "singularName": "issuer-key",
+    "pluralName": "issuer-keys",
+    "displayName": "Issuer Key",
+    "description": "Per-issuer signing keypairs. Never exposed over REST: no routes/controllers/services are defined for this content type, so it's reachable only from server-side code via strapi.db.query/entityService."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "profile": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::profile.profile"
+    },
+    "algorithm": {
+      "type": "string",
+      "default": "Ed25519"
+    },
+    "publicKeyJwk": {
+      "type": "json",
+      "required": true
+    },
+    "privateKeyEncrypted": {
+      "type": "text",
+      "required": true
+    }
+  }
+}
