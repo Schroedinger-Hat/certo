@@ -41,13 +41,22 @@ see [frontend.md](./frontend.md)) → Strapi's `credential` controller → the
 7. **Serialize to OBv3 JSON** via
    `strapi.service('api::credential.open-badge').serializeCredential(...)` — see
    [open-badges.md](./open-badges.md) for what that object looks like.
-8. **Send the email.** Looks up the `users-permissions` user for
-   `recipientEntity.email`, builds a template via
-   `generateCredentialIssuanceEmail()` (from
-   `src/backend/src/api/credential/templates/credential-issuance.ts`), then
+8. **Notify the recipient.** Looks up the `users-permissions` user for
+   `recipientEntity.email`, then calls
+   `getNotificationProvider(strapi).sendCredentialIssued({ to, achievement, credential, frontendUrl, user })`
+   (`src/backend/src/api/credential/services/notification-providers/`) —
+   this is a small provider interface, not a direct call into the email
+   plugin. The only implementation today, `strapi-email-provider.ts`, does
+   what the inline code used to do: builds a template via
+   `generateCredentialIssuanceEmail()`
+   (`src/backend/src/api/credential/templates/credential-issuance.ts`) and
    calls `strapi.plugins['email'].services.email.send({ to, subject, text, html })`
-   — i.e. **Strapi's built-in email plugin is the actual delivery mechanism**,
-   configured with the `nodemailer` provider.
+   — Strapi's built-in email plugin, configured with the `nodemailer`
+   provider, is still the actual delivery mechanism; the interface just
+   means a different provider (SES/Mailgun/Slack/...) could be swapped in
+   later via `strapi.config.get('custom.notificationProvider', ...)`
+   without touching `credential.ts`. No alternate providers are implemented
+   yet.
 9. Returns `{ credential, openBadge, notification: { sent, error } }` to the
    caller — email failures are caught and reported back as `notification.error`
    rather than failing the whole request.
