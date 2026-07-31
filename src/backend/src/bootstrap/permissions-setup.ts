@@ -236,7 +236,7 @@ export async function setupPermissions(strapi: any): Promise<void> {
 
     strapi.log.info('[Permissions] Permission setup complete');
   } catch (error) {
-    strapi.log.error('[Permissions] Error setting up permissions:', error instanceof Error ? error.message : error);
+    strapi.log.error(`[Permissions] Error setting up permissions: ${error instanceof Error ? error.message : error}`);
   }
 }
 

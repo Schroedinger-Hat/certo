@@ -104,7 +104,9 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
       return credential
     } catch (error) {
-      strapi.log.error('[credential.issue] Error:', error)
+      // strapi.log.error only prints its first argument - see the note in
+      // bootstrap/seed-data.ts for why the error is interpolated in-message.
+      strapi.log.error(`[credential.issue] Error: ${error.message}`)
       return ctx.badRequest(error.message || 'Failed to issue credential')
     }
   },
@@ -589,7 +591,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
           )
           return { success: true, recipient: recipientData.email, data: credential }
         } catch (error) {
-          strapi.log.error(`[credential.batchIssue] Error issuing to ${recipientData.email}:`, error)
+          strapi.log.error(`[credential.batchIssue] Error issuing to ${recipientData.email}: ${error.message}`)
           return { success: false, recipient: recipientData.email, error: error.message }
         }
       })
@@ -598,8 +600,8 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
       return { results }
     } catch (error) {
-      strapi.log.error('[credential.batchIssue] General error:', error)
+      strapi.log.error(`[credential.batchIssue] General error: ${error.message}`)
       return ctx.badRequest(error.message || 'Failed to batch issue credentials')
     }
   }
-})) 
+}))
