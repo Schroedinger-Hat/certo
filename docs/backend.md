@@ -70,9 +70,14 @@ public credential listing. This is evidence of permission/routing workarounds
 rather than a clean single source of truth for each route — worth being aware of
 before adding new credential routes.
 
-No GraphQL plugin. Swagger/OpenAPI is **not enabled** in `config/plugins.ts`
-despite the README mentioning it ("after enabling the Swagger plugin") — OpenAPI
-generation is scheduled to be supported.
+No GraphQL plugin. `@strapi/plugin-documentation` is enabled
+(`config/plugins.ts`'s `documentation` block) — Swagger UI / an
+auto-generated OpenAPI spec is served at `/documentation`, covering the
+standard content-type CRUD routes (custom routes like `credential`'s
+issue/verify/revoke actions aren't richly documented without further
+per-route annotation, which hasn't been done). See
+[security.md](./security.md). `/api/v1` versioning is still not implemented — deliberately deferred since it's a
+breaking change to every route the frontend calls.
 
 ## Database
 

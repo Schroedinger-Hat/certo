@@ -13,6 +13,7 @@ contributors a shared, accurate picture of the system as it exists today.
 | [open-badges.md](./open-badges.md) | Open Badges 3.0 / Verifiable Credentials implementation: serialization, signing, verification, import |
 | [tool-agnostic.md](./tool-agnostic.md) | Current Strapi coupling and what a real "swap the backend" abstraction would require |
 | [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) | Bugs, inconsistencies, stubs and security gaps found while documenting the system — read this before making security- or production-readiness claims |
+| [security.md](./security.md) | Actual current security posture: auth, authorization caveats, key management, secrets inventory, and explicit non-implementation of HTTPS/GDPR/backups/audit logs |
 | [fresh-install-implementation.md](./fresh-install-implementation.md) | Pre-existing doc: how the fresh-install seed script works |
 
 ## How to use these docs
