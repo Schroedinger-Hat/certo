@@ -102,6 +102,19 @@ export class AuthClient {
   }
 
   /**
+   * Complete an OAuth/OIDC login given a JWT Strapi's users-permissions
+   * provider callback already issued (see /auth/callback and
+   * docs/oauth-setup.md for how a provider gets configured) - unlike
+   * login()/register(), there's no /api/auth/local(...) call to make first.
+   */
+  async loginWithToken(jwt: string): Promise<{ jwt: string, user: any }> {
+    this.saveToken(jwt)
+    apiClient.setToken(jwt)
+    const user = await this.fetchAndSaveFullUser()
+    return { jwt, user }
+  }
+
+  /**
    * Logout the current user
    */
   logout(): void {
