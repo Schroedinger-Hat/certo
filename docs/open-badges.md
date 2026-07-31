@@ -33,6 +33,8 @@ a stored `credential` row:
 - `credentialSubject.id` = `mailto:<recipient email>` (if the recipient has an email)
 - `credentialSubject.achievement`: `id`, `type: ['Achievement']`, `name`, `description`, `image`, `criteria.narrative`, and `alignments[]` (mapped from the `alignment` component) if present
 - `credentialSubject.achievement.evidence[]` if the credential has evidence
+- `credentialStatus` (StatusList2021Entry) if the credential has a slot in an
+  issuer revocation list — see [strapi-and-credentials.md](./strapi-and-credentials.md#revocation)
 - `expirationDate` if set
 - `proof`: reuses the credential's stored proof if present; **otherwise signs
   the object on the fly** right here (see "Signing" below) — meaning

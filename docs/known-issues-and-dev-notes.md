@@ -56,11 +56,22 @@ several of them are the kind of thing that tends to silently regress.
    permission checks. Don't assume permissions shown in the Strapi admin UI
    fully describe what's actually enforced.
 
-6. **Revocation lists aren't wired into verification.** The `revocation-list`
-   content type exists (StatusList2021-style), but `verifyCredential()` only
-   ever checks the credential's own `revoked` boolean — a revocation list entry
-   would have no effect on verification today. `checkStatusInList` is also a
-   simplified, non-bitstring implementation.
+6. **[Fixed] Revocation lists are now wired into issuance,
+   revocation, serialization, and verification.** Previously the entire
+   `revocation-list` subsystem was dead code — `checkCredentialStatus`,
+   `checkStatusInList`, `createStatusListCredential`, and
+   `revokeCredentialInStatusList` had zero callers, and there was no field
+   linking a credential to a slot in any list at all. Now: `credential.ts`'s
+   `issue()` assigns a slot in the issuer's list (creating one on first
+   use), the revoke controller flips that slot too, `open-badge.ts` emits a
+   `credentialStatus` (StatusList2021Entry) object in the serialized OBv3
+   JSON, and `verification.ts` also checks the list alongside the `revoked`
+   boolean. `checkStatusInList` remains a simplified comma-separated-indices
+   implementation, not a real GZIP+base64 bitstring — documented as a known
+   simplification rather than fixed, since publishing a standards-compliant
+   external status list credential is a separate, larger task. See
+   [open-badges.md](./open-badges.md) and
+   [strapi-and-credentials.md](./strapi-and-credentials.md).
 
 ## Correctness / config bugs
 
