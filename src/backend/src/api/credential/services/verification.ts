@@ -20,6 +20,8 @@ interface CredentialWithRelations {
   recipient?: any;
   evidence?: any[];
   proof?: any[];
+  statusList?: any;
+  statusListIndex?: number;
 }
 
 /**
@@ -47,11 +49,12 @@ export default {
               'achievement.criteria',
               'achievement.alignment',
               'achievement.skills',
-              'issuer', 
+              'issuer',
               'issuer.image',
-              'recipient', 
+              'recipient',
               'evidence',
-              'proof'
+              'proof',
+              'statusList'
             ],
           });
 
@@ -123,6 +126,29 @@ export default {
         credential: serializedCredential,
         rawCredential: credential
       };
+    }
+
+    // Also consult the issuer's revocation status list, in addition to the
+    // `revoked` boolean above. Defense in depth for locally-issued
+    // credentials: this is the only path that would catch a bug where the
+    // two ever disagree. Note that importCredential() doesn't currently
+    // link an imported credential to a local status list at all (that
+    // would need fetching/checking a remote issuer's published status
+    // list, a separate interop feature), so this doesn't yet add real
+    // coverage for externally-issued credentials.
+    if (credential.statusList && credential.statusListIndex != null) {
+      const revocationListService = strapi.service('api::revocation-list.revocation-list');
+      const revokedInList = await revocationListService.checkStatusInList(credential.statusList, credential.statusListIndex);
+      if (revokedInList) {
+        return {
+          verified: false,
+          checks: [
+            { check: 'not_revoked', result: 'error', message: 'Credential is marked revoked in the issuer\'s status list' }
+          ],
+          credential: serializedCredential,
+          rawCredential: credential
+        };
+      }
     }
 
     // Verify proof(s)
