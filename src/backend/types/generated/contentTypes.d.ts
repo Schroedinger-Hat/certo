@@ -461,6 +461,11 @@ export interface ApiCredentialCredential extends Struct.CollectionTypeSchema {
     recipient: Schema.Attribute.Relation<'manyToOne', 'api::profile.profile'>;
     revocationReason: Schema.Attribute.Text;
     revoked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    statusList: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::revocation-list.revocation-list'
+    >;
+    statusListIndex: Schema.Attribute.Integer;
     type: Schema.Attribute.JSON &
       Schema.Attribute.DefaultTo<
         ['VerifiableCredential', 'OpenBadgeCredential']
@@ -662,6 +667,9 @@ export interface ApiRevocationListRevocationList
       'api::revocation-list.revocation-list'
     > &
       Schema.Attribute.Private;
+    nextIndex: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     statusListCredential: Schema.Attribute.String & Schema.Attribute.Required;
     statusPurpose: Schema.Attribute.String &
