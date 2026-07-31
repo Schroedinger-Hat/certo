@@ -28,7 +28,9 @@ src/frontend/
 Standard Nuxt file-based routing — no custom `router.ts`. Key pages:
 `index.vue`, `login.vue`, `register.vue`, `forgot-password.vue`,
 `reset-password.vue`, `dashboard.vue`, `issue.vue`, `profile.vue`, `verify.vue`,
-`linkedin.vue`, `get-started.vue`, `credentials/[id]/index.vue`, plus static
+`linkedin.vue`, `get-started.vue`, `credentials/[id]/index.vue`,
+`auth/callback.vue` (lands after an OAuth/OIDC provider redirect — see
+[oauth-setup.md](./oauth-setup.md), not end-to-end tested), plus static
 legal pages and `about.vue`.
 
 Route protection is handled by `middleware/route-guard.ts`, which reads
@@ -45,7 +47,11 @@ Pinia, one store: `stores/auth.ts` (`useAuthStore`) — holds `user`, `token`,
 `profile`, `isAuthenticated`, and `isIssuer` (derived from
 `role.name.toLowerCase() === 'issuer'`). Auth state is persisted to
 `localStorage` (token + user) **and** a `token` cookie (via `js-cookie`) so SSR
-route checks have something to read.
+route checks have something to read. `login()`/`register()` hit Strapi's
+local auth endpoints first; `loginWithOAuthToken(jwt)` (used by
+`pages/auth/callback.vue`) instead hydrates the same state from a JWT
+Strapi's OAuth provider callback already issued — see
+[oauth-setup.md](./oauth-setup.md).
 
 ## Talking to the backend
 
