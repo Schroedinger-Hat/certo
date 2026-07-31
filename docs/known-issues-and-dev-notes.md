@@ -54,7 +54,12 @@ several of them are the kind of thing that tends to silently regress.
    `ctx.state.auth = { strategy: { name: 'public' } }` to disable the auth
    check, and `achievement.create` calls `entityService` directly to bypass
    permission checks. Don't assume permissions shown in the Strapi admin UI
-   fully describe what's actually enforced.
+   fully describe what's actually enforced. **[Partially mitigated]**
+   these three actions (`credential.issue`, `credential.revoke`,
+   `achievement.create`) now record an `audit-log-entry` with the real
+   caller's user ID, so "who did this" is at least recoverable after the
+   fact even though the permission bypass itself is unchanged — see
+   [security.md](./security.md#authorization).
 
 6. **[Fixed] Revocation lists are now wired into issuance,
    revocation, serialization, and verification.** Previously the entire

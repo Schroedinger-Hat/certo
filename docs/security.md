@@ -17,15 +17,24 @@ Strapi admin panel (`/admin`) has its own, separate JWT
 
 ## Authorization
 
-Three fixed roles, seeded on every server start by
+Five role permission-sets are seeded on every server start by
 `bootstrap/permissions-setup.ts`'s `setupPermissions()` (see
-[backend.md](./backend.md#permission-bootstrapping)):
+[backend.md](./backend.md#permission-bootstrapping)), though only three
+roles actually exist out of the box:
 
-| Role | Can |
-|---|---|
-| `public` | Read achievements/profiles/credentials, verify/validate a credential |
-| `authenticated` | Full CRUD on credentials/achievements/profiles, custom endpoints (`me`, `myIssuedCredentials`, etc.) |
-| `issuer` | Issue/revoke/import/export credentials, manage achievements |
+| Role | Can | Exists by default? |
+|---|---|---|
+| `public` | Read achievements/profiles/credentials, verify/validate a credential | Yes |
+| `authenticated` | Full CRUD on credentials/achievements/profiles, custom endpoints (`me`, `myIssuedCredentials`, etc.) | Yes |
+| `issuer` | Issue/revoke/import/export credentials, manage achievements | No — an admin must create it in the admin panel |
+| `reviewer` | Read/verify everything, no create/update/delete | No — same as issuer |
+| `viewer` | Read-only (narrower than reviewer — no evidence) | No — same as issuer |
+
+`setupRolePermissions()` looks up each role by `type` and no-ops (with a log
+message) if it doesn't exist yet — the `reviewer`/`viewer` permission lists
+are inert until someone actually creates those roles via
+**Settings → Users & Permissions → Roles** in the admin panel, exactly like
+`issuer` already was before this doc was written.
 
 **Known caveat, don't assume the above is fully enforced**: several
 controller actions bypass this permission system directly in code rather
@@ -33,7 +42,14 @@ than going through role/permission checks (e.g. `credential.issue`
 disables the auth check explicitly; `achievement.create` bypasses
 permission checks by calling `entityService` directly) — see
 [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 5.
-There's no audit log of who did what
+These three actions (`credential.issue`, `credential.revoke`,
+`achievement.create`) now write an `audit-log-entry` row (action, entity,
+real caller's user ID, metadata) — viewable via the admin panel's content
+manager, no REST endpoint — so at least *who* did them is recoverable after
+the fact, even though the permission bypass itself isn't fixed. Audit
+logging doesn't yet cover every mutating action, only these three.
+Multi-tenancy and richer RBAC roles beyond Reviewer/Viewer remain
+future work.
 
 ## Credential signing & verification
 
