@@ -551,6 +551,38 @@ export interface ApiEvidenceEvidence extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiIssuerKeyIssuerKey extends Struct.CollectionTypeSchema {
+  collectionName: 'issuer_keys';
+  info: {
+    description: "Per-issuer signing keypairs. Never exposed over REST: no routes/controllers/services are defined for this content type, so it's reachable only from server-side code via strapi.db.query/entityService.";
+    displayName: 'Issuer Key';
+    pluralName: 'issuer-keys';
+    singularName: 'issuer-key';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    algorithm: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Ed25519'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::issuer-key.issuer-key'
+    > &
+      Schema.Attribute.Private;
+    privateKeyEncrypted: Schema.Attribute.Text & Schema.Attribute.Required;
+    profile: Schema.Attribute.Relation<'oneToOne', 'api::profile.profile'>;
+    publicKeyJwk: Schema.Attribute.JSON & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiProfileProfile extends Struct.CollectionTypeSchema {
   collectionName: 'profiles';
   info: {
@@ -1152,6 +1184,7 @@ declare module '@strapi/strapi' {
       'api::credential.credential': ApiCredentialCredential;
       'api::endorsement.endorsement': ApiEndorsementEndorsement;
       'api::evidence.evidence': ApiEvidenceEvidence;
+      'api::issuer-key.issuer-key': ApiIssuerKeyIssuerKey;
       'api::profile.profile': ApiProfileProfile;
       'api::revocation-list.revocation-list': ApiRevocationListRevocationList;
       'plugin::content-releases.release': PluginContentReleasesRelease;
