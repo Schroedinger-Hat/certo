@@ -213,3 +213,16 @@ several of them are the kind of thing that tends to silently regress.
     `frontend/autofix.yml`. Playwright E2E still isn't run in CI. Broader
     backend test coverage (controllers, other services) remains a good
     follow-up.
+
+20. **[Fixed] `strapi.log.error()`/`.warn()` only print their first
+    argument.** Unlike `console.error`, Strapi's Winston-based logger
+    doesn't concatenate/print additional arguments — every
+    `strapi.log.error('message:', error)` call in the codebase (seed data,
+    permission setup, credential issuance error handlers, the upload
+    service) was silently discarding the actual error, so a real failure
+    in any of these paths would show up in logs as e.g.
+    `[Seed] Error seeding development data:` with nothing useful after it.
+    Fixed by interpolating error details directly into the log message.
+    Confirmed by simulating a failure before/after the fix. If you add a
+    new `strapi.log.*` call, pass one interpolated string, not multiple
+    arguments.
