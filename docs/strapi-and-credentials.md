@@ -120,6 +120,27 @@ issuance time (`credential.ts`'s `issue()`, via
 `assignNextIndex`), and the serialized OBv3 credential now includes a
 `credentialStatus` (StatusList2021Entry) object pointing at it.
 
+## Webhooks
+
+`api::webhook-subscription` (`url`, `events[]`, `secret`, `enabled`) has
+**no REST routes at all** — subscriptions are managed via the admin panel's
+content manager only, not a public API, for this first pass.
+`api::webhook-subscription.dispatch`'s `dispatch(event, payload)` POSTs
+`{ event, timestamp, data: payload }` to every enabled subscription whose
+`events` list includes `event`, signing the body with
+`HMAC-SHA256(subscription.secret)` in an `X-Certo-Signature` header (the
+GitHub/Stripe convention) and a 5s timeout via `AbortSignal.timeout`. Uses
+Node's global `fetch` — no new HTTP client dependency.
+
+`credential.ts`'s `issue()` dispatches `credential.issued` after creating
+the credential; the revoke controller dispatches `credential.revoked`. Other
+events ROADMAP.md lists (`badge.created`, `issuer.created`, `user.created`,
+etc.) aren't wired yet. Delivery is fire-and-forget — each subscription's
+delivery is independently caught and logged
+(`strapi.log.warn`) on failure, so one bad endpoint can't affect others or
+fail the request that triggered it. There's no retry queue (would need a
+job runner) and no delivery log/history.
+
 ## Bootstrap-time permissions
 
 Every server start, `src/index.ts`'s `bootstrap` hook calls
