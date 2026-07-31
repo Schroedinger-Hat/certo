@@ -98,7 +98,8 @@ export default factories.createCoreController('api::credential.credential', ({ s
         achievement,
         recipient,
         evidence,
-        expirationDate
+        expirationDate,
+        ctx.state.user?.id
       )
 
       return credential
@@ -217,6 +218,15 @@ export default factories.createCoreController('api::credential.credential', ({ s
       await webhookDispatcher.dispatch('credential.revoked', {
         credentialId: updatedCredential.credentialId,
         reason: reason || 'No reason provided',
+      })
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'credential.revoke',
+        entityType: 'credential',
+        entityId: id,
+        actorId: ctx.state.user?.id,
+        metadata: { reason: reason || 'No reason provided' },
       })
 
       return { success: true, credential: updatedCredential }
@@ -574,7 +584,8 @@ export default factories.createCoreController('api::credential.credential', ({ s
             achievement,
             recipient,
             evidence,
-            expirationDate
+            expirationDate,
+            ctx.state.user?.id
           )
           return { success: true, recipient: recipientData.email, data: credential }
         } catch (error) {

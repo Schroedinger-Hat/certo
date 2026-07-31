@@ -27,10 +27,19 @@ export default factories.createCoreController('api::achievement.achievement', ({
       }
       
       // Bypass permission checks by using entityService directly
-      const entity = await strapi.entityService.create('api::achievement.achievement', { 
-        data 
+      const entity = await strapi.entityService.create('api::achievement.achievement', {
+        data
       });
-      
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'achievement.create',
+        entityType: 'achievement',
+        entityId: entity.id,
+        actorId: ctx.state.user?.id,
+        metadata: { name: entity.name },
+      })
+
       // Return the created entity
       return { data: entity };
     } catch (error) {
