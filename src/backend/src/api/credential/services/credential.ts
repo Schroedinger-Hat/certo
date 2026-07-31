@@ -2,7 +2,7 @@
  * Credential service
  */
 
-import { generateCredentialIssuanceEmail } from '../templates/credential-issuance'
+import { getNotificationProvider } from './notification-providers'
 
 export default ({ strapi }) => ({
   /**
@@ -163,19 +163,14 @@ export default ({ strapi }) => ({
           })
 
           const frontendUrl = strapi.config.get('frontend.url', 'http://localhost:3000')
-          
-          const emailTemplate = generateCredentialIssuanceEmail({
+
+          const notificationProvider = getNotificationProvider(strapi)
+          await notificationProvider.sendCredentialIssued({
+            to: recipientEntity.email,
             achievement,
             credential,
             frontendUrl,
             user,
-          })
-
-          await strapi.plugins['email'].services.email.send({
-            to: recipientEntity.email,
-            subject: emailTemplate.subject,
-            text: emailTemplate.text,
-            html: emailTemplate.html,
           })
 
           emailSent = true
