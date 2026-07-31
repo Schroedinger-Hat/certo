@@ -35,6 +35,20 @@ message) if it doesn't exist yet — the `reviewer`/`viewer` permission lists
 are inert until someone actually creates those roles via
 **Settings → Users & Permissions → Roles** in the admin panel, exactly like
 `issuer` already was before this doc was written.
+**Not implemented**: OAuth2/OIDC, LDAP, SCIM — all
+ROADMAP.md Phase 2 items. No 2FA.
+
+## Authorization
+
+Three fixed roles, seeded on every server start by
+`bootstrap/permissions-setup.ts`'s `setupPermissions()` (see
+[backend.md](./backend.md#permission-bootstrapping)):
+
+| Role | Can |
+|---|---|
+| `public` | Read achievements/profiles/credentials, verify/validate a credential |
+| `authenticated` | Full CRUD on credentials/achievements/profiles, custom endpoints (`me`, `myIssuedCredentials`, etc.) |
+| `issuer` | Issue/revoke/import/export credentials, manage achievements |
 
 **Known caveat, don't assume the above is fully enforced**: several
 controller actions bypass this permission system directly in code rather
