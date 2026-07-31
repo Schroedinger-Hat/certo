@@ -680,6 +680,39 @@ export interface ApiRevocationListRevocationList
   };
 }
 
+export interface ApiWebhookSubscriptionWebhookSubscription
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'webhook_subscriptions';
+  info: {
+    description: 'Outbound webhook endpoints notified on credential lifecycle events. Managed via the admin panel content manager - no public/authenticated REST routes are defined for this content type.';
+    displayName: 'Webhook Subscription';
+    pluralName: 'webhook-subscriptions';
+    singularName: 'webhook-subscription';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    enabled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    events: Schema.Attribute.JSON & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::webhook-subscription.webhook-subscription'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    secret: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1195,6 +1228,7 @@ declare module '@strapi/strapi' {
       'api::issuer-key.issuer-key': ApiIssuerKeyIssuerKey;
       'api::profile.profile': ApiProfileProfile;
       'api::revocation-list.revocation-list': ApiRevocationListRevocationList;
+      'api::webhook-subscription.webhook-subscription': ApiWebhookSubscriptionWebhookSubscription;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
