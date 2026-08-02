@@ -6,43 +6,231 @@ import type {
 } from '~/types/openbadges'
 import { apiClient } from '~/api/api-client'
 
-const credential = ref<AchievementCredential | null>(null)
-const credentialId = ref('')
-const currentImageIndex = ref(0)
-const error = ref<string | null>(null)
-const imageLoadError = ref(false)
-const loading = ref(false)
-const pageDescription = ref('View and verify credential details')
 const route = useRoute()
-const verificationResult = ref<VerificationResult | null>(null)
+const config = useRuntimeConfig()
+
+// ============================================================================
+// 1. ROUTE PARAMS & STATIC URLs
+// ============================================================================
+const rawId = route.params.id
+const credentialId = rawId
+  ? decodeURIComponent(Array.isArray(rawId) ? rawId[0] : rawId)
+  : ''
+
+const shareableUrl = `${WEBSITE_URL}/credentials/${encodeURIComponent(credentialId)}`
+const ogImageUrl = `${WEBSITE_URL}/.netlify/functions/og-credential?id=${encodeURIComponent(credentialId)}`
+
+// ============================================================================
+// 2. DATA FETCHING
+// ============================================================================
+// For SSR meta tags to work, the API must be reachable from the Nuxt server process.
+// In local dev: set NUXT_PUBLIC_API_URL to your backend (e.g., http://127.0.0.1:1337)
+// In production: set to your production API URL
+
+const apiUrl = config.public.apiUrl || ''
+
+// useAsyncData fetches on server (SSR) and hydrates on client
+// We catch errors to prevent page crash, but data will be null if fetch fails
+const { data: verificationData, error: fetchError, status, refresh } = await useAsyncData<VerificationResult | null>(
+  `credential-${credentialId}`,
+  async () => {
+    if (!credentialId) return null
+
+    const url = `${apiUrl}/api/credentials/${encodeURIComponent(credentialId)}/verify`
+    console.log(`[${import.meta.server ? 'SSR' : 'Client'}] Fetching: ${url}`)
+
+    try {
+      const result = await $fetch<VerificationResult>(url)
+      console.log(`[${import.meta.server ? 'SSR' : 'Client'}] Fetch success:`, result?.credential?.name || result?.rawCredential?.name)
+      return result
+    }
+    catch (err) {
+      console.error(`[${import.meta.server ? 'SSR' : 'Client'}] Fetch failed:`, err)
+      // Return null instead of throwing - page will render with fallback meta tags
+      return null
+    }
+  },
+  {
+    // Nuxt 3.10+ options
+    server: true,   // Fetch on server for SSR
+    lazy: false,    // Block render until fetch completes (needed for SEO)
+    default: () => null,
+  }
+)
+
+// Client-side retry if SSR fetch failed (e.g., localhost not reachable from server)
+onMounted(async () => {
+  if (!verificationData.value && credentialId) {
+    console.log('[Client] SSR data missing, retrying with apiClient...')
+    try {
+      verificationData.value = await apiClient.verifyBadge(credentialId)
+      console.log('[Client] Retry success:', verificationData.value?.credential?.name)
+    }
+    catch (err) {
+      console.error('[Client] Retry failed:', err)
+    }
+  }
+})
+
+// ============================================================================
+// 3. COMPUTED DATA EXTRACTION
+// ============================================================================
+const credential = computed<AchievementCredential | null>(() => {
+  const data = verificationData.value
+  if (!data) return null
+  return data.credential || data.rawCredential as AchievementCredential || null
+})
+
+const verificationResult = computed(() => verificationData.value)
+const loading = computed(() => status.value === 'pending')
+const error = computed(() => {
+  if (fetchError.value) return fetchError.value.message
+  if (status.value === 'error' && !verificationData.value && credentialId) {
+    return 'Failed to verify or fetch credential details'
+  }
+  return null
+})
+
+// ============================================================================
+// 4. SEO METADATA
+// Per Nuxt 3 docs: use getter functions () => value for reactive meta tags
+// https://nuxt.com/docs/api/composables/use-seo-meta
+// ============================================================================
+
+// Helper functions to extract data (keeps useSeoMeta clean)
+function getCredentialName(): string {
+  const cred = verificationData.value?.credential || verificationData.value?.rawCredential
+  return cred?.name || cred?.title || ''
+}
+
+function getCredentialDescription(): string {
+  const cred = verificationData.value?.credential || verificationData.value?.rawCredential
+  return cred?.description || ''
+}
+
+function getIssuerName(): string {
+  const cred = verificationData.value?.credential || verificationData.value?.rawCredential
+  return cred?.issuer?.name || 'Certo'
+}
+
+function getRecipientName(): string {
+  return verificationData.value?.rawCredential?.recipient?.name || ''
+}
+
+// SEO with getter functions (Nuxt 3 documented pattern)
+useSeoMeta({
+  // Title
+  title: () => {
+    const name = getCredentialName()
+    return name ? `${name} | Certo` : 'Credential Details | Certo'
+  },
+
+  // Description
+  description: () => {
+    const desc = getCredentialDescription()
+    if (desc) return desc
+
+    const name = getCredentialName()
+    if (name) {
+      const issuer = getIssuerName()
+      const recipient = getRecipientName()
+      return recipient
+        ? `View and verify "${name}" awarded to ${recipient}, issued by ${issuer} via Certo.`
+        : `View and verify "${name}" issued by ${issuer} via Certo.`
+    }
+    return 'View and verify this digital credential issued via Certo.'
+  },
+
+  // Open Graph
+  ogType: 'website',
+  ogSiteName: 'Certo',
+  ogUrl: shareableUrl,
+  ogTitle: () => {
+    const name = getCredentialName()
+    return name ? `${name} | Certo` : 'Credential Details | Certo'
+  },
+  ogDescription: () => {
+    const desc = getCredentialDescription()
+    if (desc) return desc
+    const name = getCredentialName()
+    if (name) return `View and verify "${name}" issued by ${getIssuerName()} via Certo.`
+    return 'View and verify this digital credential issued via Certo.'
+  },
+  ogImage: ogImageUrl,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
+  ogImageAlt: () => {
+    const name = getCredentialName()
+    return name ? `${name} - verified credential` : 'Certo credential'
+  },
+
+  // Twitter
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => {
+    const name = getCredentialName()
+    return name ? `${name} | Certo` : 'Credential Details | Certo'
+  },
+  twitterDescription: () => {
+    const desc = getCredentialDescription()
+    if (desc) return desc
+    const name = getCredentialName()
+    if (name) return `View and verify "${name}" issued by ${getIssuerName()} via Certo.`
+    return 'View and verify this digital credential issued via Certo.'
+  },
+  twitterImage: ogImageUrl,
+  twitterImageAlt: () => {
+    const name = getCredentialName()
+    return name ? `${name} - verified credential` : 'Certo credential'
+  },
+
+  // Author
+  author: () => getIssuerName(),
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: shareableUrl }],
+})
+
+// ============================================================================
+// 5. UI HELPERS
+// ============================================================================
+async function refreshCredentialDetails() {
+  await refresh()
+  // If useAsyncData refresh failed, try apiClient (client-side only)
+  if (!verificationData.value && credentialId && import.meta.client) {
+    try {
+      verificationData.value = await apiClient.verifyBadge(credentialId)
+    }
+    catch (err) {
+      console.error('Refresh retry failed:', err)
+    }
+  }
+}
+
+// Client-side only state for image handling
+const currentImageIndex = ref(0)
+const imageLoadError = ref(false)
 
 // Format dates with proper localization
 const formattedIssuanceDate = computed(() => {
   const date = credential.value?.issuanceDate
-  if (!date) {
-    return 'Unknown'
-  }
+  if (!date) return 'Unknown'
   return formatDate(date)
 })
 
 const formattedExpirationDate = computed(() => {
   const date = credential.value?.expirationDate
-  if (!date) {
-    return 'No expiration'
-  }
+  if (!date) return 'No expiration'
   return formatDate(date)
 })
 
-// Get all possible image URLs
+// Get all possible image URLs for display
 const imageUrlOptions = computed(() => {
-  if (!credential.value) {
-    return []
-  }
+  if (!credential.value) return []
 
   const cred = credential.value
-  const rawCred = verificationResult.value?.rawCredential
+  const rawCred = verificationData.value?.rawCredential
 
-  // Try different options in order of preference
   const options = [
     // Option 1: Direct certificate endpoint URL
     apiClient.getCertificateUrl(cred.id),
@@ -64,23 +252,13 @@ const imageUrlOptions = computed(() => {
     typeof cred.issuer?.image === 'string' ? cred.issuer.image : null
   ].filter(Boolean) as string[]
 
-  return [...new Set(options)] // Remove duplicates
+  return [...new Set(options)]
 })
 
 // Get the current image URL based on the current index
 const displayImageUrl = computed(() => {
-  if (imageUrlOptions.value.length === 0) {
-    return null
-  }
+  if (imageUrlOptions.value.length === 0) return null
   return imageUrlOptions.value[currentImageIndex.value]
-})
-
-// Generate shareable URL
-const shareableUrl = computed(() => {
-  if (!credentialId.value) {
-    return ''
-  }
-  return `${window.location.origin}/credentials/${encodeURIComponent(credentialId.value)}`
 })
 
 // Handle image error by trying the next URL in the options
@@ -94,9 +272,7 @@ function handleImageError() {
 }
 
 function formatDate(dateString: string) {
-  if (!dateString) {
-    return 'Unknown'
-  }
+  if (!dateString) return 'Unknown'
 
   try {
     const date = new Date(dateString)
@@ -109,8 +285,8 @@ function formatDate(dateString: string) {
       timeZoneName: 'short'
     }).format(date)
   }
-  catch (error) {
-    console.error('Error formatting date:', error)
+  catch (err) {
+    console.error('Error formatting date:', err)
     return dateString
   }
 }
@@ -121,23 +297,21 @@ async function shareCredential() {
       await navigator.share({
         title: credential.value?.name || 'Credential',
         text: `View my credential: ${credential.value?.name}`,
-        url: shareableUrl.value
+        url: shareableUrl
       })
     }
     else {
-      await navigator.clipboard.writeText(shareableUrl.value)
+      await navigator.clipboard.writeText(shareableUrl)
     }
   }
-  catch (error) {
-    console.error('Error sharing:', error)
+  catch (err) {
+    console.error('Error sharing:', err)
   }
 }
 
 async function downloadCredential() {
   const imageUrl = displayImageUrl.value
-  if (!imageUrl) {
-    return
-  }
+  if (!imageUrl) return
 
   try {
     const response = await fetch(imageUrl)
@@ -151,59 +325,14 @@ async function downloadCredential() {
     window.URL.revokeObjectURL(downloadUrl)
     document.body.removeChild(a)
   }
-  catch (error) {
-    console.error('Error downloading credential:', error)
-  }
-}
-
-async function fetchCredentialDetails() {
-  if (!credentialId.value) {
-    return
-  }
-
-  loading.value = true
-  error.value = null
-
-  try {
-    // First verify the credential
-    const result = await apiClient.verifyBadge(credentialId.value)
-    verificationResult.value = result
-
-    if (result.credential) {
-      // If verification returned the credential, use it
-      credential.value = result.credential
-    }
-    else {
-      // Otherwise try to fetch the credential directly
-      try {
-        const response = await apiClient.getCertificate(credentialId.value)
-        credential.value = apiClient.formatCredential(response.data || response) as AchievementCredential
-      }
-      catch (fetchError) {
-        console.error('Error fetching credential details:', fetchError)
-        // Use what we have from verification anyway
-        if (result.rawCredential) {
-          credential.value = result.rawCredential as AchievementCredential
-        }
-        else {
-          credential.value = null
-        }
-      }
-    }
-  }
   catch (err) {
-    console.error('Error verifying credential:', err)
-    error.value = 'Failed to verify or fetch credential details'
-  }
-  finally {
-    loading.value = false
+    console.error('Error downloading credential:', err)
   }
 }
 
 function getLinkedInAddToProfileUrl() {
-  if (!credential.value) {
-    return '#'
-  }
+  if (!credential.value) return '#'
+
   const cert = credential.value
   const params = new URLSearchParams({
     startTask: 'CERTIFICATION_NAME',
@@ -212,44 +341,10 @@ function getLinkedInAddToProfileUrl() {
     issueYear: cert.issuanceDate ? new Date(cert.issuanceDate).getFullYear().toString() : '',
     issueMonth: cert.issuanceDate ? (new Date(cert.issuanceDate).getMonth() + 1).toString() : '',
     certId: cert.id,
-    certUrl: `${window.location.origin}/credentials/${cert.id}`
+    certUrl: shareableUrl
   })
   return `https://www.linkedin.com/profile/add?${params.toString()}`
 }
-
-useSeoMeta({
-  description: () => credential.value?.description || pageDescription.value,
-  ogDescription: () => credential.value?.description || pageDescription.value,
-  ogTitle: () => credential.value?.name ? `${credential.value.name} | Certo` : 'Credential Details | Certo',
-  ogImage: () => displayImageUrl.value || `${WEBSITE_URL}/og-default.png`,
-  twitterImage: () => displayImageUrl.value || `${WEBSITE_URL}/og-default.png`,
-  ogUrl: () => shareableUrl.value
-
-})
-
-useHead({
-  title: () => credential.value?.name
-    ? `${credential.value.name} | Credential Details`
-    : 'Credential Details | Certo',
-  link: [{
-    rel: 'canonical',
-    href: () => shareableUrl.value
-  }]
-})
-
-onMounted(async () => {
-  // Get the credential ID from the route params and decode it
-  if (route.params.id) {
-    try {
-      credentialId.value = decodeURIComponent(route.params.id.toString())
-      await fetchCredentialDetails()
-    }
-    catch (error) {
-      console.error('Error decoding credential ID:', error)
-      credentialId.value = route.params.id.toString()
-    }
-  }
-})
 </script>
 
 <template>
@@ -305,7 +400,7 @@ onMounted(async () => {
         </p>
         <button
           class="inline-flex items-center px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition-colors"
-          @click="fetchCredentialDetails"
+          @click="refreshCredentialDetails"
         >
           <div class="i-lucide-refresh-cw mr-2" />
           Try Again
@@ -367,7 +462,7 @@ onMounted(async () => {
           <button
             class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             title="Refresh verification"
-            @click="fetchCredentialDetails"
+            @click="refreshCredentialDetails"
           >
             <div class="i-lucide-refresh-cw w-5 h-5" />
           </button>
