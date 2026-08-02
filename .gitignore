@@ -10,6 +10,7 @@ yarn-error.log
 .env.development.local
 .env.test.local
 .env.production.local
+ed25519*
 
 # Build files
 /dist

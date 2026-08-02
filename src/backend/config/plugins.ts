@@ -20,7 +20,7 @@ export default ({ env }) => ({
         email_reset_password: {
           from: {
             name: 'Certo Support',
-            email: env('SMTP_FROM_EMAIL', 'gw7t4cqccle4qv53@ethereal.email'),
+            email: env('SMTP_FROM', 'gw7t4cqccle4qv53@ethereal.email'),
           },
           subject: 'Reset your password for Certo',
           message: `<p>Hello,</p>
@@ -57,21 +57,22 @@ export default ({ env }) => ({
     config: {
       provider: 'nodemailer',
       providerOptions: {
-        // Using hardcoded credentials for Ethereal
-        host: 'smtp.ethereal.email',
-        port: 587,
+        // Falls back to Ethereal (a disposable test inbox) for dev when SMTP_* isn't set.
+        host: env('SMTP_HOST', 'smtp.ethereal.email'),
+        port: env.int('SMTP_PORT', 587),
         auth: {
-          user: 'gw7t4cqccle4qv53@ethereal.email',
-          pass: 'VxnCkssx2Yw2kTfQfz',
+          user: env('SMTP_USERNAME', 'gw7t4cqccle4qv53@ethereal.email'),
+          pass: env('SMTP_PASSWORD', 'VxnCkssx2Yw2kTfQfz'),
         },
-        // STARTTLS configuration - required for Ethereal
-        secure: false, // true for 465, false for other ports
-        requireTLS: true, // Force using TLS
+        // Defaults suit both Ethereal (opportunistic STARTTLS on 587) and
+        // Mailhog (plain SMTP, no TLS support) without extra config.
+        secure: env.bool('SMTP_SECURE', false), // true for 465, false for other ports
+        requireTLS: env.bool('SMTP_REQUIRE_TLS', false), // force STARTTLS; Mailhog can't do this
         ignoreTLS: false, // Don't ignore TLS
       },
       settings: {
-        defaultFrom: 'gw7t4cqccle4qv53@ethereal.email',
-        defaultReplyTo: 'gw7t4cqccle4qv53@ethereal.email',
+        defaultFrom: env('SMTP_FROM', 'gw7t4cqccle4qv53@ethereal.email'),
+        defaultReplyTo: env('SMTP_REPLY_TO', 'gw7t4cqccle4qv53@ethereal.email'),
       },
     },
   },

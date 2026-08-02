@@ -19,13 +19,13 @@ Be respectful and considerate. If the project adopts a separate `CODE_OF_CONDUCT
 This repository contains a frontend and backend. Typical commands from the repository root:
 
 - Frontend:
-  - `cd frontend`
+  - `cd src/frontend`
   - `npm install`
-  - `npm run dev` (or `npm run test` to run tests)
+  - `npm run dev` (or `npm run test:unit` to run tests)
 - Backend:
   - `cd src/backend`
   - `npm install`
-  - `npm run dev` (or `npm test`)
+  - `npm run dev` (there is currently no automated backend test suite — see `docs/known-issues-and-dev-notes.md`)
 
 Adjust commands for your package manager (yarn/pnpm) if you prefer.
 

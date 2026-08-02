@@ -55,6 +55,36 @@ const AUTHENTICATED_PERMISSIONS = [
   'api::endorsement.endorsement.verify',
 ];
 
+// Permissions to enable for the issuer role
+const ISSUER_PERMISSIONS = [
+  // Credential permissions
+  'api::credential.credential.find',
+  'api::credential.credential.findOne',
+  'api::credential.credential.create',
+  'api::credential.credential.update',
+  'api::credential.credential.delete',
+  'api::credential.credential.issue',
+  'api::credential.credential.validate',
+  'api::credential.credential.verify',
+  'api::credential.credential.import',
+  'api::credential.credential.export',
+  'api::credential.credential.revoke',
+
+  // Profile permissions
+  'api::profile.profile.find',
+  'api::profile.profile.findOne',
+  'api::profile.profile.me',
+  'api::profile.profile.myIssuedCredentials',
+  'api::profile.profile.myReceivedCredentials',
+
+  // Achievement permissions
+  'api::achievement.achievement.find',
+  'api::achievement.achievement.findOne',
+  'api::achievement.achievement.create',
+  'api::achievement.achievement.update',
+  'api::achievement.achievement.delete',
+];
+
 // Permissions to enable for public users
 const PUBLIC_PERMISSIONS = [
   // Profile - read only
@@ -159,9 +189,12 @@ export async function setupPermissions(strapi: any): Promise<void> {
   try {
     // Setup authenticated permissions
     await setupRolePermissions(strapi, 'authenticated', AUTHENTICATED_PERMISSIONS);
-    
+
     // Setup public permissions
     await setupRolePermissions(strapi, 'public', PUBLIC_PERMISSIONS);
+
+    // Setup issuer permissions (no-ops with a log message if no 'issuer' role exists yet)
+    await setupRolePermissions(strapi, 'issuer', ISSUER_PERMISSIONS);
     
     strapi.log.info('[Permissions] Permission setup complete');
   } catch (error) {
