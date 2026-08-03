@@ -193,6 +193,10 @@ export default factories.createCoreController('api::credential.credential', ({ s
         return ctx.badRequest('Credential ID is required')
       }
 
+      const existing: any = await strapi.entityService.findOne('api::credential.credential', id, {
+        populate: ['statusList'],
+      })
+
       // Update the credential to revoked status
       const updatedCredential = await strapi.entityService.update('api::credential.credential', id, {
         data: {
@@ -200,6 +204,14 @@ export default factories.createCoreController('api::credential.credential', ({ s
           revocationReason: reason || 'No reason provided'
         },
       })
+
+      // Also flip the bit in the issuer's status list, if this credential
+      // has one (older credentials issued before status lists existed
+      // won't - revoked: true above is still authoritative for those).
+      if (existing?.statusList && existing.statusListIndex != null) {
+        const revocationListService = strapi.service('api::revocation-list.revocation-list')
+        await revocationListService.revokeCredentialInStatusList(existing.statusList.id, existing.statusListIndex)
+      }
 
       return { success: true, credential: updatedCredential }
     } catch (error) {

@@ -164,9 +164,10 @@ export default ({ strapi }) => ({
           'achievement.skills',
           'issuer', 
           'issuer.image',
-          'recipient', 
+          'recipient',
           'evidence',
-          'proof'
+          'proof',
+          'statusList'
         ],
       })
       
@@ -244,6 +245,18 @@ export default ({ strapi }) => ({
         }))
       }
       
+      // Add credentialStatus (StatusList2021) if this credential has a slot
+      // in an issuer status list
+      if (credential.statusList && credential.statusListIndex != null) {
+        obCredential.credentialStatus = {
+          id: `${baseUrl}/api/revocation-lists/${credential.statusList.id}#${credential.statusListIndex}`,
+          type: 'StatusList2021Entry',
+          statusPurpose: credential.statusList.statusPurpose || 'revocation',
+          statusListIndex: String(credential.statusListIndex),
+          statusListCredential: credential.statusList.statusListCredential
+        }
+      }
+
       // Add expiration date if available
       if (credential.expirationDate) {
         obCredential.expirationDate = credential.expirationDate

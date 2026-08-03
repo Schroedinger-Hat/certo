@@ -24,6 +24,11 @@
       "type": "text",
       "required": true
     },
+    "nextIndex": {
+      "type": "integer",
+      "default": 0,
+      "required": true
+    },
     "lastUpdated": {
       "type": "datetime",
       "required": true

@@ -41,13 +41,22 @@ see [frontend.md](./frontend.md)) → Strapi's `credential` controller → the
 7. **Serialize to OBv3 JSON** via
    `strapi.service('api::credential.open-badge').serializeCredential(...)` — see
    [open-badges.md](./open-badges.md) for what that object looks like.
-8. **Send the email.** Looks up the `users-permissions` user for
-   `recipientEntity.email`, builds a template via
-   `generateCredentialIssuanceEmail()` (from
-   `src/backend/src/api/credential/templates/credential-issuance.ts`), then
+8. **Notify the recipient.** Looks up the `users-permissions` user for
+   `recipientEntity.email`, then calls
+   `getNotificationProvider(strapi).sendCredentialIssued({ to, achievement, credential, frontendUrl, user })`
+   (`src/backend/src/api/credential/services/notification-providers/`) —
+   this is a small provider interface, not a direct call into the email
+   plugin. The only implementation today, `strapi-email-provider.ts`, does
+   what the inline code used to do: builds a template via
+   `generateCredentialIssuanceEmail()`
+   (`src/backend/src/api/credential/templates/credential-issuance.ts`) and
    calls `strapi.plugins['email'].services.email.send({ to, subject, text, html })`
-   — i.e. **Strapi's built-in email plugin is the actual delivery mechanism**,
-   configured with the `nodemailer` provider.
+   — Strapi's built-in email plugin, configured with the `nodemailer`
+   provider, is still the actual delivery mechanism; the interface just
+   means a different provider (SES/Mailgun/Slack/...) could be swapped in
+   later via `strapi.config.get('custom.notificationProvider', ...)`
+   without touching `credential.ts`. No alternate providers are implemented
+   yet.
 9. Returns `{ credential, openBadge, notification: { sent, error } }` to the
    caller — email failures are caught and reported back as `notification.error`
    rather than failing the whole request.
@@ -95,13 +104,21 @@ frontend.
 
 ## Revocation
 
-`credential.revoke` (controller) simply flips `revoked: true` +
-`revocationReason` on the `credential` row. The `revocation-list` content type
-models a StatusList2021-style bitstring registry, but
-`checkStatusInList` is a simplified comma-separated-indices implementation, and
-**it isn't wired into the main verify flow** — `verifyCredential` only ever
-checks the credential's own `revoked` boolean, never consults a
-`revocation-list`. If you build the "real" revocation registry
+`credential.revoke` (controller) flips `revoked: true` + `revocationReason`
+on the `credential` row, **and** also flips the credential's
+slot in its issuer's `revocation-list` via `revokeCredentialInStatusList`,
+if it has one — older credentials issued before status lists existed won't,
+in which case `revoked: true` alone is authoritative. `verifyCredential`
+checks both. `checkStatusInList` remains a simplified comma-separated-indices
+implementation rather than a real StatusList2021 GZIP+base64 bitstring — see
+[open-badges.md](./open-badges.md#signing) and
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 6.
+
+Every new credential is assigned a slot in its issuer's revocation list at
+issuance time (`credential.ts`'s `issue()`, via
+`api::revocation-list.revocation-list`'s `getOrCreateActiveListForIssuer`/
+`assignNextIndex`), and the serialized OBv3 credential now includes a
+`credentialStatus` (StatusList2021Entry) object pointing at it.
 
 ## Bootstrap-time permissions
 

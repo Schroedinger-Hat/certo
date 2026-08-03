@@ -2,7 +2,7 @@
  * Credential service
  */
 
-import { generateCredentialIssuanceEmail } from '../templates/credential-issuance'
+import { getNotificationProvider } from './notification-providers'
 
 export default ({ strapi }) => ({
   /**
@@ -76,6 +76,12 @@ export default ({ strapi }) => ({
       // Generate cryptographic proof (JWS)
       const proof = await this.generateProof(credentialPayload.issuer, credentialPayload)
 
+      // Reserve a slot for this credential in the issuer's revocation
+      // status list (StatusList2021), creating the list on first use.
+      const revocationListService = strapi.service('api::revocation-list.revocation-list')
+      const statusList = await revocationListService.getOrCreateActiveListForIssuer(credentialPayload.issuer)
+      const statusListIndex = await revocationListService.assignNextIndex(statusList.id)
+
       // Create the credential
       const credential = await strapi.entityService.create('api::credential.credential', {
         data: {
@@ -90,6 +96,8 @@ export default ({ strapi }) => ({
           revoked: false,
           publishedAt: new Date(),
           proof: [proof],
+          statusList: statusList.id,
+          statusListIndex,
           ...(expirationDate ? { expirationDate: new Date(expirationDate) } : {})
         }
       })
@@ -155,19 +163,14 @@ export default ({ strapi }) => ({
           })
 
           const frontendUrl = strapi.config.get('frontend.url', 'http://localhost:3000')
-          
-          const emailTemplate = generateCredentialIssuanceEmail({
+
+          const notificationProvider = getNotificationProvider(strapi)
+          await notificationProvider.sendCredentialIssued({
+            to: recipientEntity.email,
             achievement,
             credential,
             frontendUrl,
             user,
-          })
-
-          await strapi.plugins['email'].services.email.send({
-            to: recipientEntity.email,
-            subject: emailTemplate.subject,
-            text: emailTemplate.text,
-            html: emailTemplate.html,
           })
 
           emailSent = true
