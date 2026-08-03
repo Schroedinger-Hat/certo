@@ -1,4 +1,14 @@
 export default ({ env }) => ({
+  documentation: {
+    enabled: true,
+    config: {
+      info: {
+        title: 'Certo API',
+        description: 'Open Badges 3.0 / Verifiable Credentials API for issuing, managing, and verifying digital credentials.',
+        version: '1.0.0',
+      },
+    },
+  },
   'users-permissions': {
     config: {
       jwtSecret: env('JWT_SECRET'),

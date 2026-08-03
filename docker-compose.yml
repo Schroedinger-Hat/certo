@@ -54,8 +54,14 @@ services:
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-your-admin-jwt-secret}
       APP_KEYS: ${APP_KEYS:-your-app-keys}
       API_TOKEN_SALT: ${API_TOKEN_SALT:-your-api-token-salt}
-      # Ed25519 private key (PKCS8 format, base64 encoded) for signing credentials
-      # This is a development-only key - generate your own for production!
+      # Used to encrypt per-issuer private signing keys at rest (see
+      # src/backend/src/utils/key-encryption.ts). Dev-only default - generate
+      # your own for production!
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-oM/e09YZzP6Pz9gNkS5Y2w==}
+      # Legacy: was the single shared signing key before per-issuer keys
+      # (issuer-key content type) were introduced. No longer read by the
+      # signing/verification code paths; kept only so old container envs
+      # referencing it don't error.
       ED25519_PRIVATE_KEY_PKCS8: ${ED25519_PRIVATE_KEY_PKCS8:-LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1DNENBUUF3QlFZREsyVndCQ0lFSUFISG5RZ0tlSitZMFFMMlhTbTRQZUxZdUxPWVRaY3NXSDVlR3hLQ3JoUi8KLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQo=}
       SMTP_HOST: mailhog
       SMTP_PORT: 1025

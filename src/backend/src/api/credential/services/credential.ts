@@ -305,40 +305,32 @@ export default ({ strapi }) => ({
   },
 
   /**
-   * Generate cryptographic proof for a credential
+   * Generate cryptographic proof for a credential, signed with the
+   * issuer's own keypair (generated on first use - see
+   * api::profile.issuer-keys). Throws rather than falling back to a fake
+   * proof: an unsigned "signed" credential is worse than a failed issuance.
    * @param {string} issuerId - The ID of the issuer profile
    * @param {Object} credentialPayload - The credential payload
    */
   async generateProof(issuerId, credentialPayload) {
-    try {
-      const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
-      const payload = { ...credentialPayload }
-      delete payload.proof
-      const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8
-      if (!pkcs8) throw new Error('ED25519_PRIVATE_KEY_PKCS8 env var not set')
-      const { importPKCS8, SignJWT } = await import('jose')
+    const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
+    const payload = { ...credentialPayload }
+    delete payload.proof
 
-      const privateKey = await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA')
-      const jws = await new SignJWT(payload)
-        .setProtectedHeader({ alg: 'EdDSA' })
-        .sign(privateKey)
-      const proof = {
-        type: "Ed25519Signature2020",
-        created: new Date().toISOString(),
-        verificationMethod: `${baseUrl}/api/profiles/${issuerId}/keys`,
-        proofPurpose: "assertionMethod",
-        jws
-      }
-      return proof
-    } catch (error) {
-      console.error('Error generating proof:', error)
-      return {
-        type: "Ed25519Signature2020",
-        created: new Date().toISOString(),
-        verificationMethod: `http://example.org/keys/1`,
-        proofPurpose: "assertionMethod",
-        proofValue: "z" + this.generateUUID().replace(/-/g, '')
-      }
+    const issuerKeys = strapi.service('api::profile.issuer-keys')
+    const { privateKey } = await issuerKeys.getOrCreateKeyPair(issuerId)
+
+    const { SignJWT } = await import('jose')
+    const jws = await new SignJWT(payload)
+      .setProtectedHeader({ alg: 'EdDSA' })
+      .sign(privateKey)
+
+    return {
+      type: "Ed25519Signature2020",
+      created: new Date().toISOString(),
+      verificationMethod: `${baseUrl}/api/profiles/${issuerId}/keys`,
+      proofPurpose: "assertionMethod",
+      jws
     }
   },
 

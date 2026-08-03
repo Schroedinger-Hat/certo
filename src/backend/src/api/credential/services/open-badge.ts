@@ -2,14 +2,6 @@
  * Open Badges service
  */
 
-// Helper to load Ed25519 private key from env
-async function getEd25519PrivateKey() {
-  const pkcs8 = process.env.ED25519_PRIVATE_KEY_PKCS8 // base64-encoded PKCS8 string
-  if (!pkcs8) throw new Error('ED25519_PRIVATE_KEY_PKCS8 env var not set')
-  const { importPKCS8 } = await import('jose')
-  return await importPKCS8(Buffer.from(pkcs8, 'base64').toString('utf8'), 'EdDSA')
-}
-
 export default ({ strapi }) => ({
   /**
    * Validate an external Open Badge 3.0 credential
@@ -276,7 +268,8 @@ export default ({ strapi }) => ({
         // Prepare payload for signing (full credential minus proof)
         const credentialPayload = { ...obCredential }
         delete credentialPayload.proof
-        const privateKey = await getEd25519PrivateKey()
+        const issuerKeys = strapi.service('api::profile.issuer-keys')
+        const { privateKey } = await issuerKeys.getOrCreateKeyPair(credential.issuer.id)
         const { SignJWT } = await import('jose')
         const jws = await new SignJWT(credentialPayload)
           .setProtectedHeader({ alg: 'EdDSA' })

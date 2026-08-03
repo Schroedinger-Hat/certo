@@ -29,11 +29,11 @@ These are current gaps, not just "future features" — see
 [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) for the
 stubs/placeholders in the code and for the long term plan:
 
-- No real cryptographic verification of a credential's signature (structural checks only).
+- No real cryptographic verification of an *externally-submitted* credential's signature (locally-issued credentials are now verified for real — see [open-badges.md](./open-badges.md#verification)).
 - No webhooks, event bus, or pluggable notification providers.
 - No RBAC beyond three fixed roles; no multi-tenancy; no audit log.
 - No OAuth2/OIDC; local auth only (Strapi's `users-permissions`).
-- No automated backend tests and effectively no CI beyond a lint-autofix bot.
+- Backend test coverage is narrow (unit tests for the signing/verification code only, no full integration suite) and Playwright E2E isn't run in CI yet.
 - No abstraction that would let a different CMS/backend replace Strapi (see [tool-agnostic.md](./tool-agnostic.md)).
 
 ## Two ways to run it

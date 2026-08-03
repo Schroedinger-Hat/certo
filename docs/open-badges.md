@@ -64,22 +64,26 @@ thing in the codebase to an interoperability/import feature.
 - **Algorithm**: Ed25519 (`EdDSA`), via the `jose` npm package's `SignJWT`,
   producing a compact JWS string stored as `proof.jws`.
 - **Proof shape**: `{ type: 'Ed25519Signature2020', created, verificationMethod, proofPurpose: 'assertionMethod', jws }`.
-- **Key**: a single global `ED25519_PRIVATE_KEY_PKCS8` env var (base64-encoded
-  PKCS8), loaded independently in both `credential.ts`'s `generateProof()` and
-  `open-badge.ts`'s `getEd25519PrivateKey()` — two separate implementations of
-  the same key-loading logic.
-- **Every issuer currently shares this one signing key.** The `profile` content
-  type has a `publicKey` component (`Ed25519VerificationKey2020` shape,
-  `publicKeyJwk`/`publicKeyMultibase`) and a `did` field, modeling a
-  per-issuer-key / DID design — but nothing in the signing or verification code
-  actually reads from `profile.publicKey`. The data model is ready for
-  multi-issuer keys; the signing code isn't wired up to use it yet.
-- **A real dev private/public keypair is committed to the repo root**
-  (`ed25519-private.pem`, `ed25519-public.pem`), and `docker-compose.yml` also
-  hardcodes a default base64 PKCS8 value for `ED25519_PRIVATE_KEY_PKCS8`
-  directly in the compose file. Fine for a throwaway dev environment; make sure
-  a real deployment generates and injects its own key rather than reusing
-  these.
+- **Key: per-issuer, generated on first use.** `src/backend/src/api/profile/services/issuer-keys.ts`'s
+  `getOrCreateKeyPair(profileId)` is the single place a signing key is
+  loaded from — both `credential.ts`'s `generateProof()` and
+  `open-badge.ts`'s on-the-fly signing branch in `serializeCredential()`
+  call it. On an issuer's first credential, it generates an Ed25519
+  keypair (`jose.generateKeyPair('EdDSA', { crv: 'Ed25519' })`), encrypts
+  the private key (AES-256-GCM, keyed by `ENCRYPTION_KEY` — see
+  `utils/key-encryption.ts`) into a new `issuer-key` row (see
+  [backend.md](./backend.md#content-types) — this content type has **no
+  REST routes at all**, so it's unreachable except from server-side code),
+  and mirrors the public JWK onto `profile.publicKey` so it's discoverable
+  the normal Open Badges way. Every issuer now has its own key; the
+  previous single-shared-key design is gone.
+- **The old single-shared-key env var, `ED25519_PRIVATE_KEY_PKCS8`, is no
+  longer read anywhere.** It's left defined (with a comment marking it
+  legacy) in `docker-compose.yml` only so old container envs referencing it
+  don't error.
+- A real dev private/public keypair is still committed to the repo root
+  (`ed25519-private.pem`, `ed25519-public.pem`) from the old design — it's
+  unused now, just not yet deleted.
 
 ## Verification
 
@@ -90,29 +94,24 @@ thing in the codebase to an interoperability/import feature.
 2. `credential.expirationDate` vs now.
 3. `verifyProof(credential)`.
 
-**`verifyProof()` does not check the cryptographic signature.** It only checks
-structural things: proof exists, has `type`/`created`/`verificationMethod`/
-`proofPurpose`, has either `proofValue` or `jws`, `proofPurpose` is one of the
-allowed enum values, and the proof isn't more than 10 years old. The function's
-own comment is explicit about this:
+**`verifyProof()` now performs real cryptographic verification** for
+credentials issued by this instance: after the existing structural checks
+(proof has all required fields, a `jws` or `proofValue`, a valid
+`proofPurpose`, isn't absurdly old), it fetches the issuer's public key via
+`issuer-keys.ts`'s `getPublicKey(issuerId)` and calls `jose.jwtVerify(proof.jws, publicKey)`,
+returning `{ valid: false, ... }` on any signature mismatch, missing key, or
+malformed JWS. A `proofValue`-only proof (no `jws`) is now explicitly
+rejected as non-verifiable, rather than silently passing — see
+[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 1.
 
-```ts
-// In a real implementation, we would:
-// 1. Fetch the issuer's public key using the verificationMethod in the proof
-// 2. Verify the signature using the appropriate algorithm (e.g., Ed25519, JsonWebSignature2020)
-// 3. Check that the proof was created by the expected issuer
-...
-// For now, since we're not implementing actual cryptographic verification,
-// we'll accept any proof that passes the above checks
-```
-
-**Do not describe "verify a badge" as cryptographically secure in any
-user-facing or partner-facing material until this is implemented** — today, a
-structurally well-formed but unsigned/fake proof (see the `generateProof`
-fallback in [strapi-and-credentials.md](./strapi-and-credentials.md)) will pass
-verification. Implementing real verification means: fetch/derive the issuer's
-public key (from `profile.publicKey` or by resolving `did`), verify the JWS with
-`jose`'s `jwtVerify`/`compactVerify` using that key, and reject on any mismatch.
+**This does not extend to external, third-party-issued credentials.**
+`validateExternalCredential()`'s proof check (used when validating/importing
+an OBv3 credential from *another* system) is still a hardcoded
+`const proofVerified = true` placeholder — verifying an arbitrary external
+issuer's signature needs DID resolution or fetching a remote key, which is a
+separate, larger interoperability feature (not part of per-issuer key
+management for *our own* issuers). Don't conflate the two: local credentials
+are now really verified; externally-submitted ones are not yet.
 
 ## Endorsements
 
