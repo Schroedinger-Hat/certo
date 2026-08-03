@@ -99,4 +99,46 @@ describe('verification.verifyProof', () => {
     const result = await verificationService.verifyProof(credential)
     expect(result).toEqual({ valid: false, message: 'Issuer has no signing key on record' })
   })
+
+  it('falls back to the issuer profile\'s publicKey component when there is no issuer-key record', async () => {
+    setFakeStrapi(async () => null)
+    const { exportJWK } = await import('jose')
+    const publicKeyJwk = await exportJWK(keypairA.publicKey)
+    const proof = await makeSignedProof(keypairA.privateKey)
+    const credential: any = {
+      proof: [proof],
+      issuer: { id: 1, publicKey: [{ revoked: false, publicKeyJwk }] },
+    }
+
+    const result = await verificationService.verifyProof(credential)
+    expect(result).toEqual({ valid: true })
+  })
+
+  it('skips revoked entries in the issuer profile\'s publicKey component fallback', async () => {
+    setFakeStrapi(async () => null)
+    const { exportJWK } = await import('jose')
+    const publicKeyJwk = await exportJWK(keypairA.publicKey)
+    const proof = await makeSignedProof(keypairA.privateKey)
+    const credential: any = {
+      proof: [proof],
+      issuer: { id: 1, publicKey: [{ revoked: true, publicKeyJwk }] },
+    }
+
+    const result = await verificationService.verifyProof(credential)
+    expect(result).toEqual({ valid: false, message: 'Issuer has no signing key on record' })
+  })
+
+  it('rejects when the profile publicKey fallback has no matching key either', async () => {
+    setFakeStrapi(async () => null)
+    const { exportJWK } = await import('jose')
+    const publicKeyJwkB = await exportJWK(keypairB.publicKey)
+    const proof = await makeSignedProof(keypairA.privateKey) // signed with A, only B on record
+    const credential: any = {
+      proof: [proof],
+      issuer: { id: 1, publicKey: [{ revoked: false, publicKeyJwk: publicKeyJwkB }] },
+    }
+
+    const result = await verificationService.verifyProof(credential)
+    expect(result).toEqual({ valid: false, message: 'Issuer has no signing key on record' })
+  })
 })

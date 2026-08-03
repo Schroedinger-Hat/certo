@@ -51,6 +51,7 @@ export default {
               'achievement.skills',
               'issuer',
               'issuer.image',
+              'issuer.publicKey',
               'recipient',
               'evidence',
               'proof',
@@ -77,9 +78,10 @@ export default {
           'achievement.criteria',
           'achievement.alignment',
           'achievement.skills',
-          'issuer', 
+          'issuer',
           'issuer.image',
-          'recipient', 
+          'issuer.publicKey',
+          'recipient',
           'evidence',
           'proof'
         ],
@@ -235,20 +237,38 @@ export default {
         return { valid: false, message: 'Credential has no issuer to verify the proof against' };
       }
 
+      const { jwtVerify, importJWK } = await import('jose');
+
       const issuerKeys = strapi.service('api::profile.issuer-keys');
       const publicKey = await issuerKeys.getPublicKey(credential.issuer.id);
-      if (!publicKey) {
-        return { valid: false, message: 'Issuer has no signing key on record' };
+      if (publicKey) {
+        try {
+          await jwtVerify(proof.jws, publicKey);
+          return { valid: true };
+        } catch (verifyError) {
+          return { valid: false, message: `Signature verification failed: ${verifyError.message}` };
+        }
       }
 
-      const { jwtVerify } = await import('jose');
-      try {
-        await jwtVerify(proof.jws, publicKey);
-      } catch (verifyError) {
-        return { valid: false, message: `Signature verification failed: ${verifyError.message}` };
+      // Fall back to the issuer's profile-level publicKey component. Older/
+      // migrated production issuers may only have a key there (predating the
+      // api::issuer-key.issuer-key table), so try every non-revoked entry
+      // that has a JWK before giving up.
+      const profileKeys = (credential.issuer.publicKey || []).filter(
+        (key) => !key.revoked && key.publicKeyJwk
+      );
+
+      for (const key of profileKeys) {
+        try {
+          const candidate = await importJWK(key.publicKeyJwk, 'EdDSA');
+          await jwtVerify(proof.jws, candidate);
+          return { valid: true };
+        } catch {
+          // Try the next candidate key.
+        }
       }
 
-      return { valid: true };
+      return { valid: false, message: 'Issuer has no signing key on record' };
     } catch (error) {
       console.error('Error verifying proof:', error);
       return { valid: false, message: `Error verifying proof: ${error.message}` };
