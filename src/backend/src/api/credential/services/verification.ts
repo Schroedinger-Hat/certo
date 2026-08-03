@@ -237,7 +237,7 @@ export default {
         return { valid: false, message: 'Credential has no issuer to verify the proof against' };
       }
 
-      const { jwtVerify, importJWK } = await import('jose');
+      const { jwtVerify, importJWK, importSPKI } = await import('jose');
 
       const issuerKeys = strapi.service('api::profile.issuer-keys');
       const publicKey = await issuerKeys.getPublicKey(credential.issuer.id);
@@ -253,18 +253,54 @@ export default {
       // Fall back to the issuer's profile-level publicKey component. Older/
       // migrated production issuers may only have a key there (predating the
       // api::issuer-key.issuer-key table), so try every non-revoked entry
-      // that has a JWK before giving up.
+      // before giving up. Some of these entries don't hold a spec-shaped JWK
+      // - e.g. this app's own JWKs have a flat { kty, crv, x }, but keys
+      // entered from elsewhere have been seen with `publicKeyJwk` wrapping a
+      // `{ jwk: [...] }` array whose "x" is actually a base64 DER SPKI blob,
+      // and/or the same DER blob duplicated into `publicKeyMultibase`
+      // (not real multibase encoding). Try every shape we've actually seen.
+      const toPem = (base64Der: string) =>
+        `-----BEGIN PUBLIC KEY-----\n${(base64Der.match(/.{1,64}/g) || [base64Der]).join('\n')}\n-----END PUBLIC KEY-----\n`;
+
+      const candidateKeysFor = async (key: any) => {
+        const attempts: Array<() => Promise<any>> = [];
+
+        if (key.publicKeyJwk?.kty) {
+          attempts.push(() => importJWK(key.publicKeyJwk, 'EdDSA'));
+        }
+
+        const wrappedJwks = key.publicKeyJwk?.jwk;
+        if (Array.isArray(wrappedJwks)) {
+          for (const entry of wrappedJwks) {
+            if (entry?.kty) attempts.push(() => importJWK(entry, 'EdDSA'));
+            if (entry?.x) attempts.push(() => importSPKI(toPem(entry.x), 'EdDSA'));
+          }
+        }
+
+        if (typeof key.publicKeyMultibase === 'string') {
+          attempts.push(() => importSPKI(toPem(key.publicKeyMultibase), 'EdDSA'));
+        }
+
+        const candidates = [];
+        for (const attempt of attempts) {
+          const candidate = await attempt().catch(() => null);
+          if (candidate) candidates.push(candidate);
+        }
+        return candidates;
+      };
+
       const profileKeys = (credential.issuer.publicKey || []).filter(
-        (key) => !key.revoked && key.publicKeyJwk
+        (key) => !key.revoked && (key.publicKeyJwk || key.publicKeyMultibase)
       );
 
       for (const key of profileKeys) {
-        try {
-          const candidate = await importJWK(key.publicKeyJwk, 'EdDSA');
-          await jwtVerify(proof.jws, candidate);
-          return { valid: true };
-        } catch {
-          // Try the next candidate key.
+        for (const candidate of await candidateKeysFor(key)) {
+          try {
+            await jwtVerify(proof.jws, candidate);
+            return { valid: true };
+          } catch {
+            // Try the next candidate key.
+          }
         }
       }
 
