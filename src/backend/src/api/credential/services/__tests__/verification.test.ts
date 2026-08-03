@@ -128,6 +128,31 @@ describe('verification.verifyProof', () => {
     expect(result).toEqual({ valid: false, message: 'Issuer has no signing key on record' })
   })
 
+  it('verifies against a malformed-but-real-world publicKey entry (wrapped { jwk: [...] } with a DER SPKI "x", duplicated into publicKeyMultibase)', async () => {
+    setFakeStrapi(async () => null)
+    const { exportSPKI } = await import('jose')
+    const spkiPem = await exportSPKI(keypairA.publicKey)
+    const derBase64 = spkiPem
+      .replace('-----BEGIN PUBLIC KEY-----', '')
+      .replace('-----END PUBLIC KEY-----', '')
+      .replace(/\s/g, '')
+    const proof = await makeSignedProof(keypairA.privateKey)
+    const credential: any = {
+      proof: [proof],
+      issuer: {
+        id: 1,
+        publicKey: [{
+          revoked: false,
+          publicKeyJwk: { jwk: [{ crv: 'Ed25519', kty: 'OKP', x: derBase64 }] },
+          publicKeyMultibase: derBase64,
+        }],
+      },
+    }
+
+    const result = await verificationService.verifyProof(credential)
+    expect(result).toEqual({ valid: true })
+  })
+
   it('rejects when the profile publicKey fallback has no matching key either', async () => {
     setFakeStrapi(async () => null)
     const { exportJWK } = await import('jose')
