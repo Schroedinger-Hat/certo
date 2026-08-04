@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "audit_log_entries",
+  "info": {
+    "singularName": "audit-log-entry",
+    "pluralName": "audit-log-entries",
+    "displayName": "Audit Log Entry",
+    "description": "Record of who did what, for actions that bypass or sit outside the normal permission model. Admin-panel-only: no public/authenticated REST routes are defined for this content type."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "action": {
+      "type": "string",
+      "required": true,
+      "description": "e.g. credential.issue, credential.revoke, achievement.create"
+    },
+    "entityType": {
+      "type": "string",
+      "required": true
+    },
+    "entityId": {
+      "type": "string",
+      "required": true
+    },
+    "actorId": {
+      "type": "integer",
+      "description": "users-permissions user id, when known"
+    },
+    "actorType": {
+      "type": "enumeration",
+      "enum": ["user", "system"],
+      "default": "user"
+    },
+    "metadata": {
+      "type": "json",
+      "description": "Action-specific extra detail, e.g. { reason } for a revocation"
+    }
+  }
+}

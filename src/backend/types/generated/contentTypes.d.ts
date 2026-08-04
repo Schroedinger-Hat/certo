@@ -416,6 +416,42 @@ export interface ApiAchievementAchievement extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAuditLogEntryAuditLogEntry
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'audit_log_entries';
+  info: {
+    description: 'Record of who did what, for actions that bypass or sit outside the normal permission model. Admin-panel-only: no public/authenticated REST routes are defined for this content type.';
+    displayName: 'Audit Log Entry';
+    pluralName: 'audit-log-entries';
+    singularName: 'audit-log-entry';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    action: Schema.Attribute.String & Schema.Attribute.Required;
+    actorId: Schema.Attribute.Integer;
+    actorType: Schema.Attribute.Enumeration<['user', 'system']> &
+      Schema.Attribute.DefaultTo<'user'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    entityId: Schema.Attribute.String & Schema.Attribute.Required;
+    entityType: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::audit-log-entry.audit-log-entry'
+    > &
+      Schema.Attribute.Private;
+    metadata: Schema.Attribute.JSON;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCredentialCredential extends Struct.CollectionTypeSchema {
   collectionName: 'credentials';
   info: {
@@ -1222,6 +1258,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::achievement.achievement': ApiAchievementAchievement;
+      'api::audit-log-entry.audit-log-entry': ApiAuditLogEntryAuditLogEntry;
       'api::credential.credential': ApiCredentialCredential;
       'api::endorsement.endorsement': ApiEndorsementEndorsement;
       'api::evidence.evidence': ApiEvidenceEvidence;

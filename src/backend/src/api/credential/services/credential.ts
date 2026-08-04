@@ -11,8 +11,9 @@ export default ({ strapi }) => ({
    * @param {Object} recipient - The recipient profile
    * @param {Array} evidence - Optional evidence items
    * @param {string} expirationDate - Optional expiration date for the credential
+   * @param {number} [actorId] - The users-permissions user id of the caller, for the audit log
    */
-  async issue(achievement, recipient, evidence = [], expirationDate = undefined) {
+  async issue(achievement, recipient, evidence = [], expirationDate = undefined, actorId = undefined) {
     try {
       // Find or create recipient profile
       let recipientEntity = null
@@ -189,6 +190,17 @@ export default ({ strapi }) => ({
         achievementId: achievement.id,
         issuerId: credentialPayload.issuer,
         recipientId: recipientEntity.id,
+      })
+
+      // Record who issued this - see known-issues-and-dev-notes.md item 5
+      // (this controller path disables the normal permission check).
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'credential.issue',
+        entityType: 'credential',
+        entityId: credential.id,
+        actorId,
+        metadata: { achievementId: achievement.id, recipientId: recipientEntity.id },
       })
 
       // Return both the populated credential record and the OBv3 serialized version

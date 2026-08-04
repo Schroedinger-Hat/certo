@@ -85,6 +85,37 @@ const ISSUER_PERMISSIONS = [
   'api::achievement.achievement.delete',
 ];
 
+// Permissions to enable for the reviewer role: read/verify everything,
+// no create/update/delete.
+const REVIEWER_PERMISSIONS = [
+  'api::profile.profile.find',
+  'api::profile.profile.findOne',
+
+  'api::achievement.achievement.find',
+  'api::achievement.achievement.findOne',
+
+  'api::credential.credential.find',
+  'api::credential.credential.findOne',
+  'api::credential.credential.verify',
+  'api::credential.credential.validate',
+
+  'api::evidence.evidence.find',
+  'api::evidence.evidence.findOne',
+];
+
+// Permissions to enable for the viewer role: read-only, narrower than
+// reviewer (no evidence, no verify beyond what's already public).
+const VIEWER_PERMISSIONS = [
+  'api::profile.profile.find',
+  'api::profile.profile.findOne',
+
+  'api::achievement.achievement.find',
+  'api::achievement.achievement.findOne',
+
+  'api::credential.credential.find',
+  'api::credential.credential.findOne',
+];
+
 // Permissions to enable for public users
 const PUBLIC_PERMISSIONS = [
   // Profile - read only
@@ -195,7 +226,14 @@ export async function setupPermissions(strapi: any): Promise<void> {
 
     // Setup issuer permissions (no-ops with a log message if no 'issuer' role exists yet)
     await setupRolePermissions(strapi, 'issuer', ISSUER_PERMISSIONS);
-    
+
+    // Reviewer/viewer: same no-op-until-the-role-exists caveat as issuer -
+    // these lists are inert until an admin creates matching roles in the
+    // admin panel (Settings > Users & Permissions > Roles). See
+    // docs/known-issues-and-dev-notes.md and docs/security.md.
+    await setupRolePermissions(strapi, 'reviewer', REVIEWER_PERMISSIONS);
+    await setupRolePermissions(strapi, 'viewer', VIEWER_PERMISSIONS);
+
     strapi.log.info('[Permissions] Permission setup complete');
   } catch (error) {
     strapi.log.error('[Permissions] Error setting up permissions:', error instanceof Error ? error.message : error);
