@@ -129,3 +129,6 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+
+# scripts/backup.js output (see docs/self-hosting.md)
+backups

@@ -3,6 +3,7 @@
  */
 
 import { errors } from '@strapi/utils';
+import { credentialsVerifiedTotal } from '../../../monitoring/metrics';
 const { ApplicationError } = errors;
 
 // Define interface for credential with all required properties
@@ -108,6 +109,7 @@ export default {
 
     // Check if credential is revoked
     if (credential.revoked) {
+      credentialsVerifiedTotal.inc({ result: 'invalid' });
       return {
         verified: false,
         checks: [
@@ -120,6 +122,7 @@ export default {
 
     // Check if credential is expired
     if (credential.expirationDate && new Date(credential.expirationDate) < new Date()) {
+      credentialsVerifiedTotal.inc({ result: 'invalid' });
       return {
         verified: false,
         checks: [
@@ -142,6 +145,7 @@ export default {
       const revocationListService = strapi.service('api::revocation-list.revocation-list');
       const revokedInList = await revocationListService.checkStatusInList(credential.statusList, credential.statusListIndex);
       if (revokedInList) {
+        credentialsVerifiedTotal.inc({ result: 'invalid' });
         return {
           verified: false,
           checks: [
@@ -162,6 +166,7 @@ export default {
     }
 
     if (!proofResult.valid) {
+      credentialsVerifiedTotal.inc({ result: 'invalid' });
       return {
         verified: false,
         checks: [
@@ -173,6 +178,7 @@ export default {
     }
 
     // All checks passed
+    credentialsVerifiedTotal.inc({ result: 'valid' });
     return {
       verified: true,
       checks: [

@@ -16,7 +16,9 @@ const AUTHENTICATED_PERMISSIONS = [
   'api::profile.profile.myReceivedCredentials',
   'api::profile.profile.findIssuedCredentials',
   'api::profile.profile.findReceivedCredentials',
-  
+  'api::profile.profile.exportMyData',
+  'api::profile.profile.importMyData',
+
   // Achievement permissions
   'api::achievement.achievement.find',
   'api::achievement.achievement.findOne',
@@ -76,6 +78,8 @@ const ISSUER_PERMISSIONS = [
   'api::profile.profile.me',
   'api::profile.profile.myIssuedCredentials',
   'api::profile.profile.myReceivedCredentials',
+  'api::profile.profile.exportMyData',
+  'api::profile.profile.importMyData',
 
   // Achievement permissions
   'api::achievement.achievement.find',

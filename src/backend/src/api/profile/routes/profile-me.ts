@@ -17,5 +17,32 @@ export default {
         },
       },
     },
+    // Export everything associated with the current user's own profile
+    {
+      method: 'GET',
+      path: '/profiles/me/export',
+      handler: 'profile.exportMyData',
+      config: {
+        policies: [],
+        middlewares: [],
+        auth: {
+          scope: ['api::profile.profile.exportMyData'],
+        },
+      },
+    },
+    // Restore achievements/credentials into the current user's own profile
+    // from a bundle previously produced by /profiles/me/export
+    {
+      method: 'POST',
+      path: '/profiles/me/import',
+      handler: 'profile.importMyData',
+      config: {
+        policies: [],
+        middlewares: [],
+        auth: {
+          scope: ['api::profile.profile.importMyData'],
+        },
+      },
+    },
   ],
-}; 
+};

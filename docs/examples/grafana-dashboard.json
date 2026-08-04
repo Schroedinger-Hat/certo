@@ -1,0 +1,64 @@
+{
+  "title": "Certo",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "time": { "from": "now-6h", "to": "now" },
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Credentials issued (rate)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "rate(certo_credentials_issued_total[5m])", "legendFormat": "issued/s" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Credentials verified (rate, by result)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "rate(certo_credentials_verified_total[5m])", "legendFormat": "{{result}}" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Credentials revoked (rate)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        { "expr": "rate(certo_credentials_revoked_total[5m])", "legendFormat": "revoked/s" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Achievements created (rate)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        { "expr": "rate(certo_achievements_created_total[5m])", "legendFormat": "created/s" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Process CPU",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        { "expr": "rate(certo_process_cpu_seconds_total[5m])", "legendFormat": "cpu seconds/s" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Process resident memory",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        { "expr": "certo_process_resident_memory_bytes", "legendFormat": "RSS bytes" }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@
  */
 
 import { factories } from '@strapi/strapi'
+import { achievementsCreatedTotal } from '../../../monitoring/metrics'
 
 interface Achievement {
   id: any
@@ -39,6 +40,7 @@ export default factories.createCoreController('api::achievement.achievement', ({
         actorId: ctx.state.user?.id,
         metadata: { name: entity.name },
       })
+      achievementsCreatedTotal.inc()
 
       // Return the created entity
       return { data: entity };

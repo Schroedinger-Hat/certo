@@ -62,7 +62,65 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
     }
   },
 
-  
+  /**
+   * Export everything associated with the current user's own profile:
+   * achievements it created, credentials it issued or received, and their
+   * evidence. See services/data-portability.ts.
+   */
+  async exportMyData(ctx) {
+    try {
+      if (!ctx.state.user) {
+        return ctx.unauthorized('You must be logged in');
+      }
+
+      const profiles = await strapi.entityService.findMany('api::profile.profile', {
+        filters: { email: ctx.state.user.email },
+        status: 'published',
+        limit: 1,
+      });
+
+      if (!profiles || profiles.length === 0) {
+        return ctx.notFound('Profile not found for the current user');
+      }
+
+      const dataPortability = strapi.service('api::profile.data-portability');
+      return await dataPortability.exportProfileData(profiles[0]);
+    } catch (err) {
+      console.error('Error exporting profile data:', err);
+      return ctx.badRequest('Error exporting profile data', { error: err });
+    }
+  },
+
+  /**
+   * Restores achievements/credentials the current user's profile previously
+   * exported via exportMyData - never someone else's data, never
+   * credentials merely *received* by this profile. See
+   * services/data-portability.ts.
+   */
+  async importMyData(ctx) {
+    try {
+      if (!ctx.state.user) {
+        return ctx.unauthorized('You must be logged in');
+      }
+
+      const profiles = await strapi.entityService.findMany('api::profile.profile', {
+        filters: { email: ctx.state.user.email },
+        status: 'published',
+        limit: 1,
+      });
+
+      if (!profiles || profiles.length === 0) {
+        return ctx.notFound('Profile not found for the current user');
+      }
+
+      const dataPortability = strapi.service('api::profile.data-portability');
+      return await dataPortability.importProfileData(profiles[0], ctx.request.body || {});
+    } catch (err) {
+      console.error('Error importing profile data:', err);
+      return ctx.badRequest('Error importing profile data', { error: err });
+    }
+  },
+
   async findIssuedCredentials(ctx) {
     try {
       const { id } = ctx.params

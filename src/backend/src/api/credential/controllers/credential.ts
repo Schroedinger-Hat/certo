@@ -4,6 +4,7 @@
 
 import { factories } from '@strapi/strapi'
 import crypto from 'crypto'
+import { credentialsRevokedTotal } from '../../../monitoring/metrics'
 
 // Define types to help with type assertions
 interface Achievement {
@@ -230,6 +231,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
         actorId: ctx.state.user?.id,
         metadata: { reason: reason || 'No reason provided' },
       })
+      credentialsRevokedTotal.inc()
 
       return { success: true, credential: updatedCredential }
     } catch (error) {

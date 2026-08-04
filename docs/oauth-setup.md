@@ -6,8 +6,8 @@ built-in connect strategies for Google, GitHub, Discord, and several other
 providers. Enabling one is a matter of configuration, not code, and that
 configuration is admin-panel/database-driven, not a `config/plugins.ts`
 setting (unlike everything else in this backend). This doc exists so
-"enable OAuth2/OIDC" (a ROADMAP.md Phase 2 item) has a real,
-correct path rather than a fabricated code path Strapi doesn't actually use.
+"enable OAuth2/OIDC login" has a real, correct path rather than a
+fabricated code path Strapi doesn't actually use.
 
 **This has not been end-to-end tested** — doing so needs a real OAuth
 app (client ID/secret) from an actual provider, which wasn't available in
@@ -55,8 +55,8 @@ callback flow above has been verified against it.
 
 ## What's explicitly out of scope here
 
-- LDAP and SCIM (also ROADMAP.md Phase 2 items) — unrelated
-  to `users-permissions`' OAuth providers, not addressed at all.
+- LDAP and SCIM — unrelated to `users-permissions`' OAuth providers, not
+  addressed at all.
 - A UI for admins to manage which providers are enabled beyond Strapi's own
   admin panel screen.
 - Programmatically seeding provider config (e.g. via `.env` + a bootstrap

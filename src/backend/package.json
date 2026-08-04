@@ -11,6 +11,8 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js",
     "test": "jest",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
@@ -23,7 +25,9 @@
     "@strapi/provider-email-sendmail": "^5.15.0",
     "@strapi/strapi": "5.15.0",
     "better-sqlite3": "11.3.0",
+    "dotenv": "^16.6.1",
     "jose": "^6.0.11",
+    "prom-client": "^15.1.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",

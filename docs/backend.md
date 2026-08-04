@@ -72,6 +72,18 @@ public credential listing. This is evidence of permission/routing workarounds
 rather than a clean single source of truth for each route — worth being aware of
 before adding new credential routes.
 
+Two routes aren't tied to any content type at all and so don't go through
+the usual `api/*/routes/` mechanism: `GET /api/health` (JSON DB-connectivity
+check) and `GET /api/metrics` (Prometheus text exposition format), both
+unauthenticated. They're registered directly via `strapi.server.routes()`
+inside `src/index.ts`'s `register()` hook (`src/monitoring/routes.ts`) — see
+[monitoring.md](./monitoring.md). Also new: `GET /profiles/me/export` and
+`POST /profiles/me/import` (`api/profile/routes/profile-me.ts`), a
+self-service data-portability pair distinct from `credential`'s existing
+`import`/`export` actions (which handle a single externally-issued OB3 VC,
+not "all of my own data") — see
+[self-hosting.md](./self-hosting.md#take-your-own-data-with-you).
+
 No GraphQL plugin. `@strapi/plugin-documentation` is enabled
 (`config/plugins.ts`'s `documentation` block) — Swagger UI / an
 auto-generated OpenAPI spec is served at `/documentation`, covering the
