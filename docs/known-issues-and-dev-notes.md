@@ -354,3 +354,21 @@ backup/restore, and basic monitoring.
     (`server.initRouting()`) partway through its own `bootstrap()`, before
     this app's `bootstrap({ strapi })` hook ever runs. See
     [monitoring.md](./monitoring.md).
+
+29. **New: structured logging (`LOG_FORMAT_JSON`) with per-request
+    correlation.** Closes out the last open Enterprise Readiness item
+    (multi-tenancy remains deliberately deferred per item 5). New
+    `config/logger.ts` — Strapi's standard "every file in `config/` becomes
+    a config key" convention, no monkey-patching — switches from the default
+    colored `prettyPrint()` to `winston.format.json()` when
+    `LOG_FORMAT_JSON=true`, off by default so local dev is unaffected. A new
+    `src/middlewares/request-id.ts` (`global::request-id`, first in
+    `config/middlewares.ts` so its context covers the whole request
+    lifecycle) assigns a correlation id per request and runs the rest of the
+    chain inside an `AsyncLocalStorage` context
+    (`src/utils/request-context.ts`); `config/logger.ts`'s format reads that
+    same store and attaches `requestId` to **every** log line produced
+    during the request — including `strapi::logger`'s own access-log line —
+    with no changes needed to any of the ~40 existing `strapi.log.*()` call
+    sites (item 20's single-interpolated-string convention is untouched).
+    See [logging.md](./logging.md).
