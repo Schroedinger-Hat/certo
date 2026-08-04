@@ -226,3 +226,61 @@ several of them are the kind of thing that tends to silently regress.
     Confirmed by simulating a failure before/after the fix. If you add a
     new `strapi.log.*` call, pass one interpolated string, not multiple
     arguments.
+
+## Self-hosting
+
+Found and reported via a real self-hosted deployment attempt —
+[issue #78](https://github.com/Schroedinger-Hat/certo/issues/78) is the full
+deployment log; #75/#76/#77 below are the three concrete bugs split out of it.
+The Dockerfile dev-mode issue also reported there was already covered by
+item 8 above.
+
+21. **[Fixed] CORS middleware crashed (`originList.split is not a
+    function`) for any origin not on the hardcoded whitelist**
+    ([#75](https://github.com/Schroedinger-Hat/certo/issues/75)).
+    `config/middlewares.ts`'s `strapi::cors` origin function returned `false`
+    for unrecognized origins, but `@strapi/core`'s cors middleware
+    unconditionally calls `.split(',')` on whatever the function returns -
+    `false` isn't a string or array, so every request from a non-whitelisted
+    origin threw internally. Fixed by returning `''` instead (the sentinel
+    `@koa/cors`/Strapi's wrapper already use internally for "no match"), and
+    by making the whitelist extensible via a new `CORS_ALLOWED_ORIGINS`
+    env var (comma-separated) so self-hosters don't have to edit source to
+    deploy on their own domain.
+
+22. **[Fixed] `GET /api/users/me?populate=*` returned 403, breaking
+    any frontend logic depending on the user's role**
+    ([#76](https://github.com/Schroedinger-Hat/certo/issues/76)). Strapi's
+    built-in `me` controller (`@strapi/plugin-users-permissions`) runs the
+    requested `populate` through `strapi.contentAPI.validate.query`, which
+    doesn't allow `role` by default - so the request was rejected before ever
+    checking the (correctly configured) Authenticated-role permissions. Fixed
+    with a `strapi-server.ts` extension
+    (`src/extensions/users-permissions/strapi-server.ts`) that overrides `me`
+    to fetch the role directly via `strapi.db.query(...).findOne({ populate:
+    ['role'] })`, bypassing that unrelated validation layer, and manually
+    strips the private fields (`password`, `resetPasswordToken`,
+    `confirmationToken`) that the default controller's sanitizer would have
+    removed.
+
+23. **[Fixed] Frontend checked a Strapi role called "Issuer" that
+    can never exist, making `/issue` unreachable for everyone**
+    ([#77](https://github.com/Schroedinger-Hat/certo/issues/77)).
+    `stores/auth.ts`'s `isIssuer` checked `user.role.name === 'issuer'` - the
+    Strapi Users & Permissions role - but a fresh instance only ever has the
+    built-in `Public`/`Authenticated` roles; issuer-ness is actually the
+    `Profile.profileType` field (`Issuer`/`Recipient`/`Both`). Fixed to check
+    `profile.value?.profileType` instead. This depended on item 22 being
+    fixed first in practice, since without it `/api/users/me` calls that
+    populate `role` 403 during session restore.
+
+24. **New: boot-time warning if the seeded default admin credentials
+    are still active.** #78 flagged that `admin@certo.com`/`certo` (the
+    README's documented dev credentials) end up live in production
+    deployments that don't explicitly set `NODE_ENV=production` (the only
+    thing that makes `seedDevelopmentData()` skip seeding). Added
+    `bootstrap/default-credentials-warning.ts`, run unconditionally on every
+    boot (not gated by environment): if `admin@certo.com` exists and its
+    password still validates against the seeded default, it logs a loud
+    `strapi.log.warn` block. This is advisory only — it doesn't rotate the
+    password or block startup, since a self-hoster may be mid-setup.
