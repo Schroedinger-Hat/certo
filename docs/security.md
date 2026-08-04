@@ -35,8 +35,6 @@ message) if it doesn't exist yet — the `reviewer`/`viewer` permission lists
 are inert until someone actually creates those roles via
 **Settings → Users & Permissions → Roles** in the admin panel, exactly like
 `issuer` already was before this doc was written.
-**Not implemented**: OAuth2/OIDC, LDAP, SCIM — all
-ROADMAP.md Phase 2 items. No 2FA.
 
 ## Authorization
 
@@ -126,9 +124,25 @@ the platform level. Self-hosting via the repo's Docker Compose setup does
 
 ## GDPR, backups, audit logs
 
-**None of these are implemented.** No data export/deletion tooling beyond
-manual DB access, no backup/restore tooling, no audit log of admin or
-issuer actions. 
+**Backups and a basic audit log now exist; GDPR-specific tooling still
+doesn't.**
+
+- **Audit log**: `api::audit-log-entry.audit-log`'s `record()` is called at
+  credential issuance/revocation and achievement creation - see
+  [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 5.
+  It's not comprehensive (not every mutating action is recorded) and there's
+  no admin-panel UI beyond the raw content-manager view of the entries.
+- **Backup/restore**: `npm run backup`/`npm run restore` (DB-native -
+  `pg_dump`/`pg_restore` for Postgres, file copy for sqlite - plus
+  `public/uploads`) - see [self-hosting.md](./self-hosting.md#backup--restore).
+  No automated/scheduled backups; this is a manual operator tool, not a
+  managed backup service.
+- **Data export/deletion (GDPR)**: still no purpose-built deletion tooling.
+  There is now a self-service *export* path
+  (`GET /api/profiles/me/export`, see
+  [self-hosting.md](./self-hosting.md#take-your-own-data-with-you)) that
+  covers data portability, but nothing analogous for right-to-erasure -
+  deleting a profile/account still means manual DB access.
 
 ## Reporting a vulnerability
 

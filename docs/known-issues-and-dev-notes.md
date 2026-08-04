@@ -284,3 +284,73 @@ item 8 above.
     password still validates against the seeded default, it logs a loud
     `strapi.log.warn` block. This is advisory only — it doesn't rotate the
     password or block startup, since a self-hoster may be mid-setup.
+
+## Enterprise readiness: Import/Export, Backup/Restore, Monitoring
+
+Continues the audit log + RBAC work above (item 5) — multi-tenancy remains
+deliberately deferred (see item 5's rationale) — with three more
+production-readiness items: self-service data portability, full-instance
+backup/restore, and basic monitoring.
+
+25. **New: self-service data export/import, per profile.**
+    `api::profile.profile`'s new `exportMyData`/`importMyData` actions
+    (`GET`/`POST /profiles/me/export`, `/profiles/me/import`) let an
+    authenticated issuer take *all* their own data with them - achievements
+    they created, credentials they issued or received, and evidence - as one
+    JSON bundle, and re-import it (achievements/credentials they issued
+    only, never `credentialsReceived`) into a fresh instance under the same
+    account. Distinct from the pre-existing
+    `credential.import`/`credential.export` actions and
+    `open-badge.ts`'s `importCredential()`, which handle ingesting/emitting a
+    single *externally-issued* OB3 VC - naming was deliberately kept
+    separate to avoid confusing the two. Import is idempotent: achievements/
+    credentials/evidence already present (matched by their natural unique
+    key - `achievementId`/`credentialId`/`evidenceId`) are skipped, never
+    duplicated or overwritten. Implementation:
+    `api/profile/services/data-portability.ts`; recipient resolution reuses
+    `credential.ts`'s find-or-create-by-email logic, extracted into its own
+    `findOrCreateRecipientProfile()` method rather than duplicated.
+
+26. **New: full-instance backup/restore (`npm run backup`/`restore`).**
+    DB-native rather than a generic content-type JSON dump - `pg_dump`/
+    `pg_restore` for Postgres, a plain file copy for sqlite - plus
+    `public/uploads`, all into one timestamped directory under `backups/`
+    (gitignored). Deliberately does **not** boot a full Strapi instance like
+    `scripts/fresh-install.js` does: backup/restore only need the raw
+    `DATABASE_*` connection config (read the same way
+    `config/database.ts` does, via `dotenv`), not the ORM - and for sqlite
+    specifically, booting Strapi would mean holding the very DB file open
+    that restore is about to overwrite. `restore.js` refuses to run without
+    an explicit `--yes` (it's destructive: `pg_restore --clean --if-exists`
+    drops existing objects first; sqlite restore overwrites the live file
+    outright). MySQL isn't supported - nothing in this repo's docker-compose/
+    docs uses it. The backend `Dockerfile` now installs
+    `postgresql16-client` (matching the `postgres:16` image in
+    `docker-compose.yml`) so `docker exec certo_backend npm run backup`
+    works without extra setup.
+
+27. **[Fixed] `docker-compose.yml`'s `backend` service had no volume
+    for `public/uploads` at all.** Every container recreation silently
+    deleted all uploaded media (achievement/profile images) - found while
+    scoping what a backup actually needs to capture, since there was nothing
+    durable to back up otherwise. Fixed by adding a named `uploads-data`
+    volume mounted at `/app/public/uploads`.
+
+28. **New: monitoring (`/api/health`, `/api/metrics`).** `/api/health`
+    is a richer JSON DB-connectivity check than Strapi's built-in `/_health`
+    (204, no body), which is unchanged and still present. `/api/metrics` is
+    a `prom-client`-backed Prometheus endpoint: default Node process metrics
+    plus four counters (`certo_credentials_issued_total`,
+    `certo_credentials_revoked_total`,
+    `certo_credentials_verified_total{result}`,
+    `certo_achievements_created_total`) incremented at the same call sites
+    already touched by item 5's audit log. Both routes are unauthenticated
+    by design (Prometheus/health-check convention, same as `/_health`) -
+    self-hosters should restrict `/api/metrics` at the reverse proxy, not
+    app auth. Neither is tied to a content type, so both are registered via
+    `strapi.server.routes()` inside `src/index.ts`'s `register()` hook
+    rather than a fake content-type-less `api/` folder - this has to happen
+    in `register()`, not `bootstrap()`, since Strapi finalizes routing
+    (`server.initRouting()`) partway through its own `bootstrap()`, before
+    this app's `bootstrap({ strapi })` hook ever runs. See
+    [monitoring.md](./monitoring.md).

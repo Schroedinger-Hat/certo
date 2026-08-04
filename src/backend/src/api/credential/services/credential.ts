@@ -3,6 +3,7 @@
  */
 
 import { getNotificationProvider } from './notification-providers'
+import { credentialsIssuedTotal } from '../../../monitoring/metrics'
 
 export default ({ strapi }) => ({
   /**
@@ -15,44 +16,7 @@ export default ({ strapi }) => ({
    */
   async issue(achievement, recipient, evidence = [], expirationDate = undefined, actorId = undefined) {
     try {
-      // Find or create recipient profile
-      let recipientEntity = null
-
-      if (recipient.id && recipient.id !== 0) {
-        // Find existing recipient by ID
-        recipientEntity = await strapi.entityService.findOne(
-          'api::profile.profile',
-          recipient.id,
-          { status: 'published' }
-        )
-      } else if (recipient.email) {
-        // Find or create by email
-        const existingRecipients = await strapi.entityService.findMany(
-          'api::profile.profile',
-          {
-            filters: { email: recipient.email },
-            status: 'published',
-          }
-        )
-
-        if (existingRecipients && existingRecipients.length > 0) {
-          recipientEntity = existingRecipients[0]
-        } else {
-          // Create new recipient profile
-          recipientEntity = await strapi.entityService.create('api::profile.profile', {
-            data: {
-              name: recipient.name,
-              email: recipient.email,
-              profileType: 'Recipient',
-              publishedAt: new Date(),
-            }
-          })
-        }
-      }
-
-      if (!recipientEntity) {
-        throw new Error('Unable to find or create recipient profile')
-      }
+      const recipientEntity = await this.findOrCreateRecipientProfile(recipient)
 
       // Find or create user associated with the profile
       await this.findOrCreateUser(recipientEntity)
@@ -202,6 +166,7 @@ export default ({ strapi }) => ({
         actorId,
         metadata: { achievementId: achievement.id, recipientId: recipientEntity.id },
       })
+      credentialsIssuedTotal.inc()
 
       // Return both the populated credential record and the OBv3 serialized version
       return {
@@ -216,6 +181,52 @@ export default ({ strapi }) => ({
       console.error('Error issuing credential:', error)
       throw error
     }
+  },
+
+  /**
+   * Find or create the recipient profile for an incoming credential -
+   * either an existing profile by id, an existing one by email, or a new
+   * bare Recipient profile if neither exists yet. Shared by issue() and by
+   * the profile data-portability service's import path.
+   * @param {Object} recipient - `{ id }` or `{ email, name }`
+   */
+  async findOrCreateRecipientProfile(recipient) {
+    let recipientEntity = null
+
+    if (recipient.id && recipient.id !== 0) {
+      recipientEntity = await strapi.entityService.findOne(
+        'api::profile.profile',
+        recipient.id,
+        { status: 'published' }
+      )
+    } else if (recipient.email) {
+      const existingRecipients = await strapi.entityService.findMany(
+        'api::profile.profile',
+        {
+          filters: { email: recipient.email },
+          status: 'published',
+        }
+      )
+
+      if (existingRecipients && existingRecipients.length > 0) {
+        recipientEntity = existingRecipients[0]
+      } else {
+        recipientEntity = await strapi.entityService.create('api::profile.profile', {
+          data: {
+            name: recipient.name,
+            email: recipient.email,
+            profileType: 'Recipient',
+            publishedAt: new Date(),
+          }
+        })
+      }
+    }
+
+    if (!recipientEntity) {
+      throw new Error('Unable to find or create recipient profile')
+    }
+
+    return recipientEntity
   },
 
   /**

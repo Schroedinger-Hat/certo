@@ -13,9 +13,10 @@ contributors a shared, accurate picture of the system as it exists today.
 | [open-badges.md](./open-badges.md) | Open Badges 3.0 / Verifiable Credentials implementation: serialization, signing, verification, import |
 | [tool-agnostic.md](./tool-agnostic.md) | Current Strapi coupling and what a real "swap the backend" abstraction would require |
 | [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) | Bugs, inconsistencies, stubs and security gaps found while documenting the system — read this before making security- or production-readiness claims |
-| [security.md](./security.md) | Actual current security posture: auth, authorization caveats, key management, secrets inventory, and explicit non-implementation of HTTPS/GDPR/backups/audit logs |
+| [security.md](./security.md) | Actual current security posture: auth, authorization caveats, key management, secrets inventory, and explicit non-implementation of HTTPS/GDPR |
 | [oauth-setup.md](./oauth-setup.md) | How to enable OAuth2/OIDC login (Google/GitHub/etc.) via Strapi's admin panel — documentation-only, not end-to-end tested |
-| [self-hosting.md](./self-hosting.md) | Deploying on your own domain: CORS allow-list env var, changing default admin credentials |
+| [self-hosting.md](./self-hosting.md) | Deploying on your own domain: CORS allow-list env var, default admin credentials, uploads persistence, backup/restore, data export/import |
+| [monitoring.md](./monitoring.md) | `/api/health` and `/api/metrics` (Prometheus), Grafana starter dashboard |
 | [fresh-install-implementation.md](./fresh-install-implementation.md) | Pre-existing doc: how the fresh-install seed script works |
 
 ## How to use these docs
@@ -24,6 +25,6 @@ contributors a shared, accurate picture of the system as it exists today.
 - `strapi-and-credentials.md` and `open-badges.md` are the two most detailed/technical docs — read them together, since credential issuance and Open Badges serialization are implemented in the same service files.
 - `known-issues-and-dev-notes.md` intentionally documents things that are broken, stubbed, or inconsistent. It exists so future work (including a roadmap) is scoped against reality, not against what the code *looks* like it does at a glance.
 
-These docs reflect the codebase as of 2026-07-30. Strapi, Nuxt, and the credential
+These docs reflect the codebase as of 2026-08-04. Strapi, Nuxt, and the credential
 services change quickly early in the project's life — if something here disagrees
 with the code, trust the code and update the doc.

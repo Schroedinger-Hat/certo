@@ -69,6 +69,13 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:1337}
     ports:
       - "1337:1337"
+    volumes:
+      # Without this, uploaded media (achievement/profile images) lives only
+      # in the container's writable layer and is silently lost on every
+      # `docker-compose up --build`/container recreation. Also what
+      # scripts/backup.js and scripts/restore.js read/write - see
+      # docs/self-hosting.md.
+      - uploads-data:/app/public/uploads
     networks:
       - certo-network
 
@@ -91,4 +98,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres-data: 
+  postgres-data:
+  uploads-data: 

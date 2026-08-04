@@ -2,6 +2,7 @@ import type { Core } from '@strapi/strapi';
 import { seedDevelopmentData } from './bootstrap/seed-data';
 import { setupPermissions } from './bootstrap/permissions-setup';
 import { warnIfDefaultAdminCredentials } from './bootstrap/default-credentials-warning';
+import { registerMonitoringRoutes } from './monitoring/routes';
 
 /**
  * Main entry point for the Strapi application
@@ -14,7 +15,12 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/*{ strapi }*/) {},
+  register({ strapi }) {
+    // Must happen here, not in bootstrap(): Strapi finalizes routing
+    // (server.initRouting()) partway through its own bootstrap(), before
+    // this app's bootstrap({ strapi }) hook runs - see monitoring/routes.ts.
+    registerMonitoringRoutes(strapi);
+  },
 
   /**
    * An asynchronous bootstrap function that runs before
