@@ -156,7 +156,11 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
         jws
       };
     } catch (proofError) {
-      strapi.log.warn('[Seed] Could not generate cryptographic proof, using placeholder:', proofError);
+      // strapi.log.warn/error only print their first argument - Strapi's
+      // logger doesn't do printf-style multi-arg concatenation like
+      // console.warn does, so a second argument here is silently dropped.
+      // Interpolate error details into the message itself instead.
+      strapi.log.warn(`[Seed] Could not generate cryptographic proof, using placeholder: ${proofError instanceof Error ? proofError.message : proofError}`);
       proof = {
         type: 'Ed25519Signature2020',
         created: new Date().toISOString(),
@@ -194,10 +198,10 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
     strapi.log.info('='.repeat(60));
 
   } catch (error) {
-    strapi.log.error('[Seed] Error seeding development data:', error instanceof Error ? error.message : String(error));
-    strapi.log.error('[Seed] Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    const message = error instanceof Error ? error.message : String(error);
+    strapi.log.error(`[Seed] Error seeding development data: ${message}`);
     if (error instanceof Error && error.stack) {
-      strapi.log.error('[Seed] Stack:', error.stack);
+      strapi.log.error(`[Seed] Stack: ${error.stack}`);
     }
   }
 }

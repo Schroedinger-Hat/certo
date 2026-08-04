@@ -40,7 +40,7 @@ export default ({ strapi }) => ({
       
       return updatedEntry
     } catch (error) {
-      strapi.log.error('Error in enhanced upload service:', error)
+      strapi.log.error(`Error in enhanced upload service: ${error.message}`)
       throw error
     }
   },
@@ -81,7 +81,7 @@ export default ({ strapi }) => ({
       
       return { success: true, entry: updatedEntry }
     } catch (error) {
-      strapi.log.error('Error in enhanced upload service:', error)
+      strapi.log.error(`Error in enhanced upload service: ${error.message}`)
       throw error
     }
   },
