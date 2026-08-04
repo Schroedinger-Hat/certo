@@ -134,7 +134,7 @@ Node's global `fetch` — no new HTTP client dependency.
 
 `credential.ts`'s `issue()` dispatches `credential.issued` after creating
 the credential; the revoke controller dispatches `credential.revoked`. Other
-events ROADMAP.md lists (`badge.created`, `issuer.created`, `user.created`,
+events lists (`badge.created`, `issuer.created`, `user.created`,
 etc.) aren't wired yet. Delivery is fire-and-forget — each subscription's
 delivery is independently caught and logged
 (`strapi.log.warn`) on failure, so one bad endpoint can't affect others or

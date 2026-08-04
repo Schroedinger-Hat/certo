@@ -255,7 +255,7 @@ The frontend will be available at http://localhost:3000
 
 ## API Documentation
 
-The API follows the Open Badges 3.0 specification and provides both public and authenticated endpoints.
+The API follows the Open Badges 3.0 specification. Swagger UI (OpenAPI) is available at http://localhost:1337/documentation.
 
 ### Key Endpoints
 
