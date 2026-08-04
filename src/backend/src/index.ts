@@ -1,6 +1,7 @@
 import type { Core } from '@strapi/strapi';
 import { seedDevelopmentData } from './bootstrap/seed-data';
 import { setupPermissions } from './bootstrap/permissions-setup';
+import { warnIfDefaultAdminCredentials } from './bootstrap/default-credentials-warning';
 
 /**
  * Main entry point for the Strapi application
@@ -28,5 +29,9 @@ export default {
 
     // Setup all permissions (public, authenticated roles)
     await setupPermissions(strapi);
+
+    // Warn on every boot if the default admin credentials are still active,
+    // regardless of environment (see bootstrap/default-credentials-warning.ts)
+    await warnIfDefaultAdminCredentials(strapi);
   },
 };

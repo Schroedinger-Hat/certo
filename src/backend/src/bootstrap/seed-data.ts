@@ -15,7 +15,7 @@ interface SeedConfig {
   adminLastName: string;
 }
 
-const DEFAULT_SEED_CONFIG: SeedConfig = {
+export const DEFAULT_SEED_CONFIG: SeedConfig = {
   adminEmail: 'admin@certo.com',
   adminPassword: 'certo',
   adminUsername: 'admin',

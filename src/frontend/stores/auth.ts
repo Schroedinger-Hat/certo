@@ -20,7 +20,7 @@ interface Profile {
   id: number
   name: string
   email: string
-  profileType: 'Issuer' | 'Recipient' | null
+  profileType: 'Issuer' | 'Recipient' | 'Both' | null
 }
 
 interface ProfileResponse {
@@ -47,7 +47,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   const userRole = computed(() => user.value?.role?.name || null)
   const isAuthenticated = computed(() => !!user.value && !!token.value)
-  const isIssuer = computed(() => (userRole.value && userRole.value.toLowerCase() === 'issuer'))
+  // Issuer-ness is an application concept (Profile.profileType), not a
+  // Strapi Users & Permissions role - a fresh instance only ever has the
+  // built-in Public/Authenticated roles, so checking user.role.name here
+  // could never be true.
+  const isIssuer = computed(() => profile.value?.profileType === 'Issuer' || profile.value?.profileType === 'Both')
 
   // Initialize auth state from localStorage/cookies
   async function init() {

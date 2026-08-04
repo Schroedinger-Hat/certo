@@ -15,6 +15,7 @@ contributors a shared, accurate picture of the system as it exists today.
 | [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) | Bugs, inconsistencies, stubs and security gaps found while documenting the system — read this before making security- or production-readiness claims |
 | [security.md](./security.md) | Actual current security posture: auth, authorization caveats, key management, secrets inventory, and explicit non-implementation of HTTPS/GDPR/backups/audit logs |
 | [oauth-setup.md](./oauth-setup.md) | How to enable OAuth2/OIDC login (Google/GitHub/etc.) via Strapi's admin panel — documentation-only, not end-to-end tested |
+| [self-hosting.md](./self-hosting.md) | Deploying on your own domain: CORS allow-list env var, changing default admin credentials |
 | [fresh-install-implementation.md](./fresh-install-implementation.md) | Pre-existing doc: how the fresh-install seed script works |
 
 ## How to use these docs
