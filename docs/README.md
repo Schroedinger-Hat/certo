@@ -17,6 +17,7 @@ contributors a shared, accurate picture of the system as it exists today.
 | [oauth-setup.md](./oauth-setup.md) | How to enable OAuth2/OIDC login (Google/GitHub/etc.) via Strapi's admin panel — documentation-only, not end-to-end tested |
 | [self-hosting.md](./self-hosting.md) | Deploying on your own domain: CORS allow-list env var, default admin credentials, uploads persistence, backup/restore, data export/import |
 | [monitoring.md](./monitoring.md) | `/api/health` and `/api/metrics` (Prometheus), Grafana starter dashboard |
+| [logging.md](./logging.md) | Structured JSON logging (`LOG_FORMAT_JSON`), per-request `X-Request-Id` correlation, shipping to Loki/ELK/Splunk |
 | [fresh-install-implementation.md](./fresh-install-implementation.md) | Pre-existing doc: how the fresh-install seed script works |
 
 ## How to use these docs

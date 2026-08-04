@@ -30,6 +30,10 @@ export default ({ env }) => {
     /^https:\/\/deploy-preview-\d+--certo\.netlify\.app$/.test(origin);
 
   return [
+    // First, so its AsyncLocalStorage context covers the entire request
+    // lifecycle - including whatever strapi::errors catches. See
+    // src/middlewares/request-id.ts and config/logger.ts.
+    'global::request-id',
     'strapi::errors',
     {
       name: 'strapi::security',
