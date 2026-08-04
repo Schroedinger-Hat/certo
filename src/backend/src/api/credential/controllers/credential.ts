@@ -213,6 +213,12 @@ export default factories.createCoreController('api::credential.credential', ({ s
         await revocationListService.revokeCredentialInStatusList(existing.statusList.id, existing.statusListIndex)
       }
 
+      const webhookDispatcher = strapi.service('api::webhook-subscription.dispatch')
+      await webhookDispatcher.dispatch('credential.revoked', {
+        credentialId: updatedCredential.credentialId,
+        reason: reason || 'No reason provided',
+      })
+
       return { success: true, credential: updatedCredential }
     } catch (error) {
       console.error('Error revoking credential:', error)

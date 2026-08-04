@@ -180,6 +180,17 @@ export default ({ strapi }) => ({
         emailError = e.message
       }
 
+      // Notify any registered webhook subscriptions. Best-effort: dispatch()
+      // never throws (each delivery is individually caught/logged), so this
+      // can't fail the issuance itself.
+      const webhookDispatcher = strapi.service('api::webhook-subscription.dispatch')
+      await webhookDispatcher.dispatch('credential.issued', {
+        credentialId: credential.credentialId,
+        achievementId: achievement.id,
+        issuerId: credentialPayload.issuer,
+        recipientId: recipientEntity.id,
+      })
+
       // Return both the populated credential record and the OBv3 serialized version
       return {
         credential: populatedCredential,

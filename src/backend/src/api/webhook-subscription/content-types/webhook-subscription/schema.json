@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "webhook_subscriptions",
+  "info": {
+    "singularName": "webhook-subscription",
+    "pluralName": "webhook-subscriptions",
+    "displayName": "Webhook Subscription",
+    "description": "Outbound webhook endpoints notified on credential lifecycle events. Managed via the admin panel content manager - no public/authenticated REST routes are defined for this content type."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "events": {
+      "type": "json",
+      "required": true,
+      "description": "Array of event names this subscription receives, e.g. [\"credential.issued\", \"credential.revoked\"]"
+    },
+    "secret": {
+      "type": "string",
+      "required": true,
+      "description": "Shared secret used to HMAC-SHA256 sign the X-Certo-Signature header on each delivery"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

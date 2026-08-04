@@ -210,6 +210,50 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function loginWithOAuthToken(jwt: string) {
+    error.value = null
+    isLoading.value = true
+
+    try {
+      const response = await authClient.loginWithToken(jwt)
+
+      user.value = response.user
+      token.value = response.jwt
+
+      // Get user profile
+      try {
+        const profileResponse = await apiClient.get<ProfileResponse>('/api/profiles/me')
+        if (profileResponse.data) {
+          profile.value = Array.isArray(profileResponse.data)
+            ? profileResponse.data[0]
+            : profileResponse.data
+        }
+      }
+      catch (profileError) {
+        console.error('Error loading profile:', profileError)
+      }
+
+      // Set token in cookie for server-side auth checks
+      if (import.meta.client) {
+        Cookies.set('token', jwt, {
+          expires: 7,
+          path: '/',
+          sameSite: 'strict'
+        })
+      }
+
+      return true
+    }
+    catch (err) {
+      console.error('OAuth login error:', err)
+      error.value = err instanceof Error ? err.message : 'OAuth sign-in failed'
+      return false
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
+
   function logout() {
     if (import.meta.client) {
       // Clear auth client state
@@ -235,6 +279,7 @@ export const useAuthStore = defineStore('auth', () => {
     isIssuer,
     userRole,
     login,
+    loginWithOAuthToken,
     register,
     logout,
     init
