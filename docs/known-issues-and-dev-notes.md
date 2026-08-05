@@ -396,3 +396,22 @@ backup/restore, and basic monitoring.
     `Caddyfile.example`, and a Traefik docker-compose label overlay for the
     non-Kubernetes deployment path. See [kubernetes.md](./kubernetes.md) and
     [reverse-proxy.md](./reverse-proxy.md).
+
+31. **New: `/api/v1` versioning, closing out Phase 1.** Previously
+    documented as "deliberately deferred since it's a breaking change to
+    every route the frontend calls" (`docs/backend.md`) - that framing
+    assumed versioning meant migrating every route/consumer at once. It
+    doesn't: Strapi mounts its entire content-API router under one global
+    prefix (`config/api.ts`'s `rest.prefix`, read at
+    `@strapi/core/dist/services/server/content-api.js:7`), so every route
+    already shares a single prefix with no per-file registration. New
+    `src/middlewares/api-version-alias.ts` (`global::api-version-alias`,
+    first in `config/middlewares.ts`) rewrites an incoming `/api/v1/*` path
+    to `/api/*` before Strapi's router matches it (confirmed via Koa's own
+    `ctx.path` setter that this correctly updates the underlying URL,
+    preserving the query string, for `@koa/router` to re-match) - so
+    `/api/v1/*` becomes a transparent, zero-maintenance alias for every
+    current *and future* route, with `/api/*` continuing to work unchanged
+    since the frontend (`api-client.ts`) and the Netlify OG-image function
+    both hardcode literal `/api/...` paths and were deliberately left
+    untouched. See [backend.md](./backend.md).
