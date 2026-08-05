@@ -18,6 +18,8 @@ contributors a shared, accurate picture of the system as it exists today.
 | [self-hosting.md](./self-hosting.md) | Deploying on your own domain: CORS allow-list env var, default admin credentials, uploads persistence, backup/restore, data export/import |
 | [monitoring.md](./monitoring.md) | `/api/health` and `/api/metrics` (Prometheus), Grafana starter dashboard |
 | [logging.md](./logging.md) | Structured JSON logging (`LOG_FORMAT_JSON`), per-request `X-Request-Id` correlation, shipping to Loki/ELK/Splunk |
+| [kubernetes.md](./kubernetes.md) | Helm chart (`helm/certo/`), values overview, scaling recommendations |
+| [reverse-proxy.md](./reverse-proxy.md) | Nginx/Caddy/Traefik examples for terminating TLS in front of the docker-compose stack |
 | [fresh-install-implementation.md](./fresh-install-implementation.md) | Pre-existing doc: how the fresh-install seed script works |
 
 ## How to use these docs
@@ -26,6 +28,6 @@ contributors a shared, accurate picture of the system as it exists today.
 - `strapi-and-credentials.md` and `open-badges.md` are the two most detailed/technical docs — read them together, since credential issuance and Open Badges serialization are implemented in the same service files.
 - `known-issues-and-dev-notes.md` intentionally documents things that are broken, stubbed, or inconsistent. It exists so future work (including a roadmap) is scoped against reality, not against what the code *looks* like it does at a glance.
 
-These docs reflect the codebase as of 2026-08-04. Strapi, Nuxt, and the credential
+These docs reflect the codebase as of 2026-08-05. Strapi, Nuxt, and the credential
 services change quickly early in the project's life — if something here disagrees
 with the code, trust the code and update the doc.

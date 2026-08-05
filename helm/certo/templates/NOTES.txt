@@ -1,0 +1,43 @@
+Certo has been installed as release "{{ .Release.Name }}" in namespace "{{ .Release.Namespace }}".
+
+{{- if .Values.ingress.enabled }}
+
+Once DNS for {{ .Values.ingress.host }} points at your ingress controller,
+visit:
+  http{{ if .Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}
+{{- else }}
+
+No ingress is enabled (ingress.enabled: false). Port-forward to reach it locally:
+  kubectl port-forward svc/{{ include "certo.frontend.fullname" . }} -n {{ .Release.Namespace }} 3000:{{ .Values.frontend.port }}
+  kubectl port-forward svc/{{ include "certo.backend.fullname" . }} -n {{ .Release.Namespace }} 1337:{{ .Values.backend.port }}
+{{- end }}
+
+{{- $anyBlank := or (not .Values.secrets.jwtSecret) (not .Values.secrets.adminJwtSecret) (not .Values.secrets.appKeys) (not .Values.secrets.apiTokenSalt) (not .Values.secrets.encryptionKey) }}
+{{- if $anyBlank }}
+
+IMPORTANT: one or more secrets in `secrets:` (values.yaml) were left blank
+and have been auto-generated for you - fine for trying this out, but you
+should pin your own values (via --set or a values file) for any real
+deployment. See docs/kubernetes.md. Auto-generated values persist across
+`helm upgrade` (they're read back from the existing Secret), so you won't
+lose access by upgrading - but they were never shown to you, so retrieve
+them if you need to record them elsewhere:
+  kubectl get secret {{ include "certo.secretName" . }} -n {{ .Release.Namespace }} -o yaml
+{{- end }}
+
+{{- if .Values.postgresql.enabled }}
+
+Bundled Postgres (postgresql.enabled: true) is a single-replica StatefulSet
+suitable for testing/small deployments only - not horizontally scalable.
+For production, point at a managed Postgres instead (postgresql.enabled:
+false + postgresql.external.host/port).
+{{- end }}
+
+{{- if and .Values.backend.uploads.enabled (gt (.Values.backend.replicaCount | int) 1) }}
+
+WARNING: backend.replicaCount is {{ .Values.backend.replicaCount }} but
+backend.uploads.enabled is true - a ReadWriteOnce PVC can't be safely shared
+by multiple backend replicas on different nodes. Either set
+backend.replicaCount: 1, or disable the uploads PVC and use an
+S3-compatible upload provider instead (see docs/kubernetes.md).
+{{- end }}

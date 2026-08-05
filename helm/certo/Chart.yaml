@@ -1,0 +1,12 @@
+apiVersion: v2
+name: certo
+description: Open Badges 3.0 / Verifiable Credentials issuance platform (Strapi backend + Nuxt frontend)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+home: https://github.com/Schroedinger-Hat/certo
+sources:
+  - https://github.com/Schroedinger-Hat/certo
+maintainers:
+  - name: Schroedinger Hat
+    url: https://github.com/Schroedinger-Hat

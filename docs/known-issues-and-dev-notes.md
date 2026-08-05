@@ -372,3 +372,27 @@ backup/restore, and basic monitoring.
     with no changes needed to any of the ~40 existing `strapi.log.*()` call
     sites (item 20's single-interpolated-string convention is untouched).
     See [logging.md](./logging.md).
+
+30. **New: Helm chart + reverse-proxy examples.** Closes Phase 1's
+    remaining deployment items (`docs/architecture.md` previously stated
+    plainly that no Kubernetes manifests, Helm charts, or Terraform existed
+    - Terraform remains genuinely out of scope, a separate Phase 4 item).
+    New `.github/workflows/docker-publish.yml` builds and pushes
+    backend/frontend images to `ghcr.io/schroedinger-hat/certo-{backend,
+    frontend}` on push to `main` and on version tags, using the workflow's
+    own `GITHUB_TOKEN` (no new secrets). New `helm/certo/` mirrors
+    `docker-compose.yml`'s services/env vars exactly rather than inventing
+    a different shape: an optional bundled Postgres (a plain StatefulSet,
+    not a Bitnami chart dependency, to avoid taking on an external chart's
+    version churn), a PVC for uploads matching the docker-compose volume
+    from item 27, readiness/liveness probes on `/api/health` (item 28's
+    recommended target), and secrets that auto-generate on first install
+    and persist across `helm upgrade` via Helm's `lookup` function so
+    upgrading never rotates a running instance's credentials out from under
+    it (verified end-to-end against a real local `kind` cluster - install,
+    confirm `JWT_SECRET` byte-identical after `helm upgrade`, confirm the
+    single-replica-Postgres StatefulSet reaches `Running` and its PVC
+    binds). Also new: `docs/examples/nginx.conf.example`,
+    `Caddyfile.example`, and a Traefik docker-compose label overlay for the
+    non-Kubernetes deployment path. See [kubernetes.md](./kubernetes.md) and
+    [reverse-proxy.md](./reverse-proxy.md).

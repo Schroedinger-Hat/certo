@@ -1,0 +1,50 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "certo.fullname" . }}
+  labels:
+    {{- include "certo.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          # /api and /admin route to the backend (Strapi's content API and
+          # admin panel); everything else to the frontend - matching the
+          # reverse-proxy examples in docs/reverse-proxy.md.
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "certo.backend.fullname" . }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "certo.backend.fullname" . }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "certo.frontend.fullname" . }}
+                port:
+                  number: {{ .Values.frontend.port }}
+{{- end }}
