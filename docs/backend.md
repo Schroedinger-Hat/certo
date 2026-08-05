@@ -90,8 +90,16 @@ auto-generated OpenAPI spec is served at `/documentation`, covering the
 standard content-type CRUD routes (custom routes like `credential`'s
 issue/verify/revoke actions aren't richly documented without further
 per-route annotation, which hasn't been done). See
-[security.md](./security.md). `/api/v1` versioning is still not implemented — deliberately deferred since it's a
-breaking change to every route the frontend calls.
+[security.md](./security.md).
+
+`/api/v1/*` is available as a transparent alias for every existing `/api/*`
+route — `src/middlewares/api-version-alias.ts` (`global::api-version-alias`,
+first in `config/middlewares.ts`) rewrites the incoming path before Strapi's
+router matches it, so this needed no per-route changes and isn't a breaking
+change: `/api/*` (unversioned) keeps working unchanged and indefinitely,
+since the frontend (`api-client.ts`) and the Netlify OG-image function both
+hardcode literal `/api/...` paths and weren't migrated. `/api/v1/*` is the
+recommended path for new integrations going forward.
 
 ## Database
 
