@@ -1,0 +1,51 @@
+# Example Traefik setup for a docker-compose deployment of Certo (see
+# docs/reverse-proxy.md). Traefik is normally configured via container
+# labels rather than a static config file - this is an overlay to merge
+# into the repo's root docker-compose.yml (`docker compose -f
+# docker-compose.yml -f docker-compose.traefik.example.yml up`), not a
+# standalone file.
+#
+# Remember to set CORS_ALLOWED_ORIGINS on the backend to match your
+# hostname - see docs/self-hosting.md#cors-allow-your-own-domain.
+
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: certo_traefik
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.address=:80
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.email=you@example.org
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certs:/letsencrypt
+    networks:
+      - certo-network
+
+  backend:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.certo-backend.rule=Host(`badges.example.org`) && (PathPrefix(`/api`) || PathPrefix(`/admin`))
+      - traefik.http.routers.certo-backend.entrypoints=websecure
+      - traefik.http.routers.certo-backend.tls.certresolver=letsencrypt
+      - traefik.http.services.certo-backend.loadbalancer.server.port=1337
+
+  frontend:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.certo-frontend.rule=Host(`badges.example.org`)
+      - traefik.http.routers.certo-frontend.entrypoints=websecure
+      - traefik.http.routers.certo-frontend.tls.certresolver=letsencrypt
+      - traefik.http.services.certo-frontend.loadbalancer.server.port=3000
+
+volumes:
+  traefik-certs:

@@ -81,10 +81,11 @@ it's PaaS-hosted, not the Docker Compose stack:
 - **Backend**: Strapi Cloud (`bold-approval-5bde4fbd5d.strapiapp.com`) and/or a custom-domain backend (`certo-strapi.schroedinger-hat.org`).
 - **OG image generation**: a standalone Netlify Function (`netlify/functions/og-credential/`) using `satori`, called for social-share previews (e.g. LinkedIn), fetching credential data from `CERTO_API_URL`.
 
-There are no Kubernetes manifests, Helm charts, or Terraform yet (all listed as
-future work). The backend Dockerfile
-currently starts Strapi in **dev mode** even for the "production" image — see
-[known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md).
+A Helm chart now exists ([`helm/certo/`](../helm/certo/), see
+[kubernetes.md](./kubernetes.md)) with images published to GHCR via
+`.github/workflows/docker-publish.yml` — this is a self-hosting option, not
+a change to the actual current production deployment above (still
+Netlify/Strapi Cloud). Terraform modules remain future work.
 
 ## CI/CD
 

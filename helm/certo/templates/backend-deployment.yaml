@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "certo.backend.fullname" . }}
+  labels:
+    {{- include "certo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "certo.backend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "certo.backend.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.port }}
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: {{ .Values.backend.port | quote }}
+            - name: DATABASE_CLIENT
+              value: "postgres"
+            - name: DATABASE_HOST
+              value: {{ .Values.postgresql.enabled | ternary (include "certo.postgresql.fullname" .) .Values.postgresql.external.host | quote }}
+            - name: DATABASE_PORT
+              value: {{ .Values.postgresql.enabled | ternary 5432 .Values.postgresql.external.port | quote }}
+            - name: DATABASE_NAME
+              value: {{ .Values.postgresql.database | quote }}
+            - name: DATABASE_USERNAME
+              value: {{ .Values.postgresql.username | quote }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: DATABASE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: JWT_SECRET
+            - name: ADMIN_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: ADMIN_JWT_SECRET
+            - name: APP_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: APP_KEYS
+            - name: API_TOKEN_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: API_TOKEN_SALT
+            - name: TRANSFER_TOKEN_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: TRANSFER_TOKEN_SALT
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "certo.secretName" . }}
+                  key: ENCRYPTION_KEY
+            - name: SMTP_HOST
+              value: {{ .Values.backend.env.smtpHost | quote }}
+            - name: SMTP_PORT
+              value: {{ .Values.backend.env.smtpPort | quote }}
+            - name: FRONTEND_URL
+              value: {{ .Values.backend.env.frontendUrl | quote }}
+            - name: PUBLIC_URL
+              value: {{ .Values.backend.env.publicUrl | quote }}
+            - name: CORS_ALLOWED_ORIGINS
+              value: {{ .Values.backend.env.corsAllowedOrigins | quote }}
+            - name: LOG_FORMAT_JSON
+              value: {{ .Values.backend.env.logFormatJson | quote }}
+          {{- if .Values.backend.uploads.enabled }}
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/public/uploads
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+      {{- if .Values.backend.uploads.enabled }}
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: {{ include "certo.backend.fullname" . }}-uploads
+      {{- end }}
+---
+{{- if .Values.backend.uploads.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "certo.backend.fullname" . }}-uploads
+  labels:
+    {{- include "certo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.backend.uploads.storageClassName }}
+  storageClassName: {{ .Values.backend.uploads.storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.backend.uploads.size }}
+{{- end }}

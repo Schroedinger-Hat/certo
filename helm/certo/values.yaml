@@ -1,0 +1,100 @@
+# Default values for the certo chart. Mirrors docker-compose.yml's env vars
+# and defaults exactly - see docs/kubernetes.md.
+
+backend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/schroedinger-hat/certo-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 1337
+  # Persists uploaded media (achievement/profile images) - mirrors
+  # docker-compose.yml's uploads-data volume, see docs/self-hosting.md. A
+  # ReadWriteOnce PVC only works with backend.replicaCount: 1 - for more
+  # than one replica, use an S3-compatible upload provider instead (not yet
+  # wired in this chart/app - see docs/kubernetes.md).
+  uploads:
+    enabled: true
+    size: 5Gi
+    storageClassName: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  env:
+    frontendUrl: "http://localhost:3000"
+    publicUrl: "http://localhost:1337"
+    smtpHost: ""
+    smtpPort: "587"
+    # Comma-separated list of extra allowed CORS origins - see
+    # docs/self-hosting.md#cors-allow-your-own-domain
+    corsAllowedOrigins: ""
+    # Structured JSON logging - see docs/logging.md
+    logFormatJson: "false"
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/schroedinger-hat/certo-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 3000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  # If empty, defaults to http://<release-name>-backend:<backend.port>
+  # (in-cluster service DNS) - override if the frontend calls the backend
+  # through your ingress hostname instead.
+  apiUrl: ""
+
+# Secrets left blank here are auto-generated on first install (and reused on
+# upgrade - see templates/secret.yaml) so `helm install` works with zero
+# required values, same spirit as docker-compose.yml's functional-but-
+# insecure defaults. Override every one of these for a real deployment -
+# see docs/kubernetes.md.
+secrets:
+  jwtSecret: ""
+  adminJwtSecret: ""
+  appKeys: ""
+  apiTokenSalt: ""
+  transferTokenSalt: ""
+  # Encrypts per-issuer private signing keys at rest - see
+  # src/backend/src/utils/key-encryption.ts. Rotating this after issuers
+  # exist makes their existing keys unreadable - treat it like any other
+  # long-lived secret.
+  encryptionKey: ""
+
+# Bundled Postgres: a plain StatefulSet + PVC, suitable for testing/small
+# deployments - NOT horizontally scalable and not a replacement for a real
+# managed Postgres in production. Set enabled: false and fill in `external`
+# to point at your own instance instead.
+postgresql:
+  enabled: true
+  image: postgres:16
+  storage: 8Gi
+  storageClassName: ""
+  database: certo
+  username: certo
+  # Left blank: auto-generated alongside the other secrets above when
+  # postgresql.enabled is true.
+  password: ""
+  external:
+    host: ""
+    port: 5432
+
+ingress:
+  enabled: false
+  className: ""
+  host: certo.example.org
+  annotations: {}
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    enabled: false
+    secretName: certo-tls

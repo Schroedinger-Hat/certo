@@ -1,0 +1,51 @@
+# Example Nginx reverse-proxy config for a docker-compose deployment of
+# Certo (see docs/reverse-proxy.md). Assumes:
+#   - the frontend container is reachable at frontend:3000
+#   - the backend container is reachable at backend:1337
+#   - TLS certs at /etc/letsencrypt/live/badges.example.org/ (e.g. via certbot)
+#
+# Remember to set CORS_ALLOWED_ORIGINS on the backend to match whatever
+# hostname you put here - see docs/self-hosting.md#cors-allow-your-own-domain.
+
+server {
+    listen 80;
+    server_name badges.example.org;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name badges.example.org;
+
+    ssl_certificate     /etc/letsencrypt/live/badges.example.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/badges.example.org/privkey.pem;
+
+    # Strapi's content API and admin panel
+    location /api {
+        proxy_pass http://backend:1337;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /admin {
+        proxy_pass http://backend:1337;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Everything else: the Nuxt frontend
+    location / {
+        proxy_pass http://frontend:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}

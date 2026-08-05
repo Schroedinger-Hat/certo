@@ -1,0 +1,21 @@
+# Example Caddyfile for a docker-compose deployment of Certo (see
+# docs/reverse-proxy.md). Caddy handles TLS (via Let's Encrypt) automatically
+# - no certbot/cert paths needed. Assumes the frontend/backend containers
+# are reachable at frontend:3000/backend:1337 (same Docker network).
+#
+# Remember to set CORS_ALLOWED_ORIGINS on the backend to match this hostname
+# - see docs/self-hosting.md#cors-allow-your-own-domain.
+
+badges.example.org {
+    handle /api/* {
+        reverse_proxy backend:1337
+    }
+
+    handle /admin/* {
+        reverse_proxy backend:1337
+    }
+
+    handle {
+        reverse_proxy frontend:3000
+    }
+}

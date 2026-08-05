@@ -95,10 +95,19 @@ Import is idempotent (skips anything that already exists, matched by its
 natural key) and never touches credentials merely *received* by that
 profile — see `src/backend/src/api/profile/services/data-portability.ts`.
 
-## Monitoring
+## Monitoring and logging
 
-`/api/health` and `/api/metrics` (Prometheus) are now available — see
-[monitoring.md](./monitoring.md).
+`/api/health` and `/api/metrics` (Prometheus) are available — see
+[monitoring.md](./monitoring.md). Structured JSON logging with per-request
+correlation (`LOG_FORMAT_JSON`) is available — see [logging.md](./logging.md).
+
+## Beyond docker-compose: Kubernetes and reverse proxies
+
+- A Helm chart ([`helm/certo/`](../helm/certo/)) mirrors docker-compose's
+  services/env vars for a Kubernetes deployment — see
+  [kubernetes.md](./kubernetes.md).
+- Nginx/Caddy/Traefik examples for terminating TLS in front of the
+  docker-compose stack — see [reverse-proxy.md](./reverse-proxy.md).
 
 ## Everything else
 
