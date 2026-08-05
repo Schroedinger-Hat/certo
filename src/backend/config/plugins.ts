@@ -48,8 +48,33 @@ export default ({ env }) => ({
   },
   upload: {
     config: {
-      provider: 'local',
-      providerOptions: {},
+      // Local disk by default (see docs/self-hosting.md for the uploads
+      // volume this needs). Set UPLOAD_PROVIDER=s3 to use an S3-compatible
+      // bucket instead - required for more than one backend replica, since
+      // a local-disk PVC can't be shared across pods on different nodes
+      // (see docs/kubernetes.md). Works with real AWS S3 or any
+      // S3-compatible service (MinIO, Cloudflare R2, etc.) via S3_ENDPOINT/
+      // S3_FORCE_PATH_STYLE - see the @strapi/provider-upload-aws-s3
+      // README's own "S3 compatible services" section for why those two
+      // options are what make that work.
+      provider: env('UPLOAD_PROVIDER', 'local') === 's3' ? 'aws-s3' : 'local',
+      providerOptions: env('UPLOAD_PROVIDER', 'local') === 's3'
+        ? {
+            s3Options: {
+              credentials: {
+                accessKeyId: env('S3_ACCESS_KEY_ID'),
+                secretAccessKey: env('S3_SECRET_ACCESS_KEY'),
+              },
+              region: env('S3_REGION', 'us-east-1'),
+              endpoint: env('S3_ENDPOINT'),
+              forcePathStyle: env.bool('S3_FORCE_PATH_STYLE', false),
+              params: {
+                Bucket: env('S3_BUCKET'),
+                ACL: env('S3_ACL', 'public-read'),
+              },
+            },
+          }
+        : {},
       actionOptions: {
         upload: {},
         uploadStream: {},

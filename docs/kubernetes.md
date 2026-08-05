@@ -45,6 +45,7 @@ the generated defaults long-term.
 | `backend.env.corsAllowedOrigins` | Same as the `CORS_ALLOWED_ORIGINS` env var — see [self-hosting.md](./self-hosting.md) |
 | `backend.env.logFormatJson` | Same as `LOG_FORMAT_JSON` — see [logging.md](./logging.md) |
 | `backend.uploads` | PVC for uploaded media (achievement/profile images) — mirrors docker-compose's `uploads-data` volume |
+| `s3.*` | S3-compatible upload storage (AWS S3, MinIO, R2, etc.) — the alternative to `backend.uploads` required for `backend.replicaCount > 1`. See [self-hosting.md](./self-hosting.md#or-skip-local-disk-entirely-s3-compatible-storage) |
 | `postgresql.enabled` | `true`: bundled single-replica StatefulSet (testing/small deployments). `false`: point `postgresql.external.host`/`port` at your own managed instance |
 | `ingress.*` | Host, TLS, ingress class, and annotations (e.g. for cert-manager) |
 
@@ -54,9 +55,10 @@ the generated defaults long-term.
   `backend.replicaCount`/`frontend.replicaCount` — *except* that
   `backend.uploads.enabled` (the default) provisions a `ReadWriteOnce` PVC,
   which only one pod can mount at a time. Running more than one backend
-  replica requires either disabling `backend.uploads` (and adding an
-  S3-compatible upload provider — not yet wired into this app, a separate
-  roadmap item) or a storage class that supports `ReadWriteMany`.
+  replica requires either a storage class that supports `ReadWriteMany`, or
+  (the recommended path) setting `backend.uploads.enabled: false` and
+  `s3.enabled: true` — verified end-to-end against a real MinIO instance:
+  uploads correctly land in the bucket instead of a pod-local volume.
 - **The bundled Postgres is not horizontally scalable** — it's a
   single-replica StatefulSet for convenience, the same tradeoff
   `docker-compose.yml` already makes. For a production deployment, set

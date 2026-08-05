@@ -147,7 +147,7 @@ ported into `bootstrap/permissions-setup.ts`'s `ISSUER_PERMISSIONS` list. See
 
 - `config/database.ts` — multi-client (`sqlite`/`mysql`/`postgres` via `DATABASE_CLIENT`).
 - `config/middlewares.ts` — custom CORS allow-list (see [architecture.md](./architecture.md#deployment-topology) for what it reveals about the real deployment) and CSP.
-- `config/plugins.ts` — `users-permissions` JWT config, `upload` = local provider, `email` = nodemailer, reading `SMTP_*` env vars (`.env.example`'s names) with the old hardcoded Ethereal test credentials kept only as fallback defaults — see [strapi-and-credentials.md](./strapi-and-credentials.md) for detail on this fix.
+- `config/plugins.ts` — `users-permissions` JWT config, `upload` (local disk by default, `UPLOAD_PROVIDER=s3` switches to `@strapi/provider-upload-aws-s3` — works with real AWS or any S3-compatible service via `S3_ENDPOINT`/`S3_FORCE_PATH_STYLE`, see [self-hosting.md](./self-hosting.md#or-skip-local-disk-entirely-s3-compatible-storage)), `email` = nodemailer, reading `SMTP_*` env vars (`.env.example`'s names) with the old hardcoded Ethereal test credentials kept only as fallback defaults — see [strapi-and-credentials.md](./strapi-and-credentials.md) for detail on this fix.
 - `config/frontend.ts` — a custom `custom.frontendUrl` value, used by the email/notification services to build links back to the frontend.
 
 ## Deployment
