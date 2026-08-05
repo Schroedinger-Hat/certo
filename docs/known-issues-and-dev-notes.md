@@ -434,3 +434,30 @@ backup/restore, and basic monitoring.
     the returned URL served the exact uploaded content back; also confirmed
     `UPLOAD_PROVIDER` unset still uses local disk exactly as before. See
     [self-hosting.md](./self-hosting.md#or-skip-local-disk-entirely-s3-compatible-storage).
+
+33. **New: QR codes on certificates.** The backend-generated
+    certificate SVG (`GET /credentials/:id/certificate`,
+    `utils/certificate-template.ts`) now embeds a QR code (bottom-right
+    corner, the one part of the 800x650 layout previously left empty)
+    linking to the credential's public verification page, and the frontend
+    credential detail page (`pages/credentials/[id]/index.vue`) renders the
+    same QR client-side (`onMounted`, matching the existing
+    `navigator.share()` pattern). Both use the new `qrcode` npm package
+    (added to both `src/backend/package.json` and
+    `src/frontend/package.json` independently - no monorepo tooling shares
+    dependencies between them). The backend's QR URL is built from
+    `strapi.config.get('frontend.url', ...)` (the same self-hosting-aware
+    config `credential.ts` already uses for notification emails) +
+    `credential.credentialId`, not a hardcoded production URL. Verified
+    end-to-end, not just code review: decoded the actual rendered QR from a
+    real certificate SVG with a QR decoder library (`jsqr` against a
+    `rsvg-convert`-rendered PNG) and confirmed it resolves to the exact
+    expected `/credentials/<credentialId>` URL; loaded the frontend detail
+    page in a real (Playwright) browser and confirmed the QR renders with a
+    valid image and the same URL underneath.
+
+    In passing: the frontend's `shareableUrl` (which this QR reuses) is
+    built from a hardcoded `WEBSITE_URL` constant
+    (`constants/index.ts`), not an env var - a pre-existing self-hosting
+    gap this feature inherits but doesn't fix, since fixing it was out of
+    scope here.

@@ -41,21 +41,28 @@ export default ({ strapi }) => ({
       // Determine badge image URL
       const baseUrl = strapi.config.get('server.url', 'http://localhost:1337')
       let badgeImageUrl = null
-      
+
       if (credential.achievement?.image?.url) {
         badgeImageUrl = credential.achievement.image.url.startsWith('http')
           ? credential.achievement.image.url
           : `${baseUrl}${credential.achievement.image.url}`
       }
-      
+
+      // The certificate's QR code links here - same self-hosting-aware
+      // frontend.url config credential.ts already uses for notification
+      // emails, not a hardcoded production URL.
+      const frontendUrl = strapi.config.get('frontend.url', 'http://localhost:3000')
+      const verifyUrl = `${frontendUrl}/credentials/${encodeURIComponent(credential.credentialId)}`
+
       // Generate the certificate SVG
-      return generateCertificateSvg({
+      return await generateCertificateSvg({
         recipientName,
         achievementName,
         issuerName,
         issueDate,
         credentialId: credential.credentialId,
-        badgeImageUrl
+        badgeImageUrl,
+        verifyUrl
       })
     } catch (error) {
       console.error('Error generating certificate:', error)

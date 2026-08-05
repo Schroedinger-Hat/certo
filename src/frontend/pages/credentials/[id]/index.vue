@@ -4,6 +4,7 @@ import type {
   Evidence,
   VerificationResult
 } from '~/types/openbadges'
+import QRCode from 'qrcode'
 import { apiClient } from '~/api/api-client'
 
 const route = useRoute()
@@ -69,6 +70,18 @@ onMounted(async () => {
     catch (err) {
       console.error('[Client] Retry failed:', err)
     }
+  }
+})
+
+// Client-only, same as the navigator.share() call in shareCredential() below -
+// avoids an SSR/hydration special case for a supplementary feature.
+const qrCodeDataUrl = ref('')
+onMounted(async () => {
+  try {
+    qrCodeDataUrl.value = await QRCode.toDataURL(shareableUrl, { width: 160, margin: 1 })
+  }
+  catch (err) {
+    console.error('Error generating QR code:', err)
   }
 })
 
@@ -659,6 +672,27 @@ function getLinkedInAddToProfileUrl() {
                   </a>
                 </div>
               </div>
+            </div>
+
+            <!-- Verify -->
+            <div class="space-y-2">
+              <div class="text-sm font-medium text-gray-500">
+                Verify
+              </div>
+              <img
+                v-if="qrCodeDataUrl"
+                :src="qrCodeDataUrl"
+                alt="QR code linking to this credential's verification page"
+                class="w-20 h-20"
+              >
+              <a
+                :href="shareableUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block text-sm text-primary-500 hover:text-primary-600 break-all"
+              >
+                {{ shareableUrl }}
+              </a>
             </div>
           </div>
         </div>

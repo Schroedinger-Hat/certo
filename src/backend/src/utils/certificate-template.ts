@@ -3,6 +3,8 @@
  * Creates a dynamic SVG certificate based on credential data
  */
 
+import { generateQrCodeSvg } from './qr-code'
+
 interface CertificateData {
   recipientName: string
   achievementName: string
@@ -10,19 +12,21 @@ interface CertificateData {
   issueDate: string
   credentialId: string
   badgeImageUrl?: string
+  verifyUrl: string
 }
 
 /**
  * Generate a certificate SVG template based on provided data
  */
-export const generateCertificateSvg = (data: CertificateData): string => {
+export const generateCertificateSvg = async (data: CertificateData): Promise<string> => {
   const {
     recipientName,
     achievementName,
     issuerName,
     issueDate,
     credentialId,
-    badgeImageUrl
+    badgeImageUrl,
+    verifyUrl
   } = data
 
   // Format date nicely
@@ -36,6 +40,15 @@ export const generateCertificateSvg = (data: CertificateData): string => {
   const badgeImage = badgeImageUrl
     ? `<image href="${badgeImageUrl}" x="350" y="120" width="100" height="100" />`
     : `<circle cx="400" cy="160" r="50" fill="#ffd700" /><text x="400" y="170" text-anchor="middle" font-size="40" font-weight="bold" fill="#333">🏆</text>`
+
+  // QR code linking to the credential's public verification page - placed
+  // in the bottom-right corner, the one part of the layout left empty by
+  // the rest of the template (clear of the border's corner ornament and
+  // the centered signature/credential-ID text above).
+  const qrCodeSize = 70
+  const qrCodeSvg = await generateQrCodeSvg(verifyUrl, qrCodeSize)
+  const qrCode = `<g transform="translate(655, 490)">${qrCodeSvg}</g>
+  <text x="690" y="572" font-size="11" fill="#888" text-anchor="middle">Scan to verify</text>`
 
   // Generate the SVG
   return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -82,6 +95,9 @@ export const generateCertificateSvg = (data: CertificateData): string => {
   <line x1="250" y1="450" x2="550" y2="450" stroke="#333" stroke-width="1" />
   <text x="400" y="480" font-family="'Georgia', serif" font-size="16" text-anchor="middle" fill="#555">Authorized Signature</text>
   <text x="400" y="540" font-size="14" fill="#888" text-anchor="middle">Credential ID: ${escapeXml(credentialId)}</text>
+
+  <!-- QR Code: scan to verify -->
+  ${qrCode}
 </svg>`
 }
 
