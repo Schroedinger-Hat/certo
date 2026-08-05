@@ -49,6 +49,31 @@ every uploaded achievement/profile image. Fixed by adding a named
 before this fix, any existing uploads are already gone; nothing to migrate,
 just make sure you're on the current `docker-compose.yml`.
 
+### Or skip local disk entirely: S3-compatible storage
+
+Set `UPLOAD_PROVIDER=s3` to store uploads in a bucket instead of
+`public/uploads` — works with real AWS S3 or any S3-compatible service
+(MinIO, Cloudflare R2, etc. — set `S3_ENDPOINT` and `S3_FORCE_PATH_STYLE=true`
+for those; leave both unset for real AWS):
+
+```bash
+UPLOAD_PROVIDER=s3
+S3_ACCESS_KEY_ID=...
+S3_SECRET_ACCESS_KEY=...
+S3_REGION=us-east-1
+S3_BUCKET=your-bucket
+# Only for non-AWS S3-compatible services:
+S3_ENDPOINT=https://minio.example.org
+S3_FORCE_PATH_STYLE=true
+```
+
+This is the only realistic option once you're running more than one backend
+instance (e.g. `backend.replicaCount > 1` in the [Helm chart](./kubernetes.md))
+— a local-disk PVC/volume can't be safely shared across multiple instances,
+a bucket can. Verified end-to-end against a local MinIO container: uploaded
+a file through Strapi's own upload API, confirmed the object actually landed
+in the bucket and the returned URL served the exact uploaded content back.
+
 ## Backup / restore
 
 `npm run backup` (run inside the backend container/host) dumps the database

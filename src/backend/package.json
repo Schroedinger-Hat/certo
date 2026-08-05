@@ -23,6 +23,7 @@
     "@strapi/plugin-users-permissions": "5.15.0",
     "@strapi/provider-email-nodemailer": "^5.15.0",
     "@strapi/provider-email-sendmail": "^5.15.0",
+    "@strapi/provider-upload-aws-s3": "^5.51.1",
     "@strapi/strapi": "5.15.0",
     "better-sqlite3": "11.3.0",
     "dotenv": "^16.6.1",

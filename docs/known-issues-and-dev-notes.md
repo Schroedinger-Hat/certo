@@ -415,3 +415,22 @@ backup/restore, and basic monitoring.
     since the frontend (`api-client.ts`) and the Netlify OG-image function
     both hardcode literal `/api/...` paths and were deliberately left
     untouched. See [backend.md](./backend.md).
+
+32. **New: S3-compatible upload provider.** `config/plugins.ts`'s
+    `upload.config` was hardcoded to `provider: 'local'` - the only storage
+    option, and a real problem for the Helm chart from item 30, whose
+    `backend.uploads` PVC is `ReadWriteOnce` and can't be shared across
+    `backend.replicaCount > 1`. New `UPLOAD_PROVIDER=s3` env var switches to
+    `@strapi/provider-upload-aws-s3` (added as a dependency); confirmed by
+    reading the package's own README and `dist/index.js` (not guessing) that
+    its `providerOptions.s3Options` is spread directly into `new S3Client()`,
+    so `S3_ENDPOINT`/`S3_FORCE_PATH_STYLE` (unset for real AWS) make it work
+    with any S3-compatible service, exactly as the package's own "S3
+    compatible services" doc section describes for Scaleway. No CSP change
+    needed - `config/middlewares.ts`'s `img-src`/`media-src` already include
+    a bare `*`. Verified end-to-end against a real local MinIO container
+    (not just config review): uploaded a file through Strapi's actual
+    upload API, confirmed the object landed in the bucket, and confirmed
+    the returned URL served the exact uploaded content back; also confirmed
+    `UPLOAD_PROVIDER` unset still uses local disk exactly as before. See
+    [self-hosting.md](./self-hosting.md#or-skip-local-disk-entirely-s3-compatible-storage).

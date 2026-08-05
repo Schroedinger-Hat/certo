@@ -11,8 +11,8 @@ backend:
   # Persists uploaded media (achievement/profile images) - mirrors
   # docker-compose.yml's uploads-data volume, see docs/self-hosting.md. A
   # ReadWriteOnce PVC only works with backend.replicaCount: 1 - for more
-  # than one replica, use an S3-compatible upload provider instead (not yet
-  # wired in this chart/app - see docs/kubernetes.md).
+  # than one replica, set uploads.enabled: false and use s3.enabled: true
+  # below instead (see docs/kubernetes.md).
   uploads:
     enabled: true
     size: 5Gi
@@ -34,6 +34,20 @@ backend:
     corsAllowedOrigins: ""
     # Structured JSON logging - see docs/logging.md
     logFormatJson: "false"
+
+# S3-compatible upload storage (AWS S3, MinIO, Cloudflare R2, etc.) - the
+# alternative to backend.uploads' PVC, required for backend.replicaCount > 1.
+# See docs/kubernetes.md and docs/self-hosting.md.
+s3:
+  enabled: false
+  accessKeyId: ""
+  secretAccessKey: ""
+  region: "us-east-1"
+  bucket: ""
+  # Leave empty for real AWS S3; set for MinIO/R2/other S3-compatible services.
+  endpoint: ""
+  forcePathStyle: false
+  acl: "public-read"
 
 frontend:
   replicaCount: 1

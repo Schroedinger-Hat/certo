@@ -38,6 +38,6 @@ false + postgresql.external.host/port).
 WARNING: backend.replicaCount is {{ .Values.backend.replicaCount }} but
 backend.uploads.enabled is true - a ReadWriteOnce PVC can't be safely shared
 by multiple backend replicas on different nodes. Either set
-backend.replicaCount: 1, or disable the uploads PVC and use an
-S3-compatible upload provider instead (see docs/kubernetes.md).
+backend.replicaCount: 1, or set backend.uploads.enabled: false and
+s3.enabled: true instead (see docs/kubernetes.md).
 {{- end }}
