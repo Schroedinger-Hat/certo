@@ -41,4 +41,7 @@ logs
 .cursorrules
 .cursor
 .github/copilot*
+
+# local utility files
 ROADMAP.md
+VISION.md
