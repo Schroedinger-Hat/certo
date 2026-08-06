@@ -44,5 +44,18 @@ export default {
         },
       },
     },
+    // Per-issuer analytics dashboard stats (called by api-client.getDashboardStats)
+    {
+      method: 'GET',
+      path: '/dashboard/stats',
+      handler: 'profile.dashboardStats',
+      config: {
+        policies: [],
+        middlewares: [],
+        auth: {
+          scope: ['api::profile.profile.dashboardStats'],
+        },
+      },
+    },
   ],
 };

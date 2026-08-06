@@ -527,28 +527,27 @@ export class ApiClient {
   }
 
   /**
-   * Get dashboard stats
+   * Get dashboard stats for the current user's profile.
+   * Served by GET /api/dashboard/stats (profile.dashboardStats controller).
    */
   async getDashboardStats() {
+    const empty = {
+      credentialsIssued: 0,
+      credentialsRevoked: 0,
+      credentialsExpired: 0,
+      credentialsReceived: 0,
+      achievementsCreated: 0,
+      uniqueRecipients: 0,
+      topAchievements: [] as { id: number; name: string; count: number }[],
+      memberSince: new Date().toISOString(),
+    }
     try {
       const response = await this.get<any>('/api/dashboard/stats')
-      return {
-        data: response.data || {
-          totalCertificates: 0,
-          totalRecipients: 0,
-          activeTemplates: 0
-        }
-      }
+      return { data: response.data || empty }
     }
     catch (error) {
       console.error('Error fetching dashboard stats:', error)
-      return {
-        data: {
-          totalCertificates: 0,
-          totalRecipients: 0,
-          activeTemplates: 0
-        }
-      }
+      return { data: empty }
     }
   }
 

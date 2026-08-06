@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { apiClient } from '~/api/api-client'
+import { useAuthStore } from '~/stores/auth'
+import Cookies from 'js-cookie'
+
 interface UserProfile {
   id: string
   name: string
@@ -16,17 +20,17 @@ interface UserProfile {
 }
 
 interface Stats {
-  issuedCertificates: number
-  receivedCertificates: number
-  verifiedBadges: number
-  certificatesIssued: number
-  templatesCreated: number
+  credentialsIssued: number
+  credentialsRevoked: number
+  credentialsExpired: number
+  credentialsReceived: number
+  achievementsCreated: number
+  uniqueRecipients: number
+  topAchievements: { id: number; name: string; count: number }[]
   memberSince: string
 }
 
 const loading = ref(false)
-const profilePicture = ref<string>('')
-const fileInput = ref<HTMLInputElement | null>(null)
 const pageDescription = ref('Everything regarding your profile from your Certo account')
 
 const form = ref({
@@ -52,12 +56,43 @@ const profile = ref<UserProfile>({
 })
 
 const stats = ref<Stats>({
-  issuedCertificates: 45,
-  receivedCertificates: 12,
-  verifiedBadges: 8,
-  certificatesIssued: 45,
-  templatesCreated: 15,
-  memberSince: '2023-01-01'
+  credentialsIssued: 0,
+  credentialsRevoked: 0,
+  credentialsExpired: 0,
+  credentialsReceived: 0,
+  achievementsCreated: 0,
+  uniqueRecipients: 0,
+  topAchievements: [],
+  memberSince: new Date().toISOString(),
+})
+const statsLoading = ref(false)
+
+// Change password
+const showPasswordForm = ref(false)
+const passwordForm = ref({ currentPassword: '', newPassword: '', confirmPassword: '' })
+const passwordLoading = ref(false)
+const passwordError = ref<string | null>(null)
+const passwordSuccess = ref(false)
+
+// Export data
+const exportLoading = ref(false)
+const exportError = ref<string | null>(null)
+
+// Fetch real stats from the backend
+onMounted(async () => {
+  statsLoading.value = true
+  try {
+    const result = await apiClient.getDashboardStats()
+    if (result.data) {
+      stats.value = result.data
+    }
+  }
+  catch (err) {
+    console.error('Failed to load dashboard stats', err)
+  }
+  finally {
+    statsLoading.value = false
+  }
 })
 
 // Initialize form with profile data
@@ -66,25 +101,6 @@ form.value = {
   email: profile.value.email,
   organization: profile.value.organization || '',
   bio: profile.value.bio || '',
-}
-
-function handleImageUpload() {
-  fileInput.value?.click()
-}
-
-function onImageSelected(event: Event) {
-  const input = event.target as HTMLInputElement
-  if (!input.files?.length) {
-    return
-  }
-
-  const file = input.files[0]
-  const reader = new FileReader()
-
-  reader.onload = () => {
-    profilePicture.value = reader.result as string
-  }
-  reader.readAsDataURL(file)
 }
 
 async function handleSubmit() {
@@ -114,11 +130,68 @@ async function handleSubmit() {
 }
 
 function handleChangePassword() {
-  // TODO: Implement password change flow
+  showPasswordForm.value = !showPasswordForm.value
+  passwordError.value = null
+  passwordSuccess.value = false
+  passwordForm.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
 }
 
-function handleExportData() {
-  // TODO: Implement data export
+async function submitPasswordChange() {
+  passwordError.value = null
+  passwordSuccess.value = false
+
+  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+    passwordError.value = 'New passwords do not match'
+    return
+  }
+  if (passwordForm.value.newPassword.length < 6) {
+    passwordError.value = 'New password must be at least 6 characters'
+    return
+  }
+
+  passwordLoading.value = true
+  try {
+    const response = await apiClient.post<{ jwt: string }>('/api/auth/change-password', {
+      currentPassword: passwordForm.value.currentPassword,
+      password: passwordForm.value.newPassword,
+    })
+    // Strapi returns a fresh JWT — update the stored token so the session stays alive
+    if (response?.jwt) {
+      const authStore = useAuthStore()
+      authStore.token = response.jwt
+      apiClient.setToken(response.jwt)
+      Cookies.set('token', response.jwt, { expires: 7 })
+    }
+    passwordSuccess.value = true
+    passwordForm.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
+  }
+  catch (err: any) {
+    passwordError.value = err?.message || 'Failed to change password'
+  }
+  finally {
+    passwordLoading.value = false
+  }
+}
+
+async function handleExportData() {
+  exportError.value = null
+  exportLoading.value = true
+  try {
+    const data = await apiClient.get<any>('/api/profiles/me/export')
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `certo-export-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+  catch (err: any) {
+    exportError.value = err?.message || 'Export failed'
+  }
+  finally {
+    exportLoading.value = false
+  }
 }
 
 function handleDeleteAccount() {
@@ -166,44 +239,6 @@ useHead({
         <div class="lg:col-span-2">
           <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg">
             <form class="space-y-6" @submit.prevent="handleSubmit">
-              <!-- Profile Picture -->
-              <div>
-                <label class="block text-sm font-medium text-text-primary mb-2">
-                  Profile Picture
-                </label>
-                <div class="flex items-center">
-                  <div class="relative">
-                    <img
-                      :src="profilePicture || '/default-avatar.png'"
-                      alt="Profile picture"
-                      class="w-20 h-20 rounded-full object-cover"
-                    >
-                    <button
-                      type="button"
-                      class="absolute bottom-0 right-0 w-8 h-8 bg-[#00E5C5] rounded-full flex items-center justify-center shadow-lg"
-                      @click="handleImageUpload"
-                    >
-                      <div class="w-4 h-4 i-heroicons-pencil text-white" />
-                    </button>
-                    <input
-                      ref="fileInput"
-                      type="file"
-                      class="hidden"
-                      accept="image/*"
-                      @change="onImageSelected"
-                    >
-                  </div>
-                  <div class="ml-4">
-                    <p class="text-sm text-text-secondary">
-                      Upload a new profile picture or change the existing one
-                    </p>
-                    <p class="text-xs text-text-secondary mt-1">
-                      Recommended size: 400x400px
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               <!-- Personal Information -->
               <div class="space-y-4">
                 <div>
@@ -281,14 +316,29 @@ useHead({
             <h2 class="text-lg font-medium text-text-primary mb-4">
               Account Overview
             </h2>
-            <div class="space-y-4">
+            <div v-if="statsLoading" class="py-4 text-center text-text-secondary text-sm">
+              Loading…
+            </div>
+            <div v-else class="space-y-4">
               <div class="flex items-center justify-between">
-                <span class="text-text-secondary">Certificates Issued</span>
-                <span class="font-medium text-text-primary">{{ stats.certificatesIssued }}</span>
+                <span class="text-text-secondary">Credentials Issued</span>
+                <span class="font-medium text-text-primary">{{ stats.credentialsIssued }}</span>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-text-secondary">Templates Created</span>
-                <span class="font-medium text-text-primary">{{ stats.templatesCreated }}</span>
+                <span class="text-text-secondary">Credentials Received</span>
+                <span class="font-medium text-text-primary">{{ stats.credentialsReceived }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-text-secondary">Achievements Created</span>
+                <span class="font-medium text-text-primary">{{ stats.achievementsCreated }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-text-secondary">Unique Recipients</span>
+                <span class="font-medium text-text-primary">{{ stats.uniqueRecipients }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-text-secondary">Revoked</span>
+                <span class="font-medium text-text-primary">{{ stats.credentialsRevoked }}</span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-text-secondary">Member Since</span>
@@ -303,20 +353,65 @@ useHead({
               Account Actions
             </h2>
             <div class="space-y-3">
+              <!-- Change Password -->
               <button
                 class="w-full flex items-center justify-between px-4 py-2 text-text-primary hover:bg-gray-50 rounded-lg transition-colors"
                 @click="handleChangePassword"
               >
                 <span>Change Password</span>
-                <div class="w-5 h-5 i-heroicons-key" />
+                <div class="w-5 h-5" :class="showPasswordForm ? 'i-heroicons-chevron-up' : 'i-heroicons-key'" />
               </button>
+              <div v-if="showPasswordForm" class="border border-gray-100 rounded-lg p-4 space-y-3">
+                <div v-if="passwordSuccess" class="text-sm text-green-600 font-medium">
+                  Password changed successfully.
+                </div>
+                <div v-if="passwordError" class="text-sm text-red-600">
+                  {{ passwordError }}
+                </div>
+                <input
+                  v-model="passwordForm.currentPassword"
+                  type="password"
+                  placeholder="Current password"
+                  class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5AB69F]"
+                  autocomplete="current-password"
+                />
+                <input
+                  v-model="passwordForm.newPassword"
+                  type="password"
+                  placeholder="New password"
+                  class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5AB69F]"
+                  autocomplete="new-password"
+                />
+                <input
+                  v-model="passwordForm.confirmPassword"
+                  type="password"
+                  placeholder="Confirm new password"
+                  class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5AB69F]"
+                  autocomplete="new-password"
+                />
+                <button
+                  class="w-full py-2 bg-[#5AB69F] text-white rounded-lg text-sm font-medium hover:bg-[#5AB69F]/90 transition-colors disabled:opacity-50"
+                  :disabled="passwordLoading"
+                  @click="submitPasswordChange"
+                >
+                  {{ passwordLoading ? 'Saving…' : 'Update Password' }}
+                </button>
+              </div>
+
+              <!-- Export Data -->
+              <div v-if="exportError" class="text-sm text-red-600 px-4">
+                {{ exportError }}
+              </div>
               <button
-                class="w-full flex items-center justify-between px-4 py-2 text-text-primary hover:bg-gray-50 rounded-lg transition-colors"
+                class="w-full flex items-center justify-between px-4 py-2 text-text-primary hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
+                :disabled="exportLoading"
                 @click="handleExportData"
               >
-                <span>Export Data</span>
+                <span>{{ exportLoading ? 'Exporting…' : 'Export Data' }}</span>
                 <div class="w-5 h-5 i-heroicons-arrow-down-tray" />
               </button>
+
+              <!-- Delete Account -->
               <button
                 class="w-full flex items-center justify-between px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 @click="handleDeleteAccount"

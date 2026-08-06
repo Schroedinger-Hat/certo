@@ -121,6 +121,37 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
     }
   },
 
+  /**
+   * Per-issuer analytics: real credential/achievement counts for the
+   * current user's profile, replacing the hardcoded placeholder values
+   * the frontend was previously showing. Served at
+   * GET /api/dashboard/stats to match the existing API-client call.
+   */
+  async dashboardStats(ctx) {
+    try {
+      if (!ctx.state.user) {
+        return ctx.unauthorized('You must be logged in');
+      }
+
+      const profiles = await strapi.entityService.findMany('api::profile.profile', {
+        filters: { email: ctx.state.user.email },
+        status: 'published',
+        limit: 1,
+      });
+
+      if (!profiles || profiles.length === 0) {
+        return ctx.notFound('Profile not found for the current user');
+      }
+
+      const dashboard = strapi.service('api::profile.dashboard');
+      const stats = await dashboard.getStats(ctx.state.user.id, profiles[0].id);
+      return { data: stats };
+    } catch (err) {
+      strapi.log.error('[dashboardStats] Error fetching stats', { error: (err as Error).message });
+      return ctx.badRequest('Error fetching dashboard stats', { error: (err as Error).message });
+    }
+  },
+
   async findIssuedCredentials(ctx) {
     try {
       const { id } = ctx.params

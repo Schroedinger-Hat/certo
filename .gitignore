@@ -40,3 +40,5 @@ logs
 .idea
 .cursorrules
 .cursor
+.github/copilot*
+ROADMAP.md
