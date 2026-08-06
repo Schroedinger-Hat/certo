@@ -449,105 +449,22 @@ export default factories.createCoreController('api::credential.credential', ({ s
   },
 
   /**
-   * Override the default find method to filter results based on user
+   * Override the default find method to filter results based on user ownership
+   * Multi-tenancy: only return credentials the user can access (owns issuer or recipient profile)
    */
   async find(ctx) {
-    
-    if (ctx.state.user) {
+    if (!ctx.state.user) {
+      return ctx.unauthorized('You must be logged in to list credentials');
     }
     
     try {
-      // If user is authenticated, filter credentials
-      if (ctx.state.user) {
-        try {
-          // Find profile by user's email
-          const userEmail = ctx.state.user.email
-          
-          const profiles = await strapi.entityService.findMany('api::profile.profile', {
-            status: 'published',
-            filters: { email: userEmail },
-          })
-
-
-          if (!profiles || profiles.length === 0) {
-            return { data: [] }
-          }
-
-          // Get the profile ID
-          const profileId = profiles[0].id
-
-          // Use entityService directly instead of calling super.find
-          const credentials = await strapi.entityService.findMany('api::credential.credential', {
-            status: 'published',
-            filters: {
-              $or: [
-                { recipient: { id: profileId } },
-                { issuer: { id: profileId } }
-              ]
-            },
-            populate: ['achievement', 'issuer', 'recipient']
-          }) as any[];
-          
-          
-          return { 
-            data: credentials.map(credential => {
-              // Create a clean credential object with proper typing
-              const formattedCredential = {
-                id: credential.id,
-                attributes: {
-                  ...credential
-                }
-              };
-              
-              // Safely add related entities if they exist
-              if (credential.achievement) {
-                formattedCredential.attributes.achievement = {
-                  data: {
-                    id: credential.achievement.id,
-                    attributes: credential.achievement
-                  }
-                };
-              }
-              
-              if (credential.issuer) {
-                formattedCredential.attributes.issuer = {
-                  data: {
-                    id: credential.issuer.id,
-                    attributes: credential.issuer
-                  }
-                };
-              }
-              
-              if (credential.recipient) {
-                formattedCredential.attributes.recipient = {
-                  data: {
-                    id: credential.recipient.id,
-                    attributes: credential.recipient
-                  }
-                };
-              }
-              
-              return formattedCredential;
-            }),
-            meta: { 
-              pagination: {
-                page: 1,
-                pageSize: credentials.length,
-                pageCount: 1,
-                total: credentials.length
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error in credential find override:', error)
-        }
-      }
-
-      // For non-authenticated users or if there was an error, return empty array
-      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
-    } catch (error) {
-      console.error('Unexpected error in credential.find:', error);
-      return { data: [], meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } } }
+      const multiTenancy = strapi.service('api::profile.multi-tenancy');
+      const credentials = await multiTenancy.getUserCredentials(ctx.state.user.id);
+      
+      return { data: credentials };
+    } catch (err) {
+      strapi.log.error('[credential.find] Multi-tenancy error:', { error: (err as Error).message });
+      return ctx.internalServerError('Error fetching credentials');
     }
   },
 

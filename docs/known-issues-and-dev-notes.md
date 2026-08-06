@@ -461,3 +461,25 @@ backup/restore, and basic monitoring.
     (`constants/index.ts`), not an env var - a pre-existing self-hosting
     gap this feature inherits but doesn't fix, since fixing it was out of
     scope here.
+
+34. **New: Multi-tenancy enforcement (user-owned profiles).** Profiles can now
+    have an owner user (new `owner_id` FK in `profiles` table, added via
+    `database/migrations/2026-08-06_add_profile_owner.js`). The new
+    `api::profile.multi-tenancy` service provides 8 methods for scoping
+    queries: `getUserProfiles()`, `getUserProfileIds()`, `getUserAchievements()`,
+    `getUserCredentials()` (handles both issuer and recipient), `userOwnsProfile()`,
+    `userCanAccessCredential()`, `userCanAccessAchievement()`, and
+    `getUserEvidence()`. Controllers (profile, credential, achievement) have
+    `find()` and `findOne()` overrides that check authentication via
+    `ctx.state.user.id` and return 403 if the user doesn't own the
+    resource. All queries use `entityService.findMany` with filters on
+    profile ID arrays (from `getUserProfileIds`) rather than adding new
+    permission middleware, so tenant data isolation is enforced at the
+    service/query layer and applies to all endpoints automatically. Tests
+    added: 15 unit tests covering all multi-tenancy service methods (mock
+    strapi.entityService) and permission checks. The seed data links the
+    admin user's profile to that user so local dev multi-tenancy works
+    out-of-the-box. This closes the last open item from Phase 2 (Build
+    Trust). See
+    [self-hosting.md](./self-hosting.md#multi-tenancy-user-owned-profiles) and
+    [backend.md](./backend.md#api-structure).

@@ -278,6 +278,61 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
     }
   },
 
+  /**
+   * Multi-tenancy: Override find to only return profiles owned by the current user
+   * Authenticated users can only see their own profiles
+   */
+  async find(ctx) {
+    try {
+      if (!ctx.state.user) {
+        return ctx.unauthorized('You must be logged in to list profiles');
+      }
+
+      const multiTenancy = strapi.service('api::profile.multi-tenancy');
+      const profiles = await multiTenancy.getUserProfiles(ctx.state.user.id);
+      
+      return { data: profiles };
+    } catch (err) {
+      strapi.log.error('[profile.find] Multi-tenancy error:', { error: (err as Error).message });
+      return ctx.internalServerError('Error fetching profiles');
+    }
+  },
+
+  /**
+   * Multi-tenancy: Override findOne to enforce ownership
+   * Users can only access profiles they own
+   */
+  async findOne(ctx) {
+    try {
+      const { id } = ctx.params;
+
+      if (!ctx.state.user) {
+        return ctx.unauthorized('You must be logged in to view profiles');
+      }
+
+      const profile = await strapi.entityService.findOne('api::profile.profile', id, {
+        populate: ['publicKey']
+      });
+
+      if (!profile) {
+        return ctx.notFound('Profile not found');
+      }
+
+      // Check ownership
+      const multiTenancy = strapi.service('api::profile.multi-tenancy');
+      const ownsProfile = await multiTenancy.userOwnsProfile(ctx.state.user.id, id);
+
+      if (!ownsProfile) {
+        return ctx.forbidden('You do not have access to this profile');
+      }
+
+      return { data: profile };
+    } catch (err) {
+      strapi.log.error('[profile.findOne] Multi-tenancy error:', { error: (err as Error).message });
+      return ctx.internalServerError('Error fetching profile');
+    }
+  },
+
   async getIssuer(ctx) {
     const { id } = ctx.params
     const profile = await strapi.entityService.findOne('api::profile.profile', id, {
