@@ -39,5 +39,19 @@ export default {
     // Warn on every boot if the default admin credentials are still active,
     // regardless of environment (see bootstrap/default-credentials-warning.ts)
     await warnIfDefaultAdminCredentials(strapi);
+
+    // Schedule daily credential expiration scan.
+    // Run once at startup (30s delay to let Strapi fully settle) and then every 24h.
+    const runExpirationCheck = async () => {
+      try {
+        const scanner = strapi.service('api::credential.expiration-scanner');
+        await scanner.runDailyCheck();
+      } catch (err: any) {
+        strapi.log.error('[bootstrap] Expiration scanner error:', { error: err.message });
+      }
+    };
+
+    setTimeout(runExpirationCheck, 30_000);
+    setInterval(runExpirationCheck, 24 * 60 * 60 * 1000);
   },
 };

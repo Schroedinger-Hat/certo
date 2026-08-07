@@ -14,6 +14,17 @@ export interface NotificationPayload {
   user: { username: string; email: string } | null
 }
 
+export interface ExpirationWarningPayload {
+  to: string
+  achievement: { name: string }
+  credential: { credentialId: string; id: number | string }
+  frontendUrl: string
+  user: { username: string; email: string } | null
+  daysLeft: number
+  expirationDate: Date
+}
+
 export interface NotificationProvider {
   sendCredentialIssued(payload: NotificationPayload): Promise<void>
+  sendExpirationWarning(payload: ExpirationWarningPayload): Promise<void>
 }

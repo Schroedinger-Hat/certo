@@ -1,5 +1,6 @@
 import { generateCredentialIssuanceEmail } from '../../templates/credential-issuance'
-import type { NotificationPayload, NotificationProvider } from './types'
+import { generateCredentialExpirationEmail } from '../../templates/credential-expiration'
+import type { ExpirationWarningPayload, NotificationPayload, NotificationProvider } from './types'
 
 /**
  * Default notification provider: sends via Strapi's own email plugin
@@ -11,6 +12,17 @@ export function createStrapiEmailProvider(strapi: any): NotificationProvider {
   return {
     async sendCredentialIssued({ to, achievement, credential, frontendUrl, user }: NotificationPayload) {
       const emailTemplate = generateCredentialIssuanceEmail({ achievement, credential, frontendUrl, user })
+
+      await strapi.plugins['email'].services.email.send({
+        to,
+        subject: emailTemplate.subject,
+        text: emailTemplate.text,
+        html: emailTemplate.html,
+      })
+    },
+
+    async sendExpirationWarning({ to, achievement, credential, frontendUrl, user, daysLeft, expirationDate }: ExpirationWarningPayload) {
+      const emailTemplate = generateCredentialExpirationEmail({ achievement, credential, frontendUrl, user, daysLeft, expirationDate })
 
       await strapi.plugins['email'].services.email.send({
         to,

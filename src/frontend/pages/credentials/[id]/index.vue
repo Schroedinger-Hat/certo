@@ -358,6 +358,47 @@ function getLinkedInAddToProfileUrl() {
   })
   return `https://www.linkedin.com/profile/add?${params.toString()}`
 }
+
+// ============================================================================
+// EXPIRATION & RENEWAL
+// ============================================================================
+const isExpired = computed(() => {
+  const d = credential.value?.expirationDate
+  return d ? new Date(d) < new Date() : false
+})
+
+const daysUntilExpiry = computed(() => {
+  const d = credential.value?.expirationDate
+  if (!d) return null
+  const diff = new Date(d).getTime() - Date.now()
+  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+})
+
+const isExpiringSoon = computed(() => {
+  const days = daysUntilExpiry.value
+  return days !== null && days > 0 && days <= 30
+})
+
+const renewalState = ref<'idle' | 'picking' | 'loading' | 'success' | 'error'>('idle')
+const renewalError = ref('')
+const renewalNewExpiry = ref('')
+
+async function submitRenewal() {
+  if (!renewalNewExpiry.value) return
+  renewalState.value = 'loading'
+  renewalError.value = ''
+  try {
+    const numericId = verificationData.value?.rawCredential?.id
+    if (!numericId) throw new Error('Credential ID not available')
+    await apiClient.renewCredential(numericId, renewalNewExpiry.value)
+    renewalState.value = 'success'
+    await refreshCredentialDetails()
+  }
+  catch (err: any) {
+    renewalState.value = 'error'
+    renewalError.value = err?.data?.error?.message || err?.message || 'Renewal failed'
+  }
+}
 </script>
 
 <template>
@@ -435,6 +476,76 @@ function getLinkedInAddToProfileUrl() {
           <img src="https://download.linkedin.com/desktop/add2profile/buttons/en_US.png" alt="LinkedIn Add to Profile" class="h-5 w-auto">
           Add to LinkedIn
         </a>
+      </div>
+
+      <!-- Expiration / Renewal Banner -->
+      <div
+        v-if="isExpired || isExpiringSoon"
+        class="mb-6 p-5 rounded-2xl border shadow-md"
+        :class="isExpired ? 'bg-red-50 border-red-300' : 'bg-amber-50 border-amber-300'"
+      >
+        <div class="flex items-start gap-4">
+          <div
+            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+            :class="isExpired ? 'bg-red-100' : 'bg-amber-100'"
+          >
+            <div
+              class="w-6 h-6"
+              :class="isExpired ? 'i-lucide-clock-alert text-red-600' : 'i-lucide-alarm-clock text-amber-600'"
+            />
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold mb-1" :class="isExpired ? 'text-red-700' : 'text-amber-700'">
+              {{ isExpired ? 'This credential has expired' : `Expires in ${daysUntilExpiry} day${daysUntilExpiry === 1 ? '' : 's'}` }}
+            </h3>
+            <p class="text-sm" :class="isExpired ? 'text-red-600' : 'text-amber-600'">
+              {{ isExpired ? 'This credential is no longer valid. Contact the issuer to renew it.' : 'Consider asking the issuer to renew this credential soon.' }}
+            </p>
+
+            <!-- Renewal form (issuer only - shown when logged in) -->
+            <div v-if="renewalState === 'idle' || renewalState === 'picking'" class="mt-3">
+              <button
+                v-if="renewalState === 'idle'"
+                class="text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                :class="isExpired ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'"
+                @click="renewalState = 'picking'"
+              >
+                Renew Credential
+              </button>
+              <div v-else class="flex flex-wrap items-center gap-2 mt-2">
+                <label class="text-sm font-medium text-gray-700">New expiration date:</label>
+                <input
+                  v-model="renewalNewExpiry"
+                  type="date"
+                  :min="new Date(Date.now() + 86400000).toISOString().split('T')[0]"
+                  class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                >
+                <button
+                  class="text-sm font-medium px-4 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white transition-colors disabled:opacity-50"
+                  :disabled="!renewalNewExpiry"
+                  @click="submitRenewal"
+                >
+                  Confirm
+                </button>
+                <button
+                  class="text-sm text-gray-500 hover:text-gray-700"
+                  @click="renewalState = 'idle'"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <div v-else-if="renewalState === 'loading'" class="mt-3 flex items-center gap-2 text-sm text-gray-600">
+              <div class="i-lucide-loader-2 w-4 h-4 animate-spin" /> Renewing…
+            </div>
+            <div v-else-if="renewalState === 'success'" class="mt-3 text-sm text-green-700 font-medium">
+              ✓ Credential renewed successfully.
+            </div>
+            <div v-else-if="renewalState === 'error'" class="mt-3 text-sm text-red-700">
+              ✗ {{ renewalError }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Verification Status -->
