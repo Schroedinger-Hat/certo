@@ -15,7 +15,8 @@
     "restore": "node scripts/restore.js",
     "test": "jest",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "certo": "node scripts/certo.js"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.15.0",
@@ -56,5 +57,8 @@
   "strapi": {
     "uuid": "e1d5ae4c-43fc-4fc8-824f-471c16864744",
     "installId": "6b2025e1df9c71f2a9d7afda8b31d186d180ac1542b55596460c236a657a4271"
+  },
+  "bin": {
+    "certo": "./scripts/certo.js"
   }
 }

@@ -2,6 +2,54 @@
 
 This directory contains utility scripts for the Certo Strapi backend.
 
+## Certo CLI (`certo.js`)
+
+A command-line interface for managing the Certo platform. No extra dependencies — uses only Node.js built-ins.
+
+### Setup
+
+```bash
+# Run directly
+node scripts/certo.js <command>
+
+# Or via npm (registered in package.json bin)
+npm run certo -- <command>
+
+# Or install globally for the `certo` shorthand
+npm link
+certo <command>
+```
+
+### Configuration
+
+Set environment variables or pass flags:
+
+| Env var | Flag | Description |
+|---|---|---|
+| `CERTO_API_URL` | `--url <url>` | Backend URL (default: `http://localhost:1337`) |
+| `CERTO_API_TOKEN` | `--token <token>` | Strapi API token |
+
+The CLI also auto-loads your `.env` file from the backend directory.
+
+### Commands
+
+```bash
+certo verify <id>                              # Verify a credential (no auth)
+certo issue --achievement 1 --recipient a@b.com [--expiration 2027-12-31]
+certo revoke 42 [--reason "Role change"]
+certo renew 42 --expiration 2028-01-01
+certo list
+certo export [--output data.json]
+certo backup
+certo restore --from backups/2026-08-01T... --yes
+certo expiration-check                         # Run expiration notification scan
+certo help [command]
+```
+
+Global flags: `--json` (machine-readable output), `--quiet` (suppress data), `--debug` (full error stack).
+
+---
+
 ## Fresh Install Script
 
 The `fresh-install.js` script provides a complete setup for a new Certo Strapi instance.
