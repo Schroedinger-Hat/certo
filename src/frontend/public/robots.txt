@@ -1,5 +1,8 @@
 User-Agent: *
 Disallow: /admin
+# Declare AI content usage preferences (Content Signals draft spec)
+# https://contentsignals.org/
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 
 # AI crawlers — explicitly welcome on credential and public pages
 User-Agent: GPTBot

@@ -8,8 +8,14 @@
  * Similar pattern to /.well-known/openid-configuration for OIDC.
  */
 export default defineEventHandler(() => ({
+  // serverInfo required by MCP Server Card spec (SEP-1649)
+  serverInfo: {
+    name: 'certo',
+    version: '0.1.0',
+    description: 'Open-source platform for issuing and verifying Open Badges 3.0 / Verifiable Credentials',
+  },
+  // Legacy top-level name field (backward compat)
   name: 'Certo',
-  description: 'Open-source platform for issuing and verifying Open Badges 3.0 / Verifiable Credentials',
   mcp_server: {
     package: '@certo/mcp',
     install: 'npx -y @certo/mcp',
