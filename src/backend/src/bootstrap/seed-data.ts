@@ -93,6 +93,7 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
     });
 
     // 3. Create a profile for the admin user (as an Issuer)
+    // Link it to the API user via owner_id for multi-tenancy
     const adminProfile = await strapi.entityService.create('api::profile.profile', {
       data: {
         name: 'Certo Admin',
@@ -100,6 +101,7 @@ export async function seedDevelopmentData(strapi: any): Promise<void> {
         description: 'Default administrator and issuer for Certo platform. This profile is used for testing and development purposes.',
         profileType: 'Both',
         url: 'https://certo.dev',
+        owner: apiUser.id,  // NEW: Link profile to API user for multi-tenancy
         publishedAt: new Date(),
       },
     });
