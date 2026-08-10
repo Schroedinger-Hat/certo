@@ -102,6 +102,28 @@ export default {
           strategies: ['users-permissions']
         }
       }
+    },
+    // Authenticated route for renewing a credential (re-issue with new expiration)
+    {
+      method: 'POST',
+      path: '/credentials/:id/renew',
+      handler: 'credential.renew',
+      config: {
+        auth: {
+          strategies: ['users-permissions']
+        }
+      }
+    },
+    // Admin-only route to manually trigger the expiration notification scan
+    {
+      method: 'POST',
+      path: '/credentials/expiration-check',
+      handler: 'credential.expirationCheck',
+      config: {
+        auth: {
+          strategies: ['users-permissions']
+        }
+      }
     }
   ]
 } 

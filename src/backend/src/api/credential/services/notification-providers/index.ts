@@ -1,7 +1,7 @@
 import { createStrapiEmailProvider } from './strapi-email-provider'
 import type { NotificationProvider } from './types'
 
-export type { NotificationProvider, NotificationPayload } from './types'
+export type { NotificationProvider, NotificationPayload, ExpirationWarningPayload } from './types'
 
 /**
  * Resolves which notification provider to use for credential-issued

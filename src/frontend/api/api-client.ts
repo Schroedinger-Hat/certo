@@ -465,6 +465,14 @@ export class ApiClient {
   }
 
   /**
+   * Renew a credential with a new expiration date.
+   * Re-issues the credential; only the issuer can call this.
+   */
+  async renewCredential(id: number | string, newExpirationDate: string) {
+    return this.post<any>(`/api/credentials/${encodeURIComponent(id)}/renew`, { newExpirationDate })
+  }
+
+  /**
    * Get issuer keys
    */
   async getIssuerKeys(id: number | string) {

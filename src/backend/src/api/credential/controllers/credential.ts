@@ -241,6 +241,85 @@ export default factories.createCoreController('api::credential.credential', ({ s
   },
 
   /**
+   * Renew a credential by re-issuing it with a new expiration date.
+   * The original credential is left untouched (not auto-revoked).
+   * Only the issuer profile owner can renew.
+   */
+  async renew(ctx) {
+    try {
+      const { id } = ctx.params
+      const { newExpirationDate } = ctx.request.body
+
+      if (!id) {
+        return ctx.badRequest('Credential ID is required')
+      }
+      if (!newExpirationDate) {
+        return ctx.badRequest('newExpirationDate is required')
+      }
+      const parsedDate = new Date(newExpirationDate)
+      if (isNaN(parsedDate.getTime()) || parsedDate <= new Date()) {
+        return ctx.badRequest('newExpirationDate must be a valid future date')
+      }
+
+      const existing: any = await strapi.entityService.findOne('api::credential.credential', id, {
+        populate: ['achievement', 'issuer', 'recipient'],
+      })
+      if (!existing) {
+        return ctx.notFound('Credential not found')
+      }
+
+      // Only the issuer profile owner (or any authenticated user if issuer has no owner — legacy)
+      if (ctx.state.user) {
+        const multiTenancy = strapi.service('api::profile.multi-tenancy')
+        const canAccess = await multiTenancy.userOwnsProfile(ctx.state.user.id, existing.issuer?.id)
+        if (!canAccess) {
+          return ctx.forbidden('Only the issuer can renew this credential')
+        }
+      } else {
+        return ctx.unauthorized('You must be logged in to renew credentials')
+      }
+
+      const credentialService = strapi.service('api::credential.credential')
+      const newCredential = await credentialService.issue(
+        existing.achievement,
+        existing.recipient,
+        [],
+        parsedDate.toISOString(),
+        ctx.state.user?.id
+      )
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'credential.renew',
+        entityType: 'credential',
+        entityId: String(id),
+        actorId: ctx.state.user?.id,
+        metadata: { newCredentialId: newCredential?.credentialId, newExpirationDate },
+      })
+
+      return { success: true, credential: newCredential }
+    } catch (error: any) {
+      strapi.log.error('[credential.renew] Error:', { error: error.message })
+      return ctx.badRequest(error.message || 'Failed to renew credential')
+    }
+  },
+
+  /**
+   * Manually trigger the expiration notification scan.
+   * Admin-only endpoint — useful for K8s CronJobs or system cron.
+   */
+  async expirationCheck(ctx) {
+    try {
+      const scanner = strapi.service('api::credential.expiration-scanner')
+      const result = await scanner.runDailyCheck()
+      return { success: true, ...result }
+    } catch (error: any) {
+      strapi.log.error('[credential.expirationCheck] Error:', { error: error.message })
+      return ctx.internalServerError('Expiration check failed')
+    }
+  },
+
+  /**
    * Export a credential as an Open Badge Verifiable Credential
    */
   async exportOpenBadge(ctx) {

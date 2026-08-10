@@ -41,6 +41,8 @@ const AUTHENTICATED_PERMISSIONS = [
   'api::credential.credential.import',
   'api::credential.credential.export',
   'api::credential.credential.certificate',
+  'api::credential.credential.renew',
+  'api::credential.credential.expirationCheck',
   
   // Evidence permissions
   'api::evidence.evidence.find',
@@ -72,8 +74,7 @@ const ISSUER_PERMISSIONS = [
   'api::credential.credential.import',
   'api::credential.credential.export',
   'api::credential.credential.revoke',
-
-  // Profile permissions
+  'api::credential.credential.renew',
   'api::profile.profile.find',
   'api::profile.profile.findOne',
   'api::profile.profile.me',
