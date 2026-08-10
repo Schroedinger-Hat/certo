@@ -1,0 +1,25 @@
+{
+  "name": "@certo/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Certo credential platform — issue, verify, and manage Open Badges 3.0 credentials from any AI assistant",
+  "type": "module",
+  "bin": {
+    "certo-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,0 +1,59 @@
+# Certo
+
+> Open-source infrastructure for issuing, verifying, and managing Open Badges 3.0 and W3C Verifiable Credentials. Self-hostable, API-first, standards-compliant.
+
+Certo lets organizations issue tamper-proof digital credentials (badges, certificates, diplomas) to recipients who can share and verify them publicly. Built on Open Badges 3.0 and W3C Verifiable Credentials standards.
+
+## Key capabilities
+
+- Issue Open Badges 3.0 credentials with cryptographic proof
+- Verify credentials by URL or ID — publicly accessible, no login required
+- Revoke and renew credentials
+- Multi-tenant: multiple organizations in one deployment
+- Batch issuance for large cohorts
+- Self-hostable via Docker Compose or Kubernetes (Helm chart provided)
+- Full REST API with versioning (`/api/v1`)
+- Interactive CLI (`certo` command) and MCP server for AI assistants
+
+## API
+
+- [OpenAPI / Swagger UI](https://certo.schroedinger-hat.org/api/documentation)
+- [API base URL](https://certo.schroedinger-hat.org/api/v1)
+- [Verify a credential](https://certo.schroedinger-hat.org/api/credentials/{id}/verify) — GET, no auth required
+- [Health check](https://certo.schroedinger-hat.org/api/health)
+- [Prometheus metrics](https://certo.schroedinger-hat.org/api/metrics)
+
+## MCP Server (for AI assistants)
+
+Use Certo from Claude Desktop, Cursor, or VS Code Copilot:
+
+```json
+{
+  "mcpServers": {
+    "certo": {
+      "command": "npx",
+      "args": ["-y", "@certo/mcp"],
+      "env": {
+        "CERTO_API_URL": "https://certo.schroedinger-hat.org",
+        "CERTO_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+## Documentation
+
+- [Overview](https://github.com/Schroedinger-Hat/certo/blob/main/docs/overview.md)
+- [Architecture](https://github.com/Schroedinger-Hat/certo/blob/main/docs/architecture.md)
+- [Self-Hosting Guide](https://github.com/Schroedinger-Hat/certo/blob/main/docs/self-hosting.md)
+- [Kubernetes / Helm](https://github.com/Schroedinger-Hat/certo/blob/main/docs/kubernetes.md)
+- [Backup & Restore](https://github.com/Schroedinger-Hat/certo/blob/main/docs/self-hosting.md#backup--restore)
+- [Monitoring](https://github.com/Schroedinger-Hat/certo/blob/main/docs/monitoring.md)
+- [Security](https://github.com/Schroedinger-Hat/certo/blob/main/docs/security.md)
+- [Open Badges](https://github.com/Schroedinger-Hat/certo/blob/main/docs/open-badges.md)
+
+## Source
+
+- [GitHub repository](https://github.com/Schroedinger-Hat/certo)
+- License: MIT

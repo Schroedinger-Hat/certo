@@ -24,7 +24,24 @@ export default defineNuxtConfig({
     ['@nuxtjs/sitemap', {
       hostname: 'https://certo.schroedinger-hat.org',
       gzip: true,
-      trailingSlash: true
+      trailingSlash: false,
+      // Static routes always in sitemap
+      staticRoutes: ['/', '/verify', '/login'],
+      // Dynamic credential pages fetched from the public verify endpoint
+      // Each public credential URL is independently indexable
+      routes: async () => {
+        try {
+          const apiUrl = process.env['NUXT_PUBLIC_API_URL'] || 'http://localhost:1337'
+          const res = await fetch(`${apiUrl}/api/credentials?fields[0]=credentialId&pagination[pageSize]=1000`)
+          if (!res.ok) return []
+          const data = await res.json() as { data?: Array<{ credentialId?: string }> }
+          return (data.data ?? [])
+            .filter((c) => c.credentialId)
+            .map((c) => `/credentials/${encodeURIComponent(c.credentialId!)}`)
+        } catch {
+          return []
+        }
+      },
     }],
   ],
   svgo: {

@@ -202,6 +202,41 @@ useSeoMeta({
 
 useHead({
   link: [{ rel: 'canonical', href: shareableUrl }],
+  script: [
+    {
+      // JSON-LD structured data — schema.org EducationalOccupationalCredential
+      // Makes credential pages indexable by Google and understandable by AI crawlers
+      type: 'application/ld+json',
+      innerHTML: () => {
+        const cred = verificationData.value?.credential ?? verificationData.value?.rawCredential
+        if (!cred) return JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage' })
+        return JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'EducationalOccupationalCredential',
+          '@id': shareableUrl,
+          'name': cred.name ?? cred.title ?? 'Digital Credential',
+          'description': cred.description ?? '',
+          'url': shareableUrl,
+          'credentialCategory': 'badge',
+          'dateCreated': cred.issuanceDate ?? undefined,
+          'expires': cred.expirationDate ?? undefined,
+          'recognizedBy': cred.issuer ? {
+            '@type': 'Organization',
+            'name': typeof cred.issuer === 'string' ? cred.issuer : cred.issuer.name ?? '',
+            'url': typeof cred.issuer === 'object' ? cred.issuer.url ?? undefined : undefined,
+          } : undefined,
+          'image': verificationData.value?.rawCredential?.achievement?.image?.url ?? undefined,
+          // Open Badges 3.0 extension
+          'identifier': credentialId,
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'Certo',
+            'url': WEBSITE_URL,
+          },
+        })
+      },
+    },
+  ],
 })
 
 // ============================================================================

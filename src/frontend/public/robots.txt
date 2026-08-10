@@ -1,2 +1,18 @@
 User-Agent: *
-Disallow:
+Disallow: /admin
+
+# AI crawlers — explicitly welcome on credential and public pages
+User-Agent: GPTBot
+Allow: /credentials/
+Allow: /verify
+Allow: /llms.txt
+
+User-Agent: ClaudeBot
+Allow: /credentials/
+Allow: /verify
+Allow: /llms.txt
+
+User-Agent: Googlebot
+Allow: /
+
+Sitemap: https://certo.schroedinger-hat.org/sitemap.xml
