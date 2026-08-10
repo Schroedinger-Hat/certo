@@ -21,10 +21,11 @@ function statusLabel(c: Credential): { text: string; color: string } {
 
 interface Props {
   cfg: Config;
+  columns?: number;
   onBack: () => void;
 }
 
-export function ListScreen({ cfg, onBack }: Props) {
+export function ListScreen({ cfg, columns = 80, onBack }: Props) {
   const [state, setState] = useState<'loading' | 'done' | 'error'>('loading');
   const [items, setItems] = useState<Credential[]>([]);
   const [error, setError] = useState('');

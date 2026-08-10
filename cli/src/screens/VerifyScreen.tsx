@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Text } from 'ink';
 import { Spinner, TextInput } from '@inkjs/ui';
 import { apiRequest, ApiError } from '../utils/api.js';
+import { useTheme } from '../theme.js';
 import type { Config } from '../utils/config.js';
 
 interface Check {
@@ -39,6 +40,7 @@ interface Props {
 }
 
 export function VerifyScreen({ cfg, initialId, onBack }: Props) {
+  const theme = useTheme();
   const [step, setStep] = useState<Step>(initialId ? 'loading' : 'input');
   const [credentialId, setCredentialId] = useState(initialId ?? '');
   const [result, setResult] = useState<VerifyResult | null>(null);
@@ -90,9 +92,9 @@ export function VerifyScreen({ cfg, initialId, onBack }: Props) {
 
       {result?.credential && (
         <Box flexDirection="column" marginLeft={2}>
-          {result.credential.issuer?.name && <Text dimColor>Issuer:  {result.credential.issuer.name}</Text>}
-          {result.credential.issuanceDate && <Text dimColor>Issued:  {new Date(result.credential.issuanceDate).toLocaleDateString()}</Text>}
-          {result.credential.expirationDate && <Text dimColor>Expires: {new Date(result.credential.expirationDate).toLocaleDateString()}</Text>}
+          {result.credential.issuer?.name && <Text color={theme.muted} dimColor={theme.dimMuted}>Issuer:  {result.credential.issuer.name}</Text>}
+          {result.credential.issuanceDate && <Text color={theme.muted} dimColor={theme.dimMuted}>Issued:  {new Date(result.credential.issuanceDate).toLocaleDateString()}</Text>}
+          {result.credential.expirationDate && <Text color={theme.muted} dimColor={theme.dimMuted}>Expires: {new Date(result.credential.expirationDate).toLocaleDateString()}</Text>}
         </Box>
       )}
 

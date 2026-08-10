@@ -1,8 +1,12 @@
+/**
+ * Header — breadcrumb bar shown on sub-screens (not the main menu).
+ * Main menu uses the full Logo instead.
+ */
 import React from 'react';
 import { Box, Text } from 'ink';
+import { useTheme } from '../theme.js';
 
 const LABELS: Record<string, string> = {
-  menu: 'Main Menu',
   verify: 'Verify Credential',
   issue: 'Issue Credential',
   list: 'List Credentials',
@@ -17,27 +21,13 @@ interface Props {
 }
 
 export function Header({ screen }: Props) {
+  const theme = useTheme();
   const label = LABELS[screen] ?? screen;
   return (
-    <Box
-      borderStyle="round"
-      borderColor="blue"
-      paddingX={2}
-      marginBottom={1}
-      flexDirection="row"
-      gap={1}
-    >
-      <Text bold color="blue">Certo</Text>
-      {screen !== 'menu' && (
-        <>
-          <Text dimColor>›</Text>
-          <Text bold>{label}</Text>
-        </>
-      )}
-      <Box flexGrow={1} />
-      {screen !== 'menu' && (
-        <Text dimColor>Esc to go back</Text>
-      )}
+    <Box marginBottom={1} gap={1}>
+      <Text bold color={theme.primary}>◆ CERTO</Text>
+      <Text color={theme.muted} dimColor={theme.dimMuted}>›</Text>
+      <Text bold>{label}</Text>
     </Box>
   );
 }
