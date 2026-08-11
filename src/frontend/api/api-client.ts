@@ -472,6 +472,28 @@ export class ApiClient {
     return this.post<any>(`/api/credentials/${encodeURIComponent(id)}/renew`, { newExpirationDate })
   }
 
+  // ── Scheduled Issuances ───────────────────────────────────────────────
+
+  async scheduleIssuance(data: {
+    achievementId: number
+    recipientEmail: string
+    recipientName?: string
+    scheduledDate: string
+    expirationDate?: string
+    note?: string
+  }) {
+    return this.post<any>('/api/scheduled-issuances', { data })
+  }
+
+  async getScheduledIssuances(status?: 'pending' | 'issued' | 'cancelled' | 'failed') {
+    const qs = status ? `?status=${status}` : ''
+    return this.get<any>(`/api/scheduled-issuances${qs}`)
+  }
+
+  async cancelScheduledIssuance(id: number | string, cancelReason?: string) {
+    return this.post<any>(`/api/scheduled-issuances/${id}/cancel`, { cancelReason })
+  }
+
   /**
    * Get issuer keys
    */

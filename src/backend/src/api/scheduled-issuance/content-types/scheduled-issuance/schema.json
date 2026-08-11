@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "scheduled_issuances",
+  "info": {
+    "singularName": "scheduled-issuance",
+    "pluralName": "scheduled-issuances",
+    "displayName": "Scheduled Issuance",
+    "description": "Credentials queued for automatic issuance at a future date."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "issued", "cancelled", "failed"],
+      "default": "pending",
+      "required": true
+    },
+    "achievementId": {
+      "type": "integer",
+      "required": true
+    },
+    "recipientEmail": {
+      "type": "email",
+      "required": true
+    },
+    "recipientName": {
+      "type": "string"
+    },
+    "scheduledDate": {
+      "type": "datetime",
+      "required": true,
+      "description": "Date/time when the credential should be issued"
+    },
+    "expirationDate": {
+      "type": "datetime",
+      "description": "Optional expiry for the issued credential"
+    },
+    "note": {
+      "type": "text",
+      "description": "Optional note explaining why issuance is scheduled for this date"
+    },
+    "issuedCredentialId": {
+      "type": "string",
+      "description": "credentialId (URN) once the credential has been issued"
+    },
+    "failureReason": {
+      "type": "text",
+      "description": "Error message if issuance failed"
+    },
+    "cancelReason": {
+      "type": "text"
+    },
+    "scheduledById": {
+      "type": "integer",
+      "description": "User ID of who scheduled the issuance"
+    },
+    "scheduledByEmail": {
+      "type": "email"
+    }
+  }
+}
