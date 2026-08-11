@@ -16,6 +16,8 @@ import { getNotificationProvider } from './notification-providers'
 /** Warning windows: send a notification when expiry is within this many days */
 const WARNING_WINDOWS = [30, 7, 1]
 
+import { channelAlerts } from './channel-alerts'
+
 export default () => ({
   /**
    * Find all active (non-revoked, non-already-expired) credentials that expire
@@ -138,6 +140,21 @@ export default () => ({
     }
 
     strapi.log.info(`[expiration-scanner] Daily check complete: ${checked} checked, ${notified} notified, ${errors} errors`)
+
+    // Send a single digest alert to admin channels listing all expiring credentials
+    if (notified > 0) {
+      const allExpiring = await this.findExpiringSoon(30);
+      channelAlerts.sendExpirationDigest({
+        count: (allExpiring as any[]).length,
+        items: (allExpiring as any[]).map((c: any) => ({
+          credentialId: c.credentialId ?? String(c.id),
+          recipientEmail: c.recipient?.email ?? '',
+          achievementName: c.achievement?.achievementType ?? c.achievement?.name,
+          daysLeft: Math.ceil((new Date(c.expirationDate).getTime() - Date.now()) / 86400000),
+        })),
+      }).catch(() => {});
+    }
+
     return { checked, notified, errors }
   },
 })
