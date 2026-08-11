@@ -59,7 +59,7 @@ export function useI18n() {
   return {
     t,
     locale: readonly(locale),
-    locales: LOCALES,
+    locales: readonly(ref(LOCALES)),
     setLocale,
   }
 }
