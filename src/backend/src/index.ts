@@ -53,5 +53,19 @@ export default {
 
     setTimeout(runExpirationCheck, 30_000);
     setInterval(runExpirationCheck, 24 * 60 * 60 * 1000);
+
+    // Schedule daily check for pending scheduled issuances.
+    // Runs on startup (30s delay) then every 24h — processes any issuances due today.
+    const runScheduledIssuanceCheck = async () => {
+      try {
+        const scanner = strapi.service('api::scheduled-issuance.scheduled-issuance-scanner');
+        await scanner.runDailyCheck();
+      } catch (err: any) {
+        strapi.log.error('[bootstrap] Scheduled issuance scanner error:', { error: err.message });
+      }
+    };
+
+    setTimeout(runScheduledIssuanceCheck, 35_000);
+    setInterval(runScheduledIssuanceCheck, 24 * 60 * 60 * 1000);
   },
 };

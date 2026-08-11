@@ -44,6 +44,12 @@ const AUTHENTICATED_PERMISSIONS = [
   'api::credential.credential.renew',
   'api::credential.credential.expirationCheck',
   
+  // Scheduled issuance permissions
+  'api::scheduled-issuance.scheduled-issuance.create',
+  'api::scheduled-issuance.scheduled-issuance.find',
+  'api::scheduled-issuance.scheduled-issuance.cancel',
+  'api::scheduled-issuance.scheduled-issuance.runCheck',
+
   // Evidence permissions
   'api::evidence.evidence.find',
   'api::evidence.evidence.findOne',
