@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const pageDescription = ref('Read everything regarding the Certo privacy and policy')
 
 useSeoMeta({

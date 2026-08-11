@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Recipient } from '~/composables/useApiClient'
-
+const { t } = useI18n()
 const pageDescription = ref('Issue badges utilizing Certo software')
 
 useSeoMeta({
@@ -10,7 +10,7 @@ useSeoMeta({
 })
 
 useHead({
-  title: 'Issue Badges',
+  title: t('issue.title'),
   link: [
     { rel: 'canonical', href: `${WEBSITE_URL}/issue` }
   ]
@@ -333,10 +333,10 @@ function formatDate(date: string) {
       <!-- Header -->
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-text-primary">
-          Issue Certificate
+          {{ t('issue.title') }}
         </h1>
         <p class="mt-2 text-text-secondary">
-          Create and issue new certificates to recipients
+          {{ t('issue.subtitle') }}
         </p>
       </div>
 

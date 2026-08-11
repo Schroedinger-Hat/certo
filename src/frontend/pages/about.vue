@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const pageDescription = ref('Learn about Certo, our mission, and our open-source community.')
 
 function handleSupportClick() {

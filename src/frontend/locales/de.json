@@ -201,5 +201,27 @@
     "exportData": "Daten exportieren",
     "language": "Sprache",
     "theme": "Design"
+  },
+  "issue": {
+    "title": "[de] Issue Certificate",
+    "subtitle": "[de] Create and issue new certificates to recipients",
+    "selectBadge": "[de] Select a badge to issue",
+    "addRecipient": "[de] Add recipient",
+    "issue": "[de] Issue Credentials",
+    "success": "[de] Certificates issued successfully",
+    "error": "[de] Failed to issue certificates"
+  },
+  "about": {
+    "title": "[de] About Certo",
+    "subtitle": "[de] Learn more about our mission to democratize digital credentials",
+    "mission": "[de] Our Mission",
+    "team": "[de] Our Team"
+  },
+  "getStarted": {
+    "title": "[de] Get Started",
+    "subtitle": "[de] Start issuing digital credentials today",
+    "step1": "[de] Step 1",
+    "step2": "[de] Step 2",
+    "step3": "[de] Step 3"
   }
 }

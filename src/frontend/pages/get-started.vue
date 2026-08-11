@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const pageDescription = ref('Get started with Certo, learn how it works')
 
 const { list, title, subtitle, steps, listTitle } = useGetStartedContent()

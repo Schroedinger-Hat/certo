@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 import { format } from '@formkit/tempo'
 
 const pageDescription = ref('Terms and conditions that apply whenever utilizing Certo')
