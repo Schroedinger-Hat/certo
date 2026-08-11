@@ -5,11 +5,12 @@
     "login": "Accedi",
     "register": "Registrati",
     "logout": "Esci",
-    "profile": "Profilo",
+    "profile": "Impostazioni profilo",
     "getStarted": "Inizia",
     "learnMore": "Scopri di più",
     "about": "Chi siamo",
-    "home": "Home"
+    "home": "Home",
+    "issue": "Emetti badge"
   },
   "common": {
     "loading": "Caricamento...",

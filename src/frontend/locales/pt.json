@@ -5,11 +5,12 @@
     "login": "Entrar",
     "register": "Registrar",
     "logout": "Sair",
-    "profile": "Perfil",
+    "profile": "Configurações do perfil",
     "getStarted": "Começar",
     "learnMore": "Saiba mais",
     "about": "Sobre",
-    "home": "Início"
+    "home": "Início",
+    "issue": "Emitir emblemas"
   },
   "common": {
     "loading": "Carregando...",

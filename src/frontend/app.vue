@@ -1,11 +1,15 @@
 <script setup lang="ts">
 const pageDescription = ref('Open source platform for digital credentials. Issue, verify, and share certificates using the Open Badges standard.')
-
 const pageTitle = ref('Certo - Digital Credential Platform')
 
+const { locale } = useI18n()
+
+// Keep <html lang="..."> in sync with the active locale — important for SEO
+// and accessibility (screen readers use this to pick the right voice)
 useHead({
   title: 'Digital Credential Platform',
   titleTemplate: '%s | Certo',
+  htmlAttrs: { lang: computed(() => locale.value) },
 })
 
 useSeoMeta({

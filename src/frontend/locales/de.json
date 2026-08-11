@@ -5,11 +5,12 @@
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",
-    "profile": "Profil",
+    "profile": "Profileinstellungen",
     "getStarted": "Loslegen",
     "learnMore": "Mehr erfahren",
     "about": "Über uns",
-    "home": "Startseite"
+    "home": "Startseite",
+    "issue": "Abzeichen ausstellen"
   },
   "common": {
     "loading": "Laden...",

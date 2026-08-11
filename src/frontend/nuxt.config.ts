@@ -92,6 +92,7 @@ export default defineNuxtConfig({
         },
       ],
       htmlAttrs: {
+        // lang is updated dynamically per-request in app.vue via useHead()
         lang: 'en'
       }
     }

@@ -5,11 +5,12 @@
     "login": "Sign in",
     "register": "Sign up",
     "logout": "Sign out",
-    "profile": "Profile",
+    "profile": "Profile Settings",
     "getStarted": "Get started",
     "learnMore": "Learn more",
     "about": "About",
-    "home": "Home"
+    "home": "Home",
+    "issue": "Issue Badges"
   },
   "common": {
     "loading": "Loading...",
