@@ -2,15 +2,15 @@
   "nav": {
     "dashboard": "Tableau de bord",
     "verify": "Vérifier",
-    "login": "Se connecter",
+    "login": "Connexion",
     "register": "S'inscrire",
-    "logout": "Se déconnecter",
-    "profile": "Paramètres du profil",
+    "logout": "Déconnexion",
+    "profile": "Profil",
     "getStarted": "Commencer",
     "learnMore": "En savoir plus",
     "about": "À propos",
     "home": "Accueil",
-    "issue": "Émettre des badges"
+    "issue": "Émettre"
   },
   "common": {
     "loading": "Chargement...",
@@ -49,26 +49,26 @@
     "password": "Mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
     "username": "Nom d'utilisateur",
-    "forgotPassword": "Mot de passe oublié ?",
+    "forgotPassword": "Mot de passe oublié?",
     "resetPassword": "Réinitialiser le mot de passe",
-    "signInTitle": "Bon retour",
+    "signInTitle": "Se connecter",
     "signInSubtitle": "Connectez-vous à votre compte Certo",
-    "signUpTitle": "Créez votre compte",
-    "signUpSubtitle": "Rejoignez des milliers d'utilisateurs émettant des identifiants vérifiés",
+    "signUpTitle": "Créer un compte",
+    "signUpSubtitle": "Rejoignez Certo aujourd'hui",
     "noAccount": "Vous n'avez pas de compte ?",
     "haveAccount": "Vous avez déjà un compte ?",
     "invalidCredentials": "E-mail ou mot de passe invalide",
     "emailRequired": "L'e-mail est obligatoire",
     "passwordRequired": "Le mot de passe est obligatoire",
     "rememberMe": "Se souvenir de moi",
-    "signUp": "Créer un compte",
+    "signUp": "S'inscrire",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "termsRequired": "Vous devez accepter les conditions d'utilisation",
-    "termsAgree": "J'accepte les Conditions d'utilisation",
+    "termsAgree": "J'accepte les conditions d'utilisation",
     "sendResetLink": "Envoyer le lien de réinitialisation",
     "newPassword": "Nouveau mot de passe",
     "currentPassword": "Mot de passe actuel",
-    "checkEmail": "Vérifiez votre email pour les instructions de réinitialisation",
+    "checkEmail": "Vérifiez votre e-mail pour le lien de réinitialisation",
     "alreadyHaveAccount": "Vous avez déjà un compte?"
   },
   "credential": {
@@ -139,20 +139,20 @@
     }
   },
   "dashboard": {
-    "title": "Tableau de bord",
+    "title": "Mon tableau de bord",
     "welcome": "Bienvenue, {name}",
-    "issued": "Badges émis",
-    "received": "Badges reçus",
+    "issued": "Émis",
+    "received": "Reçu",
     "totalCredentials": "Total des justificatifs",
     "activeCredentials": "Justificatifs actifs",
     "revokedCredentials": "Justificatifs révoqués",
     "expiredCredentials": "Justificatifs expirés",
     "recentActivity": "Activité récente",
     "quickActions": "Actions rapides",
-    "loading": "Chargement de vos identifiants...",
-    "error": "Erreur lors du chargement du tableau de bord",
-    "yourCredentials": "Vos identifiants",
-    "noCredentials": "Pas d'identifiants pour le moment"
+    "loading": "Chargement...",
+    "error": "Erreur lors du chargement",
+    "yourCredentials": "Vos justificatifs",
+    "noCredentials": "Aucune justification trouvée"
   },
   "errors": {
     "notFound": "Page introuvable",
@@ -185,43 +185,43 @@
     "pt": "Português"
   },
   "verify": {
-    "title": "Vérifier le certificat",
-    "subtitle": "Vérifiez l'authenticité de tout certificat ou badge",
-    "whyVerify": "Pourquoi vérifier avec Certo ?",
+    "title": "Vérifier les certificats",
+    "subtitle": "Vérifiez l'authenticité de toute justification numérique",
+    "whyVerify": "Pourquoi vérifier?",
     "verified": "Certificat vérifié",
-    "failed": "Vérification échouée",
-    "share": "Partager le badge",
-    "addLinkedin": "Ajouter au profil LinkedIn"
+    "failed": "La vérification a échoué",
+    "share": "Partager",
+    "addLinkedin": "Ajouter à LinkedIn"
   },
   "profile": {
-    "title": "Paramètres du profil",
-    "account": "Paramètres du compte",
-    "save": "Enregistrer les modifications",
-    "changePassword": "Modifier le mot de passe",
+    "title": "Profil",
+    "account": "Compte",
+    "save": "Enregistrer",
+    "changePassword": "Changer le mot de passe",
     "exportData": "Exporter les données",
     "language": "Langue",
     "theme": "Thème"
   },
   "issue": {
-    "title": "[fr] Issue Certificate",
-    "subtitle": "[fr] Create and issue new certificates to recipients",
-    "selectBadge": "[fr] Select a badge to issue",
-    "addRecipient": "[fr] Add recipient",
-    "issue": "[fr] Issue Credentials",
-    "success": "[fr] Certificates issued successfully",
-    "error": "[fr] Failed to issue certificates"
+    "title": "Émettre un certificat",
+    "subtitle": "Créez et émettez de nouveaux certificats aux destinataires",
+    "selectBadge": "Sélectionnez un badge à émettre",
+    "addRecipient": "Ajouter un destinataire",
+    "issue": "Émettre les justificatifs",
+    "success": "Certificats émis avec succès",
+    "error": "Échec de l'émission des certificats"
   },
   "about": {
-    "title": "[fr] About Certo",
-    "subtitle": "[fr] Learn more about our mission to democratize digital credentials",
-    "mission": "[fr] Our Mission",
-    "team": "[fr] Our Team"
+    "title": "À propos de Certo",
+    "subtitle": "En savoir plus sur notre mission de démocratiser les justificatifs numériques",
+    "mission": "Notre mission",
+    "team": "Notre équipe"
   },
   "getStarted": {
-    "title": "[fr] Get Started",
-    "subtitle": "[fr] Start issuing digital credentials today",
-    "step1": "[fr] Step 1",
-    "step2": "[fr] Step 2",
-    "step3": "[fr] Step 3"
+    "title": "Commencer",
+    "subtitle": "Commencez à émettre des justificatifs numériques aujourd'hui",
+    "step1": "Étape 1",
+    "step2": "Étape 2",
+    "step3": "Étape 3"
   }
 }

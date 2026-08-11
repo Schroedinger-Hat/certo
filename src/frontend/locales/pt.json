@@ -1,16 +1,16 @@
 {
   "nav": {
-    "dashboard": "Painel",
+    "dashboard": "Painel de controle",
     "verify": "Verificar",
     "login": "Entrar",
     "register": "Registrar",
     "logout": "Sair",
-    "profile": "Configurações do perfil",
+    "profile": "Perfil",
     "getStarted": "Começar",
     "learnMore": "Saiba mais",
     "about": "Sobre",
     "home": "Início",
-    "issue": "Emitir emblemas"
+    "issue": "Emitir"
   },
   "common": {
     "loading": "Carregando...",
@@ -49,26 +49,26 @@
     "password": "Senha",
     "confirmPassword": "Confirmar senha",
     "username": "Nome de usuário",
-    "forgotPassword": "Esqueceu a senha?",
+    "forgotPassword": "Esqueceu sua senha?",
     "resetPassword": "Redefinir senha",
-    "signInTitle": "Bem-vindo de volta",
-    "signInSubtitle": "Entre na sua conta Certo",
-    "signUpTitle": "Crie sua conta",
-    "signUpSubtitle": "Junte-se a milhares de usuários emitindo credenciais verificadas",
+    "signInTitle": "Entrar",
+    "signInSubtitle": "Faça login em sua conta Certo",
+    "signUpTitle": "Criar uma conta",
+    "signUpSubtitle": "Junte-se ao Certo hoje",
     "noAccount": "Não tem uma conta?",
     "haveAccount": "Já tem uma conta?",
     "invalidCredentials": "E-mail ou senha inválidos",
     "emailRequired": "O e-mail é obrigatório",
     "passwordRequired": "A senha é obrigatória",
-    "rememberMe": "Lembrar-me",
-    "signUp": "Inscrever-se",
+    "rememberMe": "Lembre-se de mim",
+    "signUp": "Cadastre-se",
     "passwordMismatch": "As senhas não correspondem",
-    "termsRequired": "Você deve aceitar os Termos e Condições",
-    "termsAgree": "Concordo com os Termos e Condições",
+    "termsRequired": "Você deve aceitar os termos de uso",
+    "termsAgree": "Eu aceito os termos de uso",
     "sendResetLink": "Enviar link de redefinição",
     "newPassword": "Nova senha",
     "currentPassword": "Senha atual",
-    "checkEmail": "Verifique seu email para instruções de redefinição",
+    "checkEmail": "Verifique seu e-mail para o link de redefinição",
     "alreadyHaveAccount": "Já tem uma conta?"
   },
   "credential": {
@@ -139,20 +139,20 @@
     }
   },
   "dashboard": {
-    "title": "Painel de controle",
+    "title": "Meu painel",
     "welcome": "Bem-vindo de volta, {name}",
-    "issued": "Emblemas emitidos",
-    "received": "Emblemas recebidos",
+    "issued": "Emitido",
+    "received": "Recebido",
     "totalCredentials": "Total de credenciais",
     "activeCredentials": "Credenciais ativas",
     "revokedCredentials": "Credenciais revogadas",
     "expiredCredentials": "Credenciais vencidas",
     "recentActivity": "Atividade recente",
     "quickActions": "Ações rápidas",
-    "loading": "Carregando suas credenciais...",
-    "error": "Erro ao carregar o painel",
+    "loading": "Carregando...",
+    "error": "Erro ao carregar",
     "yourCredentials": "Suas credenciais",
-    "noCredentials": "Nenhuma credencial por enquanto"
+    "noCredentials": "Nenhuma credencial encontrada"
   },
   "errors": {
     "notFound": "Página não encontrada",
@@ -185,43 +185,43 @@
     "pt": "Português"
   },
   "verify": {
-    "title": "Verificar certificado",
-    "subtitle": "Verifique a autenticidade de qualquer certificado ou emblema",
-    "whyVerify": "Por que verificar com Certo?",
+    "title": "Verificar certificados",
+    "subtitle": "Verifique a autenticidade de qualquer credencial digital",
+    "whyVerify": "Por que verificar?",
     "verified": "Certificado verificado",
-    "failed": "Falha na verificação",
-    "share": "Compartilhar emblema",
-    "addLinkedin": "Adicionar ao perfil do LinkedIn"
+    "failed": "Verificação falhou",
+    "share": "Compartilhar",
+    "addLinkedin": "Adicionar ao LinkedIn"
   },
   "profile": {
-    "title": "Configurações de perfil",
-    "account": "Configurações de conta",
-    "save": "Salvar alterações",
+    "title": "Perfil",
+    "account": "Conta",
+    "save": "Salvar",
     "changePassword": "Alterar senha",
     "exportData": "Exportar dados",
     "language": "Idioma",
     "theme": "Tema"
   },
   "issue": {
-    "title": "[pt] Issue Certificate",
-    "subtitle": "[pt] Create and issue new certificates to recipients",
-    "selectBadge": "[pt] Select a badge to issue",
-    "addRecipient": "[pt] Add recipient",
-    "issue": "[pt] Issue Credentials",
-    "success": "[pt] Certificates issued successfully",
-    "error": "[pt] Failed to issue certificates"
+    "title": "Emitir certificado",
+    "subtitle": "Crie e emita novos certificados para os destinatários",
+    "selectBadge": "Selecione um crachá para emitir",
+    "addRecipient": "Adicionar destinatário",
+    "issue": "Emitir credenciais",
+    "success": "Certificados emitidos com sucesso",
+    "error": "Erro ao emitir certificados"
   },
   "about": {
-    "title": "[pt] About Certo",
-    "subtitle": "[pt] Learn more about our mission to democratize digital credentials",
-    "mission": "[pt] Our Mission",
-    "team": "[pt] Our Team"
+    "title": "Sobre Certo",
+    "subtitle": "Saiba mais sobre nossa missão de democratizar credenciais digitais",
+    "mission": "Nossa missão",
+    "team": "Nosso time"
   },
   "getStarted": {
-    "title": "[pt] Get Started",
-    "subtitle": "[pt] Start issuing digital credentials today",
-    "step1": "[pt] Step 1",
-    "step2": "[pt] Step 2",
-    "step3": "[pt] Step 3"
+    "title": "Começar",
+    "subtitle": "Comece a emitir credenciais digitais hoje",
+    "step1": "Etapa 1",
+    "step2": "Etapa 2",
+    "step3": "Etapa 3"
   }
 }

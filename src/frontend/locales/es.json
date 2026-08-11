@@ -1,16 +1,16 @@
 {
   "nav": {
-    "dashboard": "Panel",
+    "dashboard": "Panel de control",
     "verify": "Verificar",
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "logout": "Cerrar sesión",
-    "profile": "Configuración del perfil",
+    "profile": "Perfil",
     "getStarted": "Comenzar",
     "learnMore": "Saber más",
     "about": "Acerca de",
     "home": "Inicio",
-    "issue": "Emitir insignias"
+    "issue": "Emitir"
   },
   "common": {
     "loading": "Cargando...",
@@ -51,24 +51,24 @@
     "username": "Nombre de usuario",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "resetPassword": "Restablecer contraseña",
-    "signInTitle": "Bienvenido de vuelta",
+    "signInTitle": "Iniciar sesión",
     "signInSubtitle": "Inicia sesión en tu cuenta de Certo",
-    "signUpTitle": "Crea tu cuenta",
-    "signUpSubtitle": "Únete a miles de usuarios que emiten credenciales verificadas",
+    "signUpTitle": "Crear una cuenta",
+    "signUpSubtitle": "Únete a Certo hoy",
     "noAccount": "¿No tienes una cuenta?",
     "haveAccount": "¿Ya tienes una cuenta?",
     "invalidCredentials": "Correo o contraseña no válidos",
     "emailRequired": "El correo es obligatorio",
     "passwordRequired": "La contraseña es obligatoria",
-    "rememberMe": "Recordarme",
+    "rememberMe": "Recuérdame",
     "signUp": "Registrarse",
     "passwordMismatch": "Las contraseñas no coinciden",
-    "termsRequired": "Debes aceptar los Términos y Condiciones",
-    "termsAgree": "Acepto los Términos y Condiciones",
+    "termsRequired": "Debes aceptar los términos de uso",
+    "termsAgree": "Acepto los términos de uso",
     "sendResetLink": "Enviar enlace de restablecimiento",
     "newPassword": "Nueva contraseña",
     "currentPassword": "Contraseña actual",
-    "checkEmail": "Revisa tu correo electrónico para las instrucciones de restablecimiento",
+    "checkEmail": "Revisa tu correo electrónico para el enlace de restablecimiento",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?"
   },
   "credential": {
@@ -139,20 +139,20 @@
     }
   },
   "dashboard": {
-    "title": "Panel de control",
+    "title": "Mi panel",
     "welcome": "Bienvenido, {name}",
-    "issued": "Insignias emitidas",
-    "received": "Insignias recibidas",
+    "issued": "Emitido",
+    "received": "Recibido",
     "totalCredentials": "Total de credenciales",
     "activeCredentials": "Credenciales activas",
     "revokedCredentials": "Credenciales revocadas",
     "expiredCredentials": "Credenciales vencidas",
     "recentActivity": "Actividad reciente",
     "quickActions": "Acciones rápidas",
-    "loading": "Cargando tus credenciales...",
-    "error": "Error al cargar el panel de control",
+    "loading": "Cargando...",
+    "error": "Error al cargar",
     "yourCredentials": "Tus credenciales",
-    "noCredentials": "Sin credenciales por el momento"
+    "noCredentials": "No se encontraron credenciales"
   },
   "errors": {
     "notFound": "Página no encontrada",
@@ -185,43 +185,43 @@
     "pt": "Português"
   },
   "verify": {
-    "title": "Verificar certificado",
-    "subtitle": "Verifica la autenticidad de cualquier certificado o insignia",
-    "whyVerify": "¿Por qué verificar con Certo?",
+    "title": "Verificar certificados",
+    "subtitle": "Verifica la autenticidad de cualquier credencial digital",
+    "whyVerify": "¿Por qué verificar?",
     "verified": "Certificado verificado",
     "failed": "Verificación fallida",
-    "share": "Compartir insignia",
-    "addLinkedin": "Agregar al perfil de LinkedIn"
+    "share": "Compartir",
+    "addLinkedin": "Agregar a LinkedIn"
   },
   "profile": {
-    "title": "Configuración de perfil",
-    "account": "Configuración de cuenta",
-    "save": "Guardar cambios",
+    "title": "Perfil",
+    "account": "Cuenta",
+    "save": "Guardar",
     "changePassword": "Cambiar contraseña",
     "exportData": "Exportar datos",
     "language": "Idioma",
     "theme": "Tema"
   },
   "issue": {
-    "title": "[es] Issue Certificate",
-    "subtitle": "[es] Create and issue new certificates to recipients",
-    "selectBadge": "[es] Select a badge to issue",
-    "addRecipient": "[es] Add recipient",
-    "issue": "[es] Issue Credentials",
-    "success": "[es] Certificates issued successfully",
-    "error": "[es] Failed to issue certificates"
+    "title": "Emitir certificado",
+    "subtitle": "Crea y emite nuevos certificados a los destinatarios",
+    "selectBadge": "Selecciona una insignia para emitir",
+    "addRecipient": "Agregar destinatario",
+    "issue": "Emitir credenciales",
+    "success": "Certificados emitidos exitosamente",
+    "error": "Error al emitir certificados"
   },
   "about": {
-    "title": "[es] About Certo",
-    "subtitle": "[es] Learn more about our mission to democratize digital credentials",
-    "mission": "[es] Our Mission",
-    "team": "[es] Our Team"
+    "title": "Acerca de Certo",
+    "subtitle": "Aprende más sobre nuestra misión de democratizar las credenciales digitales",
+    "mission": "Nuestra misión",
+    "team": "Nuestro equipo"
   },
   "getStarted": {
-    "title": "[es] Get Started",
-    "subtitle": "[es] Start issuing digital credentials today",
-    "step1": "[es] Step 1",
-    "step2": "[es] Step 2",
-    "step3": "[es] Step 3"
+    "title": "Comenzar",
+    "subtitle": "Comienza a emitir credenciales digitales hoy",
+    "step1": "Paso 1",
+    "step2": "Paso 2",
+    "step3": "Paso 3"
   }
 }

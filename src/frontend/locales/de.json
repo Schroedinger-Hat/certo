@@ -1,16 +1,16 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "verify": "Verifizieren",
+    "verify": "Überprüfen",
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",
-    "profile": "Profileinstellungen",
-    "getStarted": "Loslegen",
+    "profile": "Profil",
+    "getStarted": "Erste Schritte",
     "learnMore": "Mehr erfahren",
-    "about": "Über uns",
+    "about": "Über",
     "home": "Startseite",
-    "issue": "Abzeichen ausstellen"
+    "issue": "Ausstellen"
   },
   "common": {
     "loading": "Laden...",
@@ -51,25 +51,25 @@
     "username": "Benutzername",
     "forgotPassword": "Passwort vergessen?",
     "resetPassword": "Passwort zurücksetzen",
-    "signInTitle": "Willkommen zurück",
+    "signInTitle": "Anmelden",
     "signInSubtitle": "Melden Sie sich bei Ihrem Certo-Konto an",
-    "signUpTitle": "Erstelle dein Konto",
-    "signUpSubtitle": "Treten Sie Tausenden von Benutzern bei, die verifizierte Anmeldeinformationen ausstellen",
+    "signUpTitle": "Konto erstellen",
+    "signUpSubtitle": "Treten Sie heute Certo bei",
     "noAccount": "Kein Konto?",
     "haveAccount": "Bereits ein Konto?",
     "invalidCredentials": "Ungültige E-Mail oder Passwort",
     "emailRequired": "E-Mail ist erforderlich",
     "passwordRequired": "Passwort ist erforderlich",
-    "rememberMe": "Angemeldet bleiben",
+    "rememberMe": "Anmeldedaten speichern",
     "signUp": "Registrieren",
     "passwordMismatch": "Passwörter stimmen nicht überein",
-    "termsRequired": "Sie müssen den Bedingungen zustimmen",
-    "termsAgree": "Ich akzeptiere die Bedingungen",
-    "sendResetLink": "Zurückset-Link senden",
+    "termsRequired": "Sie müssen den Nutzungsbedingungen zustimmen",
+    "termsAgree": "Ich akzeptiere die Nutzungsbedingungen",
+    "sendResetLink": "Zurücksetzen-Link senden",
     "newPassword": "Neues Passwort",
     "currentPassword": "Aktuelles Passwort",
-    "checkEmail": "Überprüfen Sie Ihre E-Mail auf Anweisungen zum Zurücksetzen",
-    "alreadyHaveAccount": "Haben Sie bereits ein Konto?"
+    "checkEmail": "Überprüfen Sie Ihre E-Mail auf den Zurücksetzen-Link",
+    "alreadyHaveAccount": "Sie haben bereits ein Konto?"
   },
   "credential": {
     "title": "Nachweis",
@@ -139,20 +139,20 @@
     }
   },
   "dashboard": {
-    "title": "Armaturenbrett",
+    "title": "Mein Dashboard",
     "welcome": "Willkommen zurück, {name}",
-    "issued": "Ausgestellte Abzeichen",
-    "received": "Erhaltene Abzeichen",
+    "issued": "Ausgestellt",
+    "received": "Erhalten",
     "totalCredentials": "Nachweise insgesamt",
     "activeCredentials": "Aktive Nachweise",
     "revokedCredentials": "Widerrufene Nachweise",
     "expiredCredentials": "Abgelaufene Nachweise",
     "recentActivity": "Letzte Aktivität",
     "quickActions": "Schnellaktionen",
-    "loading": "Ihre Anmeldeinformationen werden geladen...",
-    "error": "Fehler beim Laden des Dashboards",
+    "loading": "Lädt...",
+    "error": "Fehler beim Laden",
     "yourCredentials": "Ihre Anmeldeinformationen",
-    "noCredentials": "Derzeit keine Anmeldeinformationen"
+    "noCredentials": "Keine Anmeldeinformationen gefunden"
   },
   "errors": {
     "notFound": "Seite nicht gefunden",
@@ -185,43 +185,43 @@
     "pt": "Português"
   },
   "verify": {
-    "title": "Zertifikat verifizieren",
-    "subtitle": "Überprüfe die Authentizität eines Zertifikats oder Abzeichens",
-    "whyVerify": "Warum mit Certo verifizieren?",
-    "verified": "Zertifikat verifiziert",
-    "failed": "Verifikation fehlgeschlagen",
-    "share": "Abzeichen teilen",
-    "addLinkedin": "Zum LinkedIn-Profil hinzufügen"
+    "title": "Zertifikate überprüfen",
+    "subtitle": "Überprüfen Sie die Authentizität einer digitalen Anmeldeinformation",
+    "whyVerify": "Warum überprüfen?",
+    "verified": "Zertifikat überprüft",
+    "failed": "Überprüfung fehlgeschlagen",
+    "share": "Teilen",
+    "addLinkedin": "Zu LinkedIn hinzufügen"
   },
   "profile": {
-    "title": "Profileinstellungen",
-    "account": "Kontoeinstellungen",
-    "save": "Änderungen speichern",
+    "title": "Profil",
+    "account": "Konto",
+    "save": "Speichern",
     "changePassword": "Passwort ändern",
     "exportData": "Daten exportieren",
     "language": "Sprache",
-    "theme": "Design"
+    "theme": "Thema"
   },
   "issue": {
-    "title": "[de] Issue Certificate",
-    "subtitle": "[de] Create and issue new certificates to recipients",
-    "selectBadge": "[de] Select a badge to issue",
-    "addRecipient": "[de] Add recipient",
-    "issue": "[de] Issue Credentials",
-    "success": "[de] Certificates issued successfully",
-    "error": "[de] Failed to issue certificates"
+    "title": "Zertifikat ausstellen",
+    "subtitle": "Erstellen und stellen Sie neue Zertifikate für Empfänger aus",
+    "selectBadge": "Wählen Sie ein auszustellendes Badge",
+    "addRecipient": "Empfänger hinzufügen",
+    "issue": "Anmeldeinformationen ausstellen",
+    "success": "Zertifikate erfolgreich ausgestellt",
+    "error": "Fehler beim Ausstellen von Zertifikaten"
   },
   "about": {
-    "title": "[de] About Certo",
-    "subtitle": "[de] Learn more about our mission to democratize digital credentials",
-    "mission": "[de] Our Mission",
-    "team": "[de] Our Team"
+    "title": "Über Certo",
+    "subtitle": "Erfahren Sie mehr über unsere Mission, digitale Anmeldeinformationen zu demokratisieren",
+    "mission": "Unsere Mission",
+    "team": "Unser Team"
   },
   "getStarted": {
-    "title": "[de] Get Started",
-    "subtitle": "[de] Start issuing digital credentials today",
-    "step1": "[de] Step 1",
-    "step2": "[de] Step 2",
-    "step3": "[de] Step 3"
+    "title": "Erste Schritte",
+    "subtitle": "Beginnen Sie heute mit der Ausstellung digitaler Anmeldeinformationen",
+    "step1": "Schritt 1",
+    "step2": "Schritt 2",
+    "step3": "Schritt 3"
   }
 }
