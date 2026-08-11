@@ -59,7 +59,8 @@
     "haveAccount": "Already have an account?",
     "invalidCredentials": "Invalid email or password",
     "emailRequired": "Email is required",
-    "passwordRequired": "Password is required"
+    "passwordRequired": "Password is required",
+    "rememberMe": "Remember me"
   },
   "credential": {
     "title": "Credential",

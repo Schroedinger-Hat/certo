@@ -59,7 +59,8 @@
     "haveAccount": "Bereits ein Konto?",
     "invalidCredentials": "Ungültige E-Mail oder Passwort",
     "emailRequired": "E-Mail ist erforderlich",
-    "passwordRequired": "Passwort ist erforderlich"
+    "passwordRequired": "Passwort ist erforderlich",
+    "rememberMe": "Angemeldet bleiben"
   },
   "credential": {
     "title": "Nachweis",

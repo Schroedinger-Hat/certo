@@ -59,7 +59,8 @@
     "haveAccount": "Vous avez déjà un compte ?",
     "invalidCredentials": "E-mail ou mot de passe invalide",
     "emailRequired": "L'e-mail est obligatoire",
-    "passwordRequired": "Le mot de passe est obligatoire"
+    "passwordRequired": "Le mot de passe est obligatoire",
+    "rememberMe": "Se souvenir de moi"
   },
   "credential": {
     "title": "Justificatif",

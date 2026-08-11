@@ -59,7 +59,8 @@
     "haveAccount": "Hai già un account?",
     "invalidCredentials": "Email o password non valida",
     "emailRequired": "L'email è obbligatoria",
-    "passwordRequired": "La password è obbligatoria"
+    "passwordRequired": "La password è obbligatoria",
+    "rememberMe": "Ricordami"
   },
   "credential": {
     "title": "Credenziale",
