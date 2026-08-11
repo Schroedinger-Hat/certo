@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "credential_requests",
+  "info": {
+    "singularName": "credential-request",
+    "pluralName": "credential-requests",
+    "displayName": "Credential Request",
+    "description": "Approval workflow requests for credential issuance. A requester submits, an issuer approves or rejects."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "rejected"],
+      "default": "pending",
+      "required": true
+    },
+    "achievementId": {
+      "type": "integer",
+      "required": true,
+      "description": "Numeric ID of the achievement to issue"
+    },
+    "recipientEmail": {
+      "type": "email",
+      "required": true
+    },
+    "recipientName": {
+      "type": "string"
+    },
+    "expirationDate": {
+      "type": "datetime"
+    },
+    "requesterNote": {
+      "type": "text",
+      "description": "Optional note from the person requesting the credential"
+    },
+    "reviewerNote": {
+      "type": "text",
+      "description": "Note from the reviewer when approving or rejecting"
+    },
+    "submittedByEmail": {
+      "type": "email",
+      "description": "Email of the user who submitted the request"
+    },
+    "submittedById": {
+      "type": "integer",
+      "description": "User ID of the submitter"
+    },
+    "reviewedByEmail": {
+      "type": "email",
+      "description": "Email of the issuer who reviewed the request"
+    },
+    "reviewedById": {
+      "type": "integer",
+      "description": "User ID of the reviewer"
+    },
+    "reviewedAt": {
+      "type": "datetime"
+    },
+    "issuedCredentialId": {
+      "type": "string",
+      "description": "credentialId (URN) of the issued credential once approved"
+    }
+  }
+}

@@ -472,6 +472,31 @@ export class ApiClient {
     return this.post<any>(`/api/credentials/${encodeURIComponent(id)}/renew`, { newExpirationDate })
   }
 
+  // ── Credential Requests (Approval Workflow) ────────────────────────────
+
+  async submitCredentialRequest(data: {
+    achievementId: number
+    recipientEmail: string
+    recipientName?: string
+    expirationDate?: string
+    requesterNote?: string
+  }) {
+    return this.post<any>('/api/credential-requests', { data })
+  }
+
+  async getCredentialRequests(status?: 'pending' | 'approved' | 'rejected') {
+    const qs = status ? `?status=${status}` : ''
+    return this.get<any>(`/api/credential-requests${qs}`)
+  }
+
+  async approveCredentialRequest(id: number | string, reviewerNote?: string) {
+    return this.post<any>(`/api/credential-requests/${id}/approve`, { reviewerNote })
+  }
+
+  async rejectCredentialRequest(id: number | string, reviewerNote?: string) {
+    return this.post<any>(`/api/credential-requests/${id}/reject`, { reviewerNote })
+  }
+
   /**
    * Get issuer keys
    */

@@ -43,7 +43,14 @@ const AUTHENTICATED_PERMISSIONS = [
   'api::credential.credential.certificate',
   'api::credential.credential.renew',
   'api::credential.credential.expirationCheck',
-  
+
+  // Credential request (approval workflow) permissions
+  'api::credential-request.credential-request.create',
+  'api::credential-request.credential-request.find',
+  'api::credential-request.credential-request.findOne',
+  'api::credential-request.credential-request.approve',
+  'api::credential-request.credential-request.reject',
+
   // Evidence permissions
   'api::evidence.evidence.find',
   'api::evidence.evidence.findOne',
@@ -75,6 +82,14 @@ const ISSUER_PERMISSIONS = [
   'api::credential.credential.export',
   'api::credential.credential.revoke',
   'api::credential.credential.renew',
+
+  // Credential request (approval workflow) — issuers can approve/reject
+  'api::credential-request.credential-request.create',
+  'api::credential-request.credential-request.find',
+  'api::credential-request.credential-request.findOne',
+  'api::credential-request.credential-request.approve',
+  'api::credential-request.credential-request.reject',
+
   'api::profile.profile.find',
   'api::profile.profile.findOne',
   'api::profile.profile.me',
