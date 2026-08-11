@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@nuxt/image',
     '@nuxt/icon',
-    '@nuxtjs/i18n',
     ['nuxt-gtag', {
       id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
       config: {
@@ -112,25 +111,6 @@ export default defineNuxtConfig({
     '~/plugins/api.ts',
     '~/plugins/auth.ts',
     // The auth-init plugin is client-only and will be auto-imported
+    '~/plugins/i18n.client.ts',
   ],
-  i18n: {
-    strategy: 'no_prefix',
-    defaultLocale: 'en',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'certo_locale',
-      redirectOn: 'root',
-      fallbackLocale: 'en',
-    },
-    locales: [
-      { code: 'en', language: 'en-US', name: 'English',    file: 'en.json' },
-      { code: 'fr', language: 'fr-FR', name: 'Français',   file: 'fr.json' },
-      { code: 'it', language: 'it-IT', name: 'Italiano',   file: 'it.json' },
-      { code: 'es', language: 'es-ES', name: 'Español',    file: 'es.json' },
-      { code: 'de', language: 'de-DE', name: 'Deutsch',    file: 'de.json' },
-      { code: 'pt', language: 'pt-PT', name: 'Português',  file: 'pt.json' },
-    ],
-    langDir: 'locales/',
-    lazy: true,
-  },
 })
