@@ -5,6 +5,7 @@
 import { factories } from '@strapi/strapi'
 import crypto from 'crypto'
 import { credentialsRevokedTotal } from '../../../monitoring/metrics'
+import { channelAlerts } from '../services/channel-alerts/index'
 
 // Define types to help with type assertions
 interface Achievement {
@@ -232,6 +233,14 @@ export default factories.createCoreController('api::credential.credential', ({ s
         metadata: { reason: reason || 'No reason provided' },
       })
       credentialsRevokedTotal.inc()
+
+      // Fan out admin channel alerts — best-effort
+      channelAlerts.sendCredentialRevoked({
+        credentialId: (updatedCredential as any).credentialId ?? String(id),
+        recipientEmail: (existing as any)?.recipient?.email ?? '',
+        reason: reason || 'No reason provided',
+        revokedBy: ctx.state.user?.email,
+      }).catch(() => {})
 
       return { success: true, credential: updatedCredential }
     } catch (error) {

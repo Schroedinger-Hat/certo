@@ -3,6 +3,7 @@
  */
 
 import { getNotificationProvider } from './notification-providers'
+import { channelAlerts } from './channel-alerts/index'
 import { credentialsIssuedTotal } from '../../../monitoring/metrics'
 
 export default ({ strapi }) => ({
@@ -168,7 +169,14 @@ export default ({ strapi }) => ({
       })
       credentialsIssuedTotal.inc()
 
-      // Return both the populated credential record and the OBv3 serialized version
+      // Fan out admin channel alerts (Slack/Teams/Discord) — best-effort, never throws
+      const frontendUrl = strapi.config.get('custom.frontendUrl', 'http://localhost:3000')
+      channelAlerts.sendCredentialIssued({
+        credentialId: credential.credentialId,
+        credentialUrl: `${frontendUrl}/credentials/${encodeURIComponent(credential.credentialId)}`,
+        achievementName: (achievement as any).achievementType ?? (achievement as any).name ?? 'Unknown',
+        recipientEmail: (recipientEntity as any).email ?? '',
+      }).catch(() => { /* already logged inside channelAlerts */ })
       return {
         credential: populatedCredential,
         openBadge: serializedCredential,
