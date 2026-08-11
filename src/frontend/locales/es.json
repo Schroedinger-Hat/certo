@@ -53,14 +53,23 @@
     "resetPassword": "Restablecer contraseña",
     "signInTitle": "Bienvenido de vuelta",
     "signInSubtitle": "Inicia sesión en tu cuenta de Certo",
-    "signUpTitle": "Crear cuenta",
-    "signUpSubtitle": "Comienza a emitir credenciales verificables",
+    "signUpTitle": "Crea tu cuenta",
+    "signUpSubtitle": "Únete a miles de usuarios que emiten credenciales verificadas",
     "noAccount": "¿No tienes una cuenta?",
     "haveAccount": "¿Ya tienes una cuenta?",
     "invalidCredentials": "Correo o contraseña no válidos",
     "emailRequired": "El correo es obligatorio",
     "passwordRequired": "La contraseña es obligatoria",
-    "rememberMe": "Recordarme"
+    "rememberMe": "Recordarme",
+    "signUp": "Registrarse",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "termsRequired": "Debes aceptar los Términos y Condiciones",
+    "termsAgree": "Acepto los Términos y Condiciones",
+    "sendResetLink": "Enviar enlace de restablecimiento",
+    "newPassword": "Nueva contraseña",
+    "currentPassword": "Contraseña actual",
+    "checkEmail": "Revisa tu correo electrónico para las instrucciones de restablecimiento",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?"
   },
   "credential": {
     "title": "Credencial",
@@ -130,16 +139,20 @@
     }
   },
   "dashboard": {
-    "title": "Panel",
+    "title": "Panel de control",
     "welcome": "Bienvenido, {name}",
-    "issued": "Emitidas",
-    "received": "Recibidas",
+    "issued": "Insignias emitidas",
+    "received": "Insignias recibidas",
     "totalCredentials": "Total de credenciales",
     "activeCredentials": "Credenciales activas",
     "revokedCredentials": "Credenciales revocadas",
     "expiredCredentials": "Credenciales vencidas",
     "recentActivity": "Actividad reciente",
-    "quickActions": "Acciones rápidas"
+    "quickActions": "Acciones rápidas",
+    "loading": "Cargando tus credenciales...",
+    "error": "Error al cargar el panel de control",
+    "yourCredentials": "Tus credenciales",
+    "noCredentials": "Sin credenciales por el momento"
   },
   "errors": {
     "notFound": "Página no encontrada",
@@ -170,5 +183,23 @@
     "es": "Español",
     "de": "Deutsch",
     "pt": "Português"
+  },
+  "verify": {
+    "title": "Verificar certificado",
+    "subtitle": "Verifica la autenticidad de cualquier certificado o insignia",
+    "whyVerify": "¿Por qué verificar con Certo?",
+    "verified": "Certificado verificado",
+    "failed": "Verificación fallida",
+    "share": "Compartir insignia",
+    "addLinkedin": "Agregar al perfil de LinkedIn"
+  },
+  "profile": {
+    "title": "Configuración de perfil",
+    "account": "Configuración de cuenta",
+    "save": "Guardar cambios",
+    "changePassword": "Cambiar contraseña",
+    "exportData": "Exportar datos",
+    "language": "Idioma",
+    "theme": "Tema"
   }
 }

@@ -2,7 +2,7 @@
 definePageMeta({
   middleware: ['route-guard']
 })
-
+const { t } = useI18n()
 // Don't import useAuthStore directly
 const router = useRouter()
 const firstName = ref('')
@@ -102,10 +102,10 @@ useHead({
       <!-- Header -->
       <div class="text-center">
         <h2 class="text-4xl font-bold text-text-primary">
-          Create account
+          {{ t('auth.signUpTitle') }}
         </h2>
         <p class="mt-2 text-text-secondary">
-          Start your journey with Certo
+          {{ t('auth.signUpSubtitle') }}
         </p>
       </div>
 
@@ -133,7 +133,7 @@ useHead({
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-text-primary">
-              Email address
+              {{ t('auth.email') }}
             </label>
             <div class="mt-1">
               <input
@@ -151,7 +151,7 @@ useHead({
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium text-text-primary">
-              Password
+              {{ t('auth.password') }}
             </label>
             <div class="mt-1">
               <input
@@ -169,7 +169,7 @@ useHead({
           <!-- Confirm Password -->
           <div>
             <label for="confirmPassword" class="block text-sm font-medium text-text-primary">
-              Confirm password
+              {{ t('auth.confirmPassword') }}
             </label>
             <div class="mt-1">
               <input
@@ -195,7 +195,7 @@ useHead({
               class="h-4 w-4 text-[#00E5C5] focus:ring-[#00E5C5] border-gray-300 rounded"
             >
             <label for="terms" class="ml-2 block text-sm text-text-secondary">
-              I agree to the
+              <span>{{ t('auth.termsAgree') }}</span>
               <NuxtLink to="/terms-and-conditions" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Terms and Conditions</NuxtLink>
               and
               <NuxtLink to="/privacy-policy" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">Privacy Policy</NuxtLink>
@@ -209,7 +209,7 @@ useHead({
               :disabled="isLoading"
               class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#00E5C5] hover:bg-[#00E5C5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="!isLoading">Create account</span>
+              <span v-if="!isLoading">{{ t('auth.signUp') }}</span>
               <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </button>
           </div>
@@ -218,9 +218,9 @@ useHead({
         <!-- Sign in link -->
         <div class="mt-6 text-center">
           <p class="text-sm text-text-secondary">
-            Already have an account?
+            {{ t('auth.alreadyHaveAccount') }}
             <NuxtLink to="/login" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
-              Sign in
+              {{ t('nav.login') }}
             </NuxtLink>
           </p>
         </div>

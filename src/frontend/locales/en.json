@@ -47,20 +47,29 @@
   "auth": {
     "email": "Email address",
     "password": "Password",
-    "confirmPassword": "Confirm password",
+    "confirmPassword": "Confirm Password",
     "username": "Username",
     "forgotPassword": "Forgot password?",
     "resetPassword": "Reset password",
     "signInTitle": "Welcome back",
     "signInSubtitle": "Sign in to your Certo account",
-    "signUpTitle": "Create account",
-    "signUpSubtitle": "Start issuing verifiable credentials",
+    "signUpTitle": "Create your account",
+    "signUpSubtitle": "Join thousands issuing verified credentials",
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
     "invalidCredentials": "Invalid email or password",
     "emailRequired": "Email is required",
     "passwordRequired": "Password is required",
-    "rememberMe": "Remember me"
+    "rememberMe": "Remember me",
+    "signUp": "Sign Up",
+    "passwordMismatch": "Passwords do not match",
+    "termsRequired": "You must accept the terms and conditions",
+    "termsAgree": "I agree to the Terms and Conditions",
+    "sendResetLink": "Send reset link",
+    "newPassword": "New password",
+    "currentPassword": "Current password",
+    "checkEmail": "Check your email for reset instructions",
+    "alreadyHaveAccount": "Already have an account?"
   },
   "credential": {
     "title": "Credential",
@@ -132,14 +141,18 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back, {name}",
-    "issued": "Issued",
-    "received": "Received",
+    "issued": "Issued Badges",
+    "received": "Received Badges",
     "totalCredentials": "Total credentials",
     "activeCredentials": "Active credentials",
     "revokedCredentials": "Revoked credentials",
     "expiredCredentials": "Expired credentials",
     "recentActivity": "Recent activity",
-    "quickActions": "Quick actions"
+    "quickActions": "Quick actions",
+    "loading": "Loading your credentials...",
+    "error": "Error loading dashboard",
+    "yourCredentials": "Your Credentials",
+    "noCredentials": "No credentials yet"
   },
   "errors": {
     "notFound": "Page not found",
@@ -170,5 +183,23 @@
     "es": "Español",
     "de": "Deutsch",
     "pt": "Português"
+  },
+  "verify": {
+    "title": "Verify Certificate",
+    "subtitle": "Verify the authenticity of any certificate or badge",
+    "whyVerify": "Why Verify with Certo?",
+    "verified": "Certificate verified",
+    "failed": "Verification failed",
+    "share": "Share Badge",
+    "addLinkedin": "Add to LinkedIn Profile"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "account": "Account Settings",
+    "save": "Save Changes",
+    "changePassword": "Change Password",
+    "exportData": "Export Data",
+    "language": "Language",
+    "theme": "Theme"
   }
 }

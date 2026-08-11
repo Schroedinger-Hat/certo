@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { apiClient } from '~/api/api-client'
-
+const { t } = useI18n()
 definePageMeta({
   middleware: ['auth']
 })
@@ -51,7 +51,7 @@ useSeoMeta({
 })
 
 useHead({
-  title: 'Dashboard',
+  title: t('dashboard.title'),
   link: [
     { rel: 'canonical', href: `${WEBSITE_URL}/dashboard` }
   ]
@@ -109,13 +109,13 @@ onMounted(async () => {
       <div class="mb-12">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-semibold">
-            Received Certificates
+            {{ t('dashboard.received') }}
           </h2>
         </div>
         <div v-if="receivedCertificates.length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
           <div class="i-heroicons-inbox w-12 h-12 mx-auto text-gray-400 mb-3" />
           <h3 class="text-lg font-medium mb-2">
-            No Certificates Yet
+            {{ t('dashboard.noCredentials') }}
           </h3>
           <p class="text-gray-600">
             You haven't received any certificates yet.
@@ -148,7 +148,7 @@ onMounted(async () => {
       <div v-if="authStore.isIssuer">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-semibold">
-            Issued Certificates
+            {{ t('dashboard.issued') }}
           </h2>
           <div class="flex items-center gap-4">
             <NuxtLink
@@ -162,7 +162,7 @@ onMounted(async () => {
         <div v-if="issuedCertificates.length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
           <div class="i-heroicons-document-plus w-12 h-12 mx-auto text-gray-400 mb-3" />
           <h3 class="text-lg font-medium mb-2">
-            No Issued Certificates
+            {{ t('dashboard.noCredentials') }}
           </h3>
           <p class="text-gray-600 mb-4">
             You haven't issued any certificates yet.

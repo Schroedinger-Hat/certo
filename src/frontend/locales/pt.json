@@ -53,14 +53,23 @@
     "resetPassword": "Redefinir senha",
     "signInTitle": "Bem-vindo de volta",
     "signInSubtitle": "Entre na sua conta Certo",
-    "signUpTitle": "Criar conta",
-    "signUpSubtitle": "Comece a emitir credenciais verificáveis",
+    "signUpTitle": "Crie sua conta",
+    "signUpSubtitle": "Junte-se a milhares de usuários emitindo credenciais verificadas",
     "noAccount": "Não tem uma conta?",
     "haveAccount": "Já tem uma conta?",
     "invalidCredentials": "E-mail ou senha inválidos",
     "emailRequired": "O e-mail é obrigatório",
     "passwordRequired": "A senha é obrigatória",
-    "rememberMe": "Lembrar-me"
+    "rememberMe": "Lembrar-me",
+    "signUp": "Inscrever-se",
+    "passwordMismatch": "As senhas não correspondem",
+    "termsRequired": "Você deve aceitar os Termos e Condições",
+    "termsAgree": "Concordo com os Termos e Condições",
+    "sendResetLink": "Enviar link de redefinição",
+    "newPassword": "Nova senha",
+    "currentPassword": "Senha atual",
+    "checkEmail": "Verifique seu email para instruções de redefinição",
+    "alreadyHaveAccount": "Já tem uma conta?"
   },
   "credential": {
     "title": "Credencial",
@@ -130,16 +139,20 @@
     }
   },
   "dashboard": {
-    "title": "Painel",
+    "title": "Painel de controle",
     "welcome": "Bem-vindo de volta, {name}",
-    "issued": "Emitidas",
-    "received": "Recebidas",
+    "issued": "Emblemas emitidos",
+    "received": "Emblemas recebidos",
     "totalCredentials": "Total de credenciais",
     "activeCredentials": "Credenciais ativas",
     "revokedCredentials": "Credenciais revogadas",
     "expiredCredentials": "Credenciais vencidas",
     "recentActivity": "Atividade recente",
-    "quickActions": "Ações rápidas"
+    "quickActions": "Ações rápidas",
+    "loading": "Carregando suas credenciais...",
+    "error": "Erro ao carregar o painel",
+    "yourCredentials": "Suas credenciais",
+    "noCredentials": "Nenhuma credencial por enquanto"
   },
   "errors": {
     "notFound": "Página não encontrada",
@@ -170,5 +183,23 @@
     "es": "Español",
     "de": "Deutsch",
     "pt": "Português"
+  },
+  "verify": {
+    "title": "Verificar certificado",
+    "subtitle": "Verifique a autenticidade de qualquer certificado ou emblema",
+    "whyVerify": "Por que verificar com Certo?",
+    "verified": "Certificado verificado",
+    "failed": "Falha na verificação",
+    "share": "Compartilhar emblema",
+    "addLinkedin": "Adicionar ao perfil do LinkedIn"
+  },
+  "profile": {
+    "title": "Configurações de perfil",
+    "account": "Configurações de conta",
+    "save": "Salvar alterações",
+    "changePassword": "Alterar senha",
+    "exportData": "Exportar dados",
+    "language": "Idioma",
+    "theme": "Tema"
   }
 }

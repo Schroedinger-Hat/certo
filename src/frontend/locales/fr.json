@@ -53,14 +53,23 @@
     "resetPassword": "Réinitialiser le mot de passe",
     "signInTitle": "Bon retour",
     "signInSubtitle": "Connectez-vous à votre compte Certo",
-    "signUpTitle": "Créer un compte",
-    "signUpSubtitle": "Commencez à émettre des justificatifs vérifiables",
+    "signUpTitle": "Créez votre compte",
+    "signUpSubtitle": "Rejoignez des milliers d'utilisateurs émettant des identifiants vérifiés",
     "noAccount": "Vous n'avez pas de compte ?",
     "haveAccount": "Vous avez déjà un compte ?",
     "invalidCredentials": "E-mail ou mot de passe invalide",
     "emailRequired": "L'e-mail est obligatoire",
     "passwordRequired": "Le mot de passe est obligatoire",
-    "rememberMe": "Se souvenir de moi"
+    "rememberMe": "Se souvenir de moi",
+    "signUp": "Créer un compte",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "termsRequired": "Vous devez accepter les conditions d'utilisation",
+    "termsAgree": "J'accepte les Conditions d'utilisation",
+    "sendResetLink": "Envoyer le lien de réinitialisation",
+    "newPassword": "Nouveau mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "checkEmail": "Vérifiez votre email pour les instructions de réinitialisation",
+    "alreadyHaveAccount": "Vous avez déjà un compte?"
   },
   "credential": {
     "title": "Justificatif",
@@ -132,14 +141,18 @@
   "dashboard": {
     "title": "Tableau de bord",
     "welcome": "Bienvenue, {name}",
-    "issued": "Émis",
-    "received": "Reçus",
+    "issued": "Badges émis",
+    "received": "Badges reçus",
     "totalCredentials": "Total des justificatifs",
     "activeCredentials": "Justificatifs actifs",
     "revokedCredentials": "Justificatifs révoqués",
     "expiredCredentials": "Justificatifs expirés",
     "recentActivity": "Activité récente",
-    "quickActions": "Actions rapides"
+    "quickActions": "Actions rapides",
+    "loading": "Chargement de vos identifiants...",
+    "error": "Erreur lors du chargement du tableau de bord",
+    "yourCredentials": "Vos identifiants",
+    "noCredentials": "Pas d'identifiants pour le moment"
   },
   "errors": {
     "notFound": "Page introuvable",
@@ -170,5 +183,23 @@
     "es": "Español",
     "de": "Deutsch",
     "pt": "Português"
+  },
+  "verify": {
+    "title": "Vérifier le certificat",
+    "subtitle": "Vérifiez l'authenticité de tout certificat ou badge",
+    "whyVerify": "Pourquoi vérifier avec Certo ?",
+    "verified": "Certificat vérifié",
+    "failed": "Vérification échouée",
+    "share": "Partager le badge",
+    "addLinkedin": "Ajouter au profil LinkedIn"
+  },
+  "profile": {
+    "title": "Paramètres du profil",
+    "account": "Paramètres du compte",
+    "save": "Enregistrer les modifications",
+    "changePassword": "Modifier le mot de passe",
+    "exportData": "Exporter les données",
+    "language": "Langue",
+    "theme": "Thème"
   }
 }

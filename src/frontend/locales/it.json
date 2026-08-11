@@ -50,17 +50,26 @@
     "confirmPassword": "Conferma password",
     "username": "Nome utente",
     "forgotPassword": "Password dimenticata?",
-    "resetPassword": "Reimposta password",
+    "resetPassword": "Ripristina password",
     "signInTitle": "Bentornato",
     "signInSubtitle": "Accedi al tuo account Certo",
-    "signUpTitle": "Crea account",
-    "signUpSubtitle": "Inizia a emettere credenziali verificabili",
+    "signUpTitle": "Crea il tuo account",
+    "signUpSubtitle": "Unisciti a migliaia di utenti che emettono credenziali verificate",
     "noAccount": "Non hai un account?",
     "haveAccount": "Hai già un account?",
     "invalidCredentials": "Email o password non valida",
     "emailRequired": "L'email è obbligatoria",
     "passwordRequired": "La password è obbligatoria",
-    "rememberMe": "Ricordami"
+    "rememberMe": "Ricordami",
+    "signUp": "Crea account",
+    "passwordMismatch": "Le password non corrispondono",
+    "termsRequired": "Devi accettare i Termini e le Condizioni",
+    "termsAgree": "Accetto i Termini e le Condizioni",
+    "sendResetLink": "Invia link di ripristino",
+    "newPassword": "Nuova password",
+    "currentPassword": "Password attuale",
+    "checkEmail": "Controlla la tua email per le istruzioni di ripristino",
+    "alreadyHaveAccount": "Hai già un account?"
   },
   "credential": {
     "title": "Credenziale",
@@ -132,14 +141,18 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Bentornato, {name}",
-    "issued": "Emesse",
-    "received": "Ricevute",
+    "issued": "Badge emessi",
+    "received": "Badge ricevuti",
     "totalCredentials": "Totale credenziali",
     "activeCredentials": "Credenziali attive",
     "revokedCredentials": "Credenziali revocate",
     "expiredCredentials": "Credenziali scadute",
     "recentActivity": "Attività recente",
-    "quickActions": "Azioni rapide"
+    "quickActions": "Azioni rapide",
+    "loading": "Caricamento delle tue credenziali...",
+    "error": "Errore durante il caricamento della dashboard",
+    "yourCredentials": "Le tue credenziali",
+    "noCredentials": "Nessuna credenziale per il momento"
   },
   "errors": {
     "notFound": "Pagina non trovata",
@@ -170,5 +183,23 @@
     "es": "Español",
     "de": "Deutsch",
     "pt": "Português"
+  },
+  "verify": {
+    "title": "Verifica certificato",
+    "subtitle": "Verifica l'autenticità di qualsiasi certificato o badge",
+    "whyVerify": "Perché verificare con Certo?",
+    "verified": "Certificato verificato",
+    "failed": "Verifica non riuscita",
+    "share": "Condividi badge",
+    "addLinkedin": "Aggiungi al profilo LinkedIn"
+  },
+  "profile": {
+    "title": "Impostazioni profilo",
+    "account": "Impostazioni account",
+    "save": "Salva modifiche",
+    "changePassword": "Cambia password",
+    "exportData": "Esporta dati",
+    "language": "Lingua",
+    "theme": "Tema"
   }
 }

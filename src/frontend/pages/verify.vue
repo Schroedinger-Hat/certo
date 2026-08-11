@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const pageDescription = ref('Verify your badges with Certo')
 const faqs = ref([
   {
@@ -35,7 +36,7 @@ useSeoMeta({
 })
 
 useHead({
-  title: 'Verify your badge',
+  title: t('verify.title'),
   link: [
     { rel: 'canonical', href: `${WEBSITE_URL}/verify` }
   ]
@@ -48,10 +49,10 @@ useHead({
       <!-- Header -->
       <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-text-primary">
-          Verify Certificate
+          {{ t('verify.title') }}
         </h1>
         <p class="mt-2 text-text-secondary">
-          Verify the authenticity of any certificate or badge
+          {{ t('verify.subtitle') }}
         </p>
       </div>
 
@@ -63,7 +64,7 @@ useHead({
       <!-- Features -->
       <div class="mt-16">
         <h2 class="text-2xl font-bold text-text-primary text-center mb-8">
-          Why Verify with Certo?
+          {{ t('verify.whyVerify') }}
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -109,9 +110,9 @@ useHead({
 
       <!-- FAQ Section -->
       <div class="mt-16">
-        <h2 class="text-2xl font-bold text-text-primary text-center mb-8">
-          Frequently Asked Questions
-        </h2>
+            <h3 class="text-lg font-medium text-text-primary mb-2">
+              Frequently Asked Questions
+            </h3>
 
         <div class="max-w-3xl mx-auto space-y-4">
           <div
