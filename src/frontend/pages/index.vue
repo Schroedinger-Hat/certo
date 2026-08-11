@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const { sections, features, trustees } = useHomeContent()
 </script>
 
@@ -6,26 +7,23 @@ const { sections, features, trustees } = useHomeContent()
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
     <div class="max-w-4xl mx-auto text-center mb-16 mt-16">
       <h1 class="text-5xl md:text-7xl font-display font-bold mb-6">
-        Design
-        <span class="text-primary">certificates</span>
-        <br>
-        & send to anyone
+        {{ t('home.heroTitle').split(t('home.heroHighlight'))[0] }}<span class="text-primary">{{ t('home.heroHighlight') }}</span>{{ t('home.heroTitle').split(t('home.heroHighlight'))[1] }}
       </h1>
       <p class="text-text-secondary text-xl md:text-2xl mb-12 max-w-2xl mx-auto">
-        Issue, verify and manage digital credentials using the Open Badges standard. Secure, transparent and verifiable
+        {{ t('home.heroSubtitle') }}
       </p>
       <NuxtLink
         to="/get-started"
         class="inline-flex items-center px-8 py-4 rounded-full bg-secondary text-text-primary hover:bg-opacity-90 transition-all text-lg font-medium"
       >
-        Get Started
+        {{ t('home.heroButton') }}
         <span class="i-heroicons-arrow-right ml-2 w-5 h-5" />
       </NuxtLink>
     </div>
 
     <div class="text-center mb-8 md:mb-16">
       <h2 class="text-text-secondary text-xl mb-12">
-        Trusted by
+        {{ t('home.trustedBy') }}
       </h2>
       <div class="flex justify-center gap-8 items-center opacity-70 md:gap-16 h-auto">
         <HomeTrustees v-for="trustee in trustees" :key="trustee.url" :trustee="trustee" />

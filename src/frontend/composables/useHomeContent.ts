@@ -31,46 +31,48 @@ export interface CardFeature {
 }
 
 export default () => {
+  const { t } = useI18n()
+
   const certificateSection: Section = {
     id: 'certificate',
-    title: 'Create certificates',
-    header: 'Create & Design Certificates',
+    title: t('home.section1Title'),
+    header: t('home.section1Header'),
     features: [
-      'Professionally designed certificates templates',
-      'The possibility to design a certificate from scratch',
-      'Personalized text, branding, and attributes',
-      'Compliant with Open Badges 3.0 standard for verifiable credentials'
+      t('home.section1Feature1'),
+      t('home.section1Feature2'),
+      t('home.section1Feature3'),
+      t('home.section1Feature4'),
     ],
     content: {
       title: 'Open Badges 3.0',
       features: [
         'Verifiable digital credentials',
         'Portable across platforms',
-        'Cryptographically secure'
-      ]
-    }
+        'Cryptographically secure',
+      ],
+    },
   }
 
   const recipientSection: Section = {
     id: 'recipient',
-    title: 'Upload the list',
-    header: 'Add recipients & create lists',
+    title: t('home.section2Title'),
+    header: t('home.section2Header'),
     features: [
-      'Create courses, groups, and recipient lists',
-      'Upload recipients list via CSV format',
-      'Manage and organize recipients efficiently'
-    ]
+      t('home.section2Feature1'),
+      t('home.section2Feature2'),
+      t('home.section2Feature3'),
+    ],
   }
 
   const exportSection: Section = {
     id: 'export',
-    title: 'Issue in bulk',
-    header: 'Export & send issued certificates',
+    title: t('home.section3Title'),
+    header: t('home.section3Header'),
     features: [
-      'Send emails with PDF certificates automatically',
-      'Export certificates in PNG, JPG and SVG formats',
-      'Manage issued certificates'
-    ]
+      t('home.section3Feature1'),
+      t('home.section3Feature2'),
+      t('home.section3Feature3'),
+    ],
   }
 
   const sections: Section[] = [
@@ -81,20 +83,20 @@ export default () => {
 
   const features: CardFeature[] = [
     {
-      title: 'Secure Verification',
-      description: 'Verify the authenticity of any credential using our powerful verification engine.',
-      icon: 'shield-check'
+      title: t('home.feature1Title'),
+      description: t('home.feature1Desc'),
+      icon: 'shield-check',
     },
     {
-      title: 'Badge Issuance',
-      description: 'Create and issue badges to recognize achievements, skills and credentials.',
-      icon: 'identification'
+      title: t('home.feature2Title'),
+      description: t('home.feature2Desc'),
+      icon: 'identification',
     },
     {
-      title: 'Credential Management',
-      description: 'Manage your digital credentials in one place, with easy export and sharing options.',
-      icon: 'briefcase'
-    }
+      title: t('home.feature3Title'),
+      description: t('home.feature3Desc'),
+      icon: 'briefcase',
+    },
   ]
 
   const trustees: Trustee[] = [
