@@ -103,6 +103,7 @@ onUnmounted(() => {
 
           <!-- Auth Buttons -->
           <div class="flex items-center gap-4 ml-6">
+            <LanguageSwitcher />
             <template v-if="isAuthenticated && userName">
               <div class="relative">
                 <button
