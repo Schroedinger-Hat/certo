@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const router = useRouter()
 const email = ref('')
 const password = ref('')
@@ -76,10 +77,10 @@ onMounted(() => {
       <!-- Header -->
       <div class="text-center">
         <h2 class="text-4xl font-bold text-text-primary">
-          Welcome back
+          {{ t('auth.signInTitle') }}
         </h2>
         <p class="mt-2 text-text-secondary">
-          Sign in to your account
+          {{ t('auth.signInSubtitle') }}
         </p>
       </div>
 
@@ -103,7 +104,7 @@ onMounted(() => {
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-text-primary">
-              Email address
+              {{ t('auth.email') }}
             </label>
             <div class="mt-1">
               <input
@@ -121,7 +122,7 @@ onMounted(() => {
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium text-text-primary">
-              Password
+              {{ t('auth.password') }}
             </label>
             <div class="mt-1">
               <input
@@ -146,13 +147,13 @@ onMounted(() => {
                 class="h-4 w-4 text-[#00E5C5] focus:ring-[#5AB69F] border-gray-300 rounded"
               >
               <label for="remember-me" class="ml-2 block text-sm text-text-secondary">
-                Remember me
+                {{ t('auth.rememberMe') }}
               </label>
             </div>
 
             <div class="text-sm">
               <NuxtLink to="/forgot-password" class="font-medium text-text-secondary hover:text-[#5AB69F]/80">
-                Forgot your password?
+                {{ t('auth.forgotPassword') }}
               </NuxtLink>
             </div>
           </div>
@@ -164,7 +165,7 @@ onMounted(() => {
               :disabled="isLoading"
               class="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-white bg-[#5AB69F] hover:bg-[#5AB69F]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="!isLoading" class="text-[#000]">Sign in</span>
+              <span v-if="!isLoading" class="text-[#000]">{{ t('nav.login') }}</span>
               <div v-else class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </button>
           </div>

@@ -7,6 +7,7 @@ import type {
 import QRCode from 'qrcode'
 import { apiClient } from '~/api/api-client'
 
+const { t } = useI18n()
 const route = useRoute()
 const config = useRuntimeConfig()
 
@@ -446,7 +447,7 @@ async function submitRenewal() {
       <div class="flex flex-col items-center justify-center">
         <div class="i-lucide-loader-2 w-12 h-12 animate-spin text-primary-500 mb-4" />
         <h2 class="text-xl font-medium">
-          Loading Credential...
+          {{ t('credential.loadingVerification') }}
         </h2>
       </div>
     </div>
@@ -459,17 +460,17 @@ async function submitRenewal() {
       <div class="text-center">
         <div class="i-lucide-alert-triangle w-16 h-16 mx-auto text-amber-500 mb-4" />
         <h2 class="text-2xl font-semibold mb-3">
-          Invalid Credential ID
+          {{ t('errors.notFound') }}
         </h2>
         <p class="text-gray-600 mb-6">
-          No credential ID was provided or the ID is invalid.
+          {{ t('errors.notFoundMessage') }}
         </p>
         <NuxtLink
           to="/verify"
           class="inline-flex items-center px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition-colors"
         >
           <div class="i-lucide-search mr-2" />
-          Verify Another Credential
+          {{ t('credential.verifyAnother') }}
         </NuxtLink>
       </div>
     </div>
@@ -611,7 +612,7 @@ async function submitRenewal() {
             </div>
             <div>
               <h3 class="text-xl font-semibold mb-1">
-                {{ verificationResult?.verified ? 'Credential Verified' : 'Verification Failed' }}
+                {{ verificationResult?.verified ? t('credential.verificationSuccess') : t('credential.verificationFailed') }}
               </h3>
               <p class="text-gray-600">
                 {{ verificationResult?.error || 'All verification checks passed successfully.' }}
@@ -694,8 +695,8 @@ async function submitRenewal() {
                   <!-- Check name with friendly label -->
                   <div class="font-semibold text-gray-800">
                     {{
-                      check.check === 'not_revoked' ? 'Not Revoked' :
-                      check.check === 'not_expired' ? 'Not Expired' :
+                      check.check === 'not_revoked' ? t('credential.checks.not_revoked') :
+                      check.check === 'not_expired' ? t('credential.checks.not_expired') :
                       check.check === 'proof' ? 'Valid Signature' :
                       check.check.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
                     }}

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const { headerLogo } = useHomeContent()
 const router = useRouter()
 const isStoreReady = ref(false)
@@ -98,11 +99,12 @@ onUnmounted(() => {
             :to="link.href"
             class="text-text-secondary hover:text-text-primary transition-colors font-medium"
           >
-            {{ link.name }}
+            {{ t(`nav.${link.i18nKey}`) || link.name }}
           </NuxtLink>
 
           <!-- Auth Buttons -->
           <div class="flex items-center gap-4 ml-6">
+            <LanguageSwitcher />
             <template v-if="isAuthenticated && userName">
               <div class="relative">
                 <button
@@ -127,13 +129,13 @@ onUnmounted(() => {
                     class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50"
                     @click="showUserMenu = false"
                   >
-                    Profile Settings
+                    {{ t('nav.profile') }}
                   </NuxtLink>
                   <button
                     class="block w-full text-left px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50"
                     @click="handleLogout"
                   >
-                    Sign Out
+                    {{ t('nav.logout') }}
                   </button>
                 </div>
               </div>
@@ -143,13 +145,13 @@ onUnmounted(() => {
                 to="/login"
                 class="font-medium text-text-primary hover:text-text-secondary transition-colors"
               >
-                Sign in
+                {{ t('nav.login') }}
               </NuxtLink>
               <NuxtLink
                 to="/get-started"
                 class="px-4 py-2 bg-[#5AB69F] rounded-full font-medium hover:bg-[#5AB69F]/90 transition-colors text-text-primary"
               >
-                Get Started
+                {{ t('nav.getStarted') }}
               </NuxtLink>
             </template>
           </div>
@@ -184,13 +186,13 @@ onUnmounted(() => {
               to="/profile"
               class="block w-full py-2 text-text-primary hover:text-text-secondary transition-colors"
             >
-              Profile Settings
+              {{ t('nav.profile') }}
             </NuxtLink>
             <button
               class="block w-full py-2 text-text-primary hover:text-text-secondary transition-colors"
               @click="handleLogout"
             >
-              Sign Out
+              {{ t('nav.logout') }}
             </button>
           </template>
           <template v-else>
@@ -198,13 +200,13 @@ onUnmounted(() => {
               to="/login"
               class="block w-full py-2 text-center text-text-primary hover:text-text-secondary transition-colors"
             >
-              Sign in
+              {{ t('nav.login') }}
             </NuxtLink>
             <NuxtLink
               to="/get-started"
               class="block w-full py-2 text-center bg-[#5AB69F] text-white rounded-full hover:bg-[#5AB69F]/90 transition-colors"
             >
-              Get Started
+              {{ t('nav.getStarted') }}
             </NuxtLink>
           </template>
         </div>

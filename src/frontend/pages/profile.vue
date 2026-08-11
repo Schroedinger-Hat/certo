@@ -2,7 +2,7 @@
 import { apiClient } from '~/api/api-client'
 import { useAuthStore } from '~/stores/auth'
 import Cookies from 'js-cookie'
-
+const { t } = useI18n()
 interface UserProfile {
   id: string
   name: string
@@ -213,7 +213,7 @@ useSeoMeta({
 })
 
 useHead({
-  title: 'Profile',
+  title: t('profile.title'),
   link: [
     { rel: 'canonical', href: `${WEBSITE_URL}/profile` }
   ]
@@ -226,10 +226,10 @@ useHead({
       <!-- Header -->
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-text-primary">
-          Profile Settings
+          {{ t('profile.title') }}
         </h1>
         <p class="mt-2 text-text-secondary">
-          Manage your account and preferences
+          {{ t('profile.account') }}
         </p>
       </div>
 

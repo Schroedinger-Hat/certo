@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const email = ref('')
 const isLoading = ref(false)
 const success = ref(false)
@@ -32,7 +33,7 @@ async function handleSubmit() {
 }
 
 useHead({
-  title: 'Forgot Password',
+  title: t('auth.resetPassword'),
   link: [
     { rel: 'canonical', href: `${WEBSITE_URL}/forgot-password` }
   ]
@@ -50,10 +51,10 @@ useSeoMeta({
       <!-- Header -->
       <div class="text-center">
         <h2 class="text-4xl font-bold text-text-primary">
-          Reset password
+          {{ t('auth.resetPassword') }}
         </h2>
         <p class="mt-2 text-text-secondary">
-          We'll send you instructions to reset your password
+          {{ t('auth.checkEmail') }}
         </p>
       </div>
 
@@ -63,7 +64,7 @@ useSeoMeta({
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-text-primary">
-              Email address
+              {{ t('auth.email') }}
             </label>
             <div class="mt-1">
               <input

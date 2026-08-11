@@ -92,6 +92,7 @@ export default defineNuxtConfig({
         },
       ],
       htmlAttrs: {
+        // lang is updated dynamically per-request in app.vue via useHead()
         lang: 'en'
       }
     }
@@ -111,5 +112,6 @@ export default defineNuxtConfig({
     '~/plugins/api.ts',
     '~/plugins/auth.ts',
     // The auth-init plugin is client-only and will be auto-imported
+    '~/plugins/i18n.client.ts',
   ],
 })
