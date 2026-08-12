@@ -1,0 +1,14 @@
+/**
+ * SDK-specific error class. Thrown for any non-2xx HTTP response.
+ */
+export class CertoApiError extends Error {
+  readonly statusCode: number;
+  readonly body: unknown;
+
+  constructor(message: string, statusCode: number, body: unknown) {
+    super(message);
+    this.name = 'CertoApiError';
+    this.statusCode = statusCode;
+    this.body = body;
+  }
+}
