@@ -1,6 +1,9 @@
 export default defineNuxtRouteMiddleware((to) => {
-  // Skip middleware on server side
-  if (import.meta.client) {
+  // Skip middleware on server side — auth state is only available
+  // client-side (localStorage/cookies). On SSR the page will render
+  // the public/generic view and the client-side hydration will enforce
+  // the guard after mount.
+  if (import.meta.server) {
     return
   }
 

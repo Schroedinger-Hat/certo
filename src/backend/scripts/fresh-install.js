@@ -20,7 +20,11 @@ const { v4: uuidv4 } = require('uuid');
 const CONFIG = {
   admin: {
     email: 'admin@certo.com',
-    password: 'Admin123!',
+    // Matches seed-data.ts so both auto-seeding and fresh-install produce
+    // the same admin credentials. The issuer user (issuer@certo.com/
+    // Issuer123!) remains the distinguishing feature of the fresh-install
+    // path.
+    password: 'certo',
     firstname: 'Admin',
     lastname: 'User'
   },

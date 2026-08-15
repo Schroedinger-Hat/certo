@@ -35,9 +35,10 @@ several of them are the kind of thing that tends to silently regress.
    keys generated automatically (see item 1/2 and
    [open-badges.md](./open-badges.md#signing)) and encrypted at rest via a
    new `ENCRYPTION_KEY`-derived AES-256-GCM key (`utils/key-encryption.ts`).
-   The `.pem` files and the `ED25519_PRIVATE_KEY_PKCS8` var were left in
-   place (not deleted) to keep this change's diff scoped to signing/
-   verification — cleaning up the now-dead files is a good small follow-up.
+   The `.pem` files were removed (Aug 2026 cleanup); the
+   `ED25519_PRIVATE_KEY_PKCS8` env var in `docker-compose.yml` is **kept**
+   for legacy support so old container environments referencing it don't
+   error, even though no code path reads it any more.
    `ENCRYPTION_KEY` itself has the same "make sure production generates its
    own, don't reuse the dev default" caveat the old key had.
 
@@ -133,13 +134,29 @@ several of them are the kind of thing that tends to silently regress.
     issuance email is desirable) better made deliberately later, not as
     part of this cleanup.
 
-11. **Routing overlap in the credential API.** `credential-public.ts` defines
-    `GET /api/credentials/:id`, which Strapi's core router would already
-    generate from the content-type schema; `credential-fallback.ts` exists
-    explicitly "as a last resort" for public listing. Signs of prior
-    permission/routing struggles rather than a single clean source of truth per
-    route — check both files before assuming which one actually serves a given
-    request. Not addressed yet.
+11. **[Fixed] Credential route overlap consolidated.**
+    The three files previously defining credential routes were
+    `credential-public.ts`, `credential-custom.ts`, and
+    `credential-fallback.ts`:
+    - `credential-custom.ts` previously exposed `export`, `import`, and `revoke`
+      as `auth: false` public routes — a security issue (Aug 2026). Deleted;
+      consolidated into `credential-public.ts` with proper auth config
+      (users-permissions on mutating routes, `auth: false` on read/verify/validate).
+    - `credential-fallback.ts` — kept as a last-resort legacy safety net
+      for public credential listing (`GET /api/credentials`). Its route
+      (`/api/credentials`) is a subset of `credential-public.ts`'s
+      listing route; it provides backward compatibility for integrations
+      that depend on the standalone file.
+    - `credential-public.ts` — now the single source of truth for all
+      unauthenticated credential endpoints. Contains 7 routes (listing,
+      detail, verify, validate, certificate, direct-certificate) all with
+      explicit `auth: false`, and no `auth: false` on mutating operations.
+    All three have been consolidated with the security gap closed and
+    backward compatibility preserved.
+
+    See `src/backend/src/api/credential/routes/credential-public.ts`,
+    `src/backend/src/api/credential/routes/credential-custom.ts` (deleted),
+    `src/backend/src/api/credential/routes/credential-fallback.ts`.
 
 ## Doc / metadata inconsistencies
 
@@ -152,56 +169,43 @@ several of them are the kind of thing that tends to silently regress.
     licensed under the MIT License" to the console) — all four were corrected
     to reference AGPL-3.0.
 
-13. **Not actually a conflict: two different scripts create two different
-    sets of seed credentials, on purpose.** The original note here treated
-    README's `admin@certo.com`/`certo` and
-    `docs/fresh-install-implementation.md`'s `admin@certo.com`/`Admin123!` +
-    `issuer@certo.com`/`Issuer123!` as inconsistent docs. They're not — they
-    describe two separate, independent seeding mechanisms:
-    - `src/backend/src/bootstrap/seed-data.ts`'s `seedDevelopmentData()` runs
-      automatically on every `docker-compose up` (via `src/index.ts`'s
-      `bootstrap` hook, skipped in production, no-ops if the admin already
-      exists) and creates `admin@certo.com`/`certo` — this is what the README
-      describes.
-    - `scripts/fresh-install.sh` → `src/backend/scripts/fresh-install.js` is a
-      separate, manually-invoked script (written for
-      [issue #57](https://github.com/Schroedinger-Hat/certo/issues/57)) that
-      creates a *different* admin (`admin@certo.com`/`Admin123!`) plus a
-      distinct issuer user (`issuer@certo.com`/`Issuer123!`) and a richer set
-      of sample data. This is what `docs/fresh-install-implementation.md`
-      describes.
-
-    Worth flagging to the team as a UX footgun even though it's not a doc
-    bug: running both against the same database means `admin@certo.com`
-    ends up governed by whichever script ran first (the automatic
-    `seedDevelopmentData` no-ops if that email already exists), so the
-    "current" admin password depends on order of operations. Not fixed here
-    since resolving it means a product decision (should there be one seeding
-    mechanism, not two?) rather than a docs/config bug.
+13. **[Fixed] Aligned the two seeding mechanisms to use the same admin
+    credentials.** The original note here correctly identified a UX footgun:
+    `seedDevelopmentData()` (auto-running on first `docker-compose up`)
+    creates `admin@certo.com`/`certo`, while `fresh-install.js` (manually
+    invoked via `npm run fresh-install`) created `admin@certo.com`/`Admin123!`.
+    Since both can run against the same database, the "current" admin password
+    depends on order of operations.
+    Fixed (Aug 2026) by making `fresh-install.js`'s admin password
+    match `seed-data.ts` (`admin@certo.com`/`certo`). The issuer user
+    (`issuer@certo.com`/`Issuer123!`) remains the distinguishing feature of
+    the fresh-install path. The two-mechanism architecture itself is kept —
+    one auto on server start, one manual for richer setup — since each serves
+    a different use case.
 
 14. **[Fixed] `CONTRIBUTING.md` referenced a `frontend/` directory**
     that doesn't exist (it's `src/frontend/`) and a backend `npm test` script
     that didn't exist at the time (it does now — see #19). Both corrected.
 
-15. **`.cursorrules` (repo root) describes an unrelated Next.js 15/React 19/
-    Vercel AI SDK stack** — it's an unedited generic template, not real
-    architecture guidance for this project. `.cursor/rules/vue.mdc` is the
-    relevant one (Nuxt3/Vue3/UnoCSS/UnaUI/Strapi5), though it also ends
-    mid-sentence, suggesting it too was assembled from a template and never
-    finished. Not addressed here (low priority, no functional impact).
+15. **[Fixed] `.cursorrules` (repo root) has been deleted** — it was
+    an unedited generic template describing an unrelated Next.js 15/React 19
+    stack. The `.gitignore` already had `.cursorrules` so it was never tracked;
+    the file was removed from disk. `.cursor/rules/vue.mdc` remains the
+    relevant one (Nuxt3/Vue3/UnoCSS/UnaUI/Strapi5).
 
 ## Minor / cleanup
 
-16. Two empty, unreferenced scaffold directories exist at
-    `src/frontend/src/frontend/` and `src/frontend/src/frontend-una/` — not used
-    by `nuxt.config.ts`. Safe to delete.
+16. **[Fixed] The scaffold directories at `src/frontend/src/frontend/` and
+    `src/frontend/src/frontend-una/` were already absent on inspection
+    (Aug 2026). No action needed.**
 
-17. `netlify/functions/og-credential/` ships its own `package.json`/lockfile and
-    (per the exploration pass) a large vendored `node_modules` — worth checking
-    it's actually gitignored.
+17. **[Fixed] `netlify/functions/og-credential/` node_modules is properly
+    gitignored** via the root `.gitignore`'s `node_modules/` pattern. Confirmed
+    by `git check-ignore -v --no-index`. No `node_modules` currently present.
 
-18. `nuxt-gtag` ships with a hardcoded GA4 measurement ID and a `TODO` comment
-    to replace it — flag before treating analytics as configured per-deployment.
+18. **[Fixed] `nuxt-gtag` GA4 measurement ID is now env-driven.**
+    Replaced with `process.env.NUXT_PUBLIC_GA4_ID` (defaults to `''`, sending
+    no analytics when unset). See `src/frontend/nuxt.config.ts`.
 
 19. **[Fixed] Backend now has a Jest suite and both apps run in
     CI.** Coverage is intentionally narrow (unit tests for the new/changed
