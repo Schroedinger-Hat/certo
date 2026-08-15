@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/icon',
     ['nuxt-gtag', {
-      id: 'G-FLSJZHYM3M', // TODO: Replace with your real GA4 ID
+      id: process.env.NUXT_PUBLIC_GA4_ID || '', // No ID = no analytics sent
       config: {
         anonymize_ip: true,
         send_page_view: true
