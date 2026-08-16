@@ -69,7 +69,8 @@
     "newPassword": "Nuova password",
     "currentPassword": "Password attuale",
     "checkEmail": "Controlla la tua email per il link di reimpostazione",
-    "alreadyHaveAccount": "Hai già un account?"
+    "alreadyHaveAccount": "Hai già un account?",
+    "orContinueWith": "oppure continua con"
   },
   "credential": {
     "title": "Credenziale",

@@ -42,25 +42,30 @@ several of them are the kind of thing that tends to silently regress.
    `ENCRYPTION_KEY` itself has the same "make sure production generates its
    own, don't reuse the dev default" caveat the old key had.
 
-4. **External-credential proof verification is still a stub.**
-   `open-badge.ts`'s `validateExternalCredential()` sets
-   `const proofVerified = true` unconditionally — importing/validating a
-   third-party OBv3 credential doesn't check its signature. Deliberately not
-   addressed here: that work covers *our own* issuers' keys; verifying
-   an arbitrary external issuer needs DID resolution or fetching a remote
-   key, a separate, larger interoperability feature.
+4. **[Fixed] External-credential proof verification is now
+   cryptographic.** `open-badge.ts`'s `validateExternalCredential()` no
+   longer sets `const proofVerified = true` unconditionally. It now calls
+   `verifyExternalProof()`, which resolves the issuer's verification method
+   (local profile URL, remote HTTP(S) key document, or `did:web`/`did:key`),
+   fetches the public key, and cryptographically verifies the JWS signature
+   with `jose.jwtVerify`. See [open-badges.md](./open-badges.md#verification)
+   and Phase 1 of [roadmap.md](./roadmap.md).
 
-5. **Several controller actions bypass Strapi's permission system in code**
-   rather than through the role/permission model — e.g. `credential.issue` sets
+5. **[Fixed] Controller actions no longer bypass Strapi's permission
+   system in code.** `credential.issue` no longer sets
    `ctx.state.auth = { strategy: { name: 'public' } }` to disable the auth
-   check, and `achievement.create` calls `entityService` directly to bypass
-   permission checks. Don't assume permissions shown in the Strapi admin UI
-   fully describe what's actually enforced. **[Partially mitigated]**
-   these three actions (`credential.issue`, `credential.revoke`,
-   `achievement.create`) now record an `audit-log-entry` with the real
-   caller's user ID, so "who did this" is at least recoverable after the
-   fact even though the permission bypass itself is unchanged — see
-   [security.md](./security.md#authorization).
+   check — auth is enforced by the route config instead (mutating routes
+   use users-permissions). `achievement.create` and `createAchievement`
+   now call `super.create(ctx)` through the core controller (which enforces
+   Strapi RBAC) rather than calling `strapi.entityService.create()` directly
+   to bypass permission checks. All three actions continue to record an
+   `audit-log-entry` with the real caller's user ID, so "who did this" is
+   recoverable — see [security.md](./security.md#authorization).
+   Audit log coverage was also expanded (Aug 2026) to include
+   `credential.import`, `credential.import-open-badge`,
+   `credential.batch-issue`, `credential.renew`, `achievement.delete`,
+   and `profile.delete-data` (GDPR erasure) — see Phase 1 of
+   [roadmap.md](./roadmap.md).
 
 6. **[Fixed] Revocation lists are now wired into issuance,
    revocation, serialization, and verification.** Previously the entire

@@ -27,10 +27,9 @@ export default factories.createCoreController('api::achievement.achievement', ({
         data.tags = [];
       }
       
-      // Bypass permission checks by using entityService directly
-      const entity = await strapi.entityService.create('api::achievement.achievement', {
-        data
-      });
+      // Use the core controller's create which enforces Strapi RBAC
+      const response = await super.create(ctx);
+      const entity = response.data ?? response;
 
       const auditLog = strapi.service('api::audit-log-entry.audit-log')
       await auditLog.record({
@@ -43,7 +42,7 @@ export default factories.createCoreController('api::achievement.achievement', ({
       achievementsCreatedTotal.inc()
 
       // Return the created entity
-      return { data: entity };
+      return response;
     } catch (error) {
       console.error('Error creating achievement:', error);
       return ctx.badRequest('Failed to create achievement', { error: error.message });
@@ -61,12 +60,21 @@ export default factories.createCoreController('api::achievement.achievement', ({
         data.tags = [];
       }
       
-      // Create the achievement using the entity service directly
-      const achievement = await strapi.entityService.create('api::achievement.achievement', {
-        data
-      });
+      // Use the core controller's create which enforces Strapi RBAC
+      const response = await super.create(ctx);
+      const achievement = response.data ?? response;
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'achievement.create',
+        entityType: 'achievement',
+        entityId: achievement.id,
+        actorId: ctx.state.user?.id,
+        metadata: { name: achievement.name },
+      })
+      achievementsCreatedTotal.inc()
       
-      return { data: achievement };
+      return response;
     } catch (error) {
       console.error('Error in createAchievement:', error);
       return ctx.badRequest('Failed to create achievement', { error: error.toString() });

@@ -47,9 +47,8 @@ export default factories.createCoreController('api::credential.credential', ({ s
     try {
       strapi.log.debug('[credential.issue] Request received:', ctx.request.body)
       
-      // Temporarily disable auth check
-      ctx.state.auth = { strategy: { name: 'public' } }
-      
+      // Auth is enforced by the route config (users-permissions on mutating
+      // routes). No in-controller auth bypass.
       const { data } = ctx.request.body
       if (!data) {
         return ctx.badRequest('Missing required data')
@@ -360,6 +359,15 @@ export default factories.createCoreController('api::credential.credential', ({ s
       // Use the open-badge service to import the credential
       const openBadgeService = strapi.service('api::credential.open-badge')
       const importedCredential = await openBadgeService.importCredential(credential)
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'credential.import-open-badge',
+        entityType: 'credential',
+        entityId: importedCredential.id,
+        actorId: ctx.state.user?.id,
+        metadata: { credentialId: credential.id },
+      })
       
       return { 
         success: true, 
@@ -449,6 +457,15 @@ export default factories.createCoreController('api::credential.credential', ({ s
 
       // Use the OpenBadge service to import the credential
       const credential = await strapi.service('api::credential.open-badge').importCredential(certificateData)
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'credential.import',
+        entityType: 'credential',
+        entityId: credential.id,
+        actorId: ctx.state.user?.id,
+        metadata: { credentialId: credential.credentialId },
+      })
 
       return {
         data: credential,
@@ -604,6 +621,20 @@ export default factories.createCoreController('api::credential.credential', ({ s
       })
 
       const results = await Promise.all(issuePromises)
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'credential.batch-issue',
+        entityType: 'credential',
+        entityId: String(achievementId),
+        actorId: ctx.state.user?.id,
+        metadata: {
+          achievementId,
+          recipientCount: recipients.length,
+          succeeded: results.filter(r => r.success).length,
+          failed: results.filter(r => !r.success).length,
+        },
+      })
 
       return { results }
     } catch (error) {

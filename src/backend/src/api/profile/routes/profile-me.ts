@@ -44,6 +44,20 @@ export default {
         },
       },
     },
+    // GDPR right-to-erasure: delete the current user's profile and all
+    // associated data. Requires { confirm: true } in the request body.
+    {
+      method: 'DELETE',
+      path: '/profiles/me/data',
+      handler: 'profile.deleteMyData',
+      config: {
+        policies: [],
+        middlewares: [],
+        auth: {
+          scope: ['api::profile.profile.deleteMyData'],
+        },
+      },
+    },
     // Per-issuer analytics dashboard stats (called by api-client.getDashboardStats)
     {
       method: 'GET',

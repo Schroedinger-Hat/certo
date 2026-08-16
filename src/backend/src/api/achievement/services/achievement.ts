@@ -28,12 +28,12 @@ export default factories.createCoreService('api::achievement.achievement', ({ st
   async update(entityId, params) {
     // Ensure tags is a valid JSON array
     const { data } = params;
-    
+
     // Handle empty tags by setting it to an empty array
     if (data.tags === '' || data.tags === undefined || data.tags === null) {
       data.tags = [];
     }
-    
+
     try {
       // Call the parent implementation
       const result = await super.update(entityId, params);
@@ -42,5 +42,25 @@ export default factories.createCoreService('api::achievement.achievement', ({ st
       console.error('Error in achievement update:', error);
       throw error;
     }
+  },
+
+  async delete(entityId, params) {
+    try {
+      // Call the parent implementation
+      const result = await super.delete(entityId, params);
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'achievement.delete',
+        entityType: 'achievement',
+        entityId: entityId,
+        metadata: {},
+      })
+
+      return result;
+    } catch (error) {
+      console.error('Error in achievement delete:', error);
+      throw error;
+    }
   }
-})) 
+}))

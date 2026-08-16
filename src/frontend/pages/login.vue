@@ -9,6 +9,26 @@ const authError = ref(null)
 const isLoading = ref(false)
 const pageDescription = ref('Sign in to your Certo account to access your credentials and dashboard.')
 
+// OAuth / OIDC providers enabled via NUXT_PUBLIC_OAUTH_PROVIDERS env var
+// (comma-separated list of Strapi users-permissions provider names).
+const oauthProviders = computed(() => {
+  const raw = import.meta.env?.NUXT_PUBLIC_OAUTH_PROVIDERS
+    ?? process.env.NUXT_PUBLIC_OAUTH_PROVIDERS
+    ?? ''
+  return raw.split(',').map((p: string) => p.trim()).filter(Boolean)
+})
+
+const apiBaseUrl = import.meta.env?.NUXT_PUBLIC_API_URL
+  ?? process.env.NUXT_PUBLIC_API_URL
+  ?? 'http://localhost:1337'
+
+function startOAuth(provider: string) {
+  // Redirect to Strapi's users-permissions connect endpoint, which
+  // redirects to the provider, then back to /auth/callback with
+  // ?access_token=<jwt> (see docs/oauth-setup.md).
+  window.location.href = `${apiBaseUrl}/api/connect/${provider}`
+}
+
 useSeoMeta({
   description: pageDescription.value,
   ogDescription: pageDescription.value,
@@ -171,15 +191,31 @@ onMounted(() => {
           </div>
         </form>
 
-        <!-- Sign up link -->
-        <!-- <div class="mt-6 text-center">
-          <p class="text-sm text-text-secondary">
-            Don't have an account?
-            <NuxtLink to="/register" class="font-medium text-[#00E5C5] hover:text-[#00E5C5]/80">
-              Sign up for free
-            </NuxtLink>
-          </p>
-        </div> -->
+        <!-- OAuth / OIDC providers (optional, env-driven) -->
+        <div v-if="oauthProviders.length > 0" class="mt-6">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300" />
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-white/80 text-text-secondary">
+                {{ t('auth.orContinueWith') }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-6 grid grid-cols-1 gap-3">
+            <button
+              v-for="provider in oauthProviders"
+              :key="provider"
+              type="button"
+              class="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-text-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00E5C5]"
+              @click="startOAuth(provider)"
+            >
+              <span class="capitalize">{{ provider }}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

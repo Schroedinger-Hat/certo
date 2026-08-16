@@ -92,6 +92,52 @@ export default factories.createCoreController('api::profile.profile', ({ strapi 
   },
 
   /**
+   * GDPR right-to-erasure: delete the current user's profile and all
+   * associated data per the cascade policy in services/right-to-erasure.ts.
+   * Requires an explicit `confirm: true` in the request body to prevent
+   * accidental deletion.
+   */
+  async deleteMyData(ctx) {
+    try {
+      if (!ctx.state.user) {
+        return ctx.unauthorized('You must be logged in');
+      }
+
+      const { confirm } = ctx.request.body || {};
+      if (confirm !== true) {
+        return ctx.badRequest('Deletion requires explicit confirmation: { confirm: true }');
+      }
+
+      const profiles = await strapi.entityService.findMany('api::profile.profile', {
+        filters: { email: ctx.state.user.email },
+        status: 'published',
+        limit: 1,
+      });
+
+      if (!profiles || profiles.length === 0) {
+        return ctx.notFound('Profile not found for the current user');
+      }
+
+      const rightToErasure = strapi.service('api::profile.right-to-erasure');
+      const summary = await rightToErasure.deleteProfileData(profiles[0], ctx.state.user);
+
+      const auditLog = strapi.service('api::audit-log-entry.audit-log')
+      await auditLog.record({
+        action: 'profile.delete-data',
+        entityType: 'profile',
+        entityId: profiles[0].id,
+        actorId: ctx.state.user?.id,
+        metadata: { ...summary },
+      })
+
+      return { success: true, summary };
+    } catch (err) {
+      console.error('Error deleting profile data:', err);
+      return ctx.badRequest('Error deleting profile data', { error: err });
+    }
+  },
+
+  /**
    * Restores achievements/credentials the current user's profile previously
    * exported via exportMyData - never someone else's data, never
    * credentials merely *received* by this profile. See

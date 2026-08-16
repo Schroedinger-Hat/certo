@@ -69,7 +69,8 @@
     "newPassword": "Nova senha",
     "currentPassword": "Senha atual",
     "checkEmail": "Verifique seu e-mail para o link de redefinição",
-    "alreadyHaveAccount": "Já tem uma conta?"
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "orContinueWith": "ou continue com"
   },
   "credential": {
     "title": "Credencial",
