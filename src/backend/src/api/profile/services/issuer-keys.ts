@@ -7,10 +7,15 @@
  * no REST routes at all - see its schema.json); the public key is also
  * mirrored onto profile.publicKey so it's discoverable the normal Open
  * Badges way.
+ *
+ * Key material is managed through the pluggable signing-key-provider
+ * abstraction (src/utils/signing-key-provider.ts), so deployments can
+ * switch from local encrypted-at-rest keys to a KMS/HSM-backed provider
+ * by setting SIGNING_KEY_PROVIDER=kms.
  */
 
 import type { CryptoKey, JWK } from 'jose'
-import { encrypt, decrypt } from '../../../utils/key-encryption'
+import signingKeyProvider from '../../../utils/signing-key-provider'
 
 interface KeyPairResult {
   privateKey: CryptoKey
@@ -20,56 +25,19 @@ interface KeyPairResult {
 export default ({ strapi }: { strapi: any }) => ({
   /**
    * Returns the issuer's signing keypair, generating and persisting one on
-   * first use.
+   * first use. Delegates to the configured signing-key provider.
    */
   async getOrCreateKeyPair(profileId: number | string): Promise<KeyPairResult> {
-    const { importPKCS8 } = await import('jose')
-
-    const existing = await strapi.db.query('api::issuer-key.issuer-key').findOne({
-      where: { profile: profileId },
-    })
-
-    if (existing) {
-      const pkcs8 = decrypt(existing.privateKeyEncrypted)
-      const privateKey = await importPKCS8(pkcs8, 'EdDSA')
-      return { privateKey, publicKeyJwk: existing.publicKeyJwk }
-    }
-
-    const { generateKeyPair, exportJWK, exportPKCS8 } = await import('jose')
-    const { publicKey, privateKey } = await generateKeyPair('EdDSA', {
-      crv: 'Ed25519',
-      extractable: true,
-    })
-
-    const publicKeyJwk = await exportJWK(publicKey)
-    const pkcs8 = await exportPKCS8(privateKey)
-
-    await strapi.db.query('api::issuer-key.issuer-key').create({
-      data: {
-        profile: profileId,
-        algorithm: 'Ed25519',
-        publicKeyJwk,
-        privateKeyEncrypted: encrypt(pkcs8),
-      },
-    })
-
-    await this.mirrorPublicKeyOntoProfile(profileId, publicKeyJwk)
-
-    return { privateKey, publicKeyJwk }
+    return signingKeyProvider.getOrCreateKeyPair(strapi, profileId)
   },
 
   /**
    * Returns the issuer's public key (for verification), or null if the
-   * issuer has never signed anything yet.
+   * issuer has never signed anything yet. Delegates to the configured
+   * signing-key provider.
    */
   async getPublicKey(profileId: number | string) {
-    const record = await strapi.db.query('api::issuer-key.issuer-key').findOne({
-      where: { profile: profileId },
-    })
-    if (!record) return null
-
-    const { importJWK } = await import('jose')
-    return importJWK(record.publicKeyJwk, 'EdDSA')
+    return signingKeyProvider.getPublicKey(strapi, profileId)
   },
 
   /**

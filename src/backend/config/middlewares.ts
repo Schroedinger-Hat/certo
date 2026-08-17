@@ -37,6 +37,9 @@ export default ({ env }) => {
     // lifecycle - including whatever strapi::errors catches. See
     // src/middlewares/request-id.ts and config/logger.ts.
     'global::request-id',
+    // Rate limiting & brute-force protection on auth endpoints.
+    // See src/middlewares/rate-limit.ts.
+    'global::rate-limit',
     'strapi::errors',
     {
       name: 'strapi::security',

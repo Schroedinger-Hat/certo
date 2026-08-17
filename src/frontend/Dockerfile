@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -38,4 +38,4 @@ COPY --from=builder --chown=nuxt:nodejs /app/package.json /app/package.json
 EXPOSE 3000
 
 # Start the application
-CMD ["node", ".output/server/index.mjs"] 
+CMD ["node", ".output/server/index.mjs"]

@@ -35,11 +35,10 @@ export default ({ strapi }) => ({
         }
       }
       
-      // For proof verification, we would need to:
-      // 1. Get the issuer's public key
-      // 2. Verify the proof using the key
-      // This is a placeholder
-      const proofVerified = true;
+      // Real cryptographic proof verification for externally-submitted
+      // credentials. Resolves the issuer's verification method (URL or DID),
+      // fetches the public key, and verifies the proof's JWS signature.
+      const proofResult = await this.verifyExternalProof(credential);
       
       // Check expiration
       const now = new Date();
@@ -49,11 +48,11 @@ export default ({ strapi }) => ({
       }
       
       return {
-        verified: issuerVerified && proofVerified && !expired,
+        verified: issuerVerified && proofResult.valid && !expired,
         checks: [
           { check: 'format', result: validFormat.valid ? 'success' : 'error', message: validFormat.error },
           { check: 'issuer', result: issuerVerified ? 'success' : 'warning', message: issuerVerified ? null : 'Issuer not verified' },
-          { check: 'proof', result: proofVerified ? 'success' : 'error', message: proofVerified ? null : 'Invalid proof' },
+          { check: 'proof', result: proofResult.valid ? 'success' : 'error', message: proofResult.message || null },
           { check: 'expiration', result: !expired ? 'success' : 'error', message: expired ? 'Credential has expired' : null }
         ],
         credential: {
@@ -120,6 +119,251 @@ export default ({ strapi }) => ({
     return { valid: true };
   },
   
+  /**
+   * Verify an external credential's cryptographic proof.
+   *
+   * Resolves the verification method from the proof (a URL or DID),
+   * fetches the issuer's public key, and verifies the JWS signature.
+   * Returns { valid: boolean, message?: string }.
+   */
+  async verifyExternalProof(credential) {
+    try {
+      // A credential must have a proof to be cryptographically verifiable
+      const proof = credential.proof;
+      if (!proof) {
+        return { valid: false, message: 'Credential has no proof to verify' };
+      }
+
+      // Support both single proof objects and arrays
+      const proofObj = Array.isArray(proof) ? proof[0] : proof;
+      if (!proofObj) {
+        return { valid: false, message: 'Credential has no proof to verify' };
+      }
+
+      // The JWS signature is what we cryptographically verify. Some
+      // credentials use proofValue (e.g. a base64-encoded signature for
+      // Ed25519Signature2018) — for those we'd need type-specific verification.
+      const jws = proofObj.jws;
+      if (!jws) {
+        // Try proofValue as a JWS-compatible compact serialization
+        if (proofObj.proofValue) {
+          return { valid: false, message: 'proofValue-only proofs are not supported for external verification yet' };
+        }
+        return { valid: false, message: 'Proof is missing jws' };
+      }
+
+      // Validate proofPurpose
+      if (proofObj.proofPurpose && proofObj.proofPurpose !== 'assertionMethod') {
+        return { valid: false, message: `Unsupported proof purpose: ${proofObj.proofPurpose}` };
+      }
+
+      // Resolve the verification method to find the issuer's public key.
+      // The verificationMethod is usually a URL pointing to the issuer's key,
+      // e.g. https://issuer.example.com/api/profiles/1/keys or a DID URL
+      // like did:web:issuer.example.com#key-1.
+      const verificationMethod = proofObj.verificationMethod;
+      if (!verificationMethod) {
+        return { valid: false, message: 'Proof is missing verificationMethod' };
+      }
+
+      // 1. If the verificationMethod points at our own issuer (via URL),
+      //    look up the key from our local issuer-keys service.
+      const baseUrl = strapi.config.get('server.url') || 'http://localhost:1337';
+      const localProfileMatch = String(verificationMethod).match(/\/api\/profiles\/(\d+)\/keys/);
+      if (localProfileMatch) {
+        const profileId = parseInt(localProfileMatch[1], 10);
+        const issuerKeys = strapi.service('api::profile.issuer-keys');
+        const publicKey = await issuerKeys.getPublicKey(profileId);
+        if (publicKey) {
+          const { jwtVerify } = await import('jose');
+          try {
+            await jwtVerify(jws, publicKey);
+            return { valid: true };
+          } catch (verifyError) {
+            return { valid: false, message: `Signature verification failed: ${verifyError.message}` };
+          }
+        }
+      }
+
+      // 2. If the verificationMethod is a remote HTTPS URL, fetch the key
+      //    document from the issuer and extract a public key JWK to verify.
+      if (String(verificationMethod).startsWith('https://') ||
+          String(verificationMethod).startsWith('http://')) {
+        try {
+          const response = await fetch(verificationMethod, {
+            headers: { Accept: 'application/json, application/ld+json' },
+            signal: AbortSignal.timeout(10000),
+          });
+          if (!response.ok) {
+            return { valid: false, message: `Failed to fetch verification method (HTTP ${response.status})` };
+          }
+          const keyDocument = await response.json();
+          const candidates = await this.extractPublicKeysFromDocument(keyDocument);
+          if (candidates.length === 0) {
+            return { valid: false, message: 'No public keys found in verification method document' };
+          }
+          const { jwtVerify } = await import('jose');
+          for (const key of candidates) {
+            try {
+              await jwtVerify(jws, key);
+              return { valid: true };
+            } catch {
+              // Try the next candidate key.
+            }
+          }
+          return { valid: false, message: 'Signature could not be verified with any key from the issuer' };
+        } catch (fetchError) {
+          return { valid: false, message: `Error fetching verification method: ${fetchError.message}` };
+        }
+      }
+
+      // 3. DID support: did:web URLs can be resolved to a DID document,
+      //    which lists public keys under verificationMethod.
+      if (String(verificationMethod).startsWith('did:')) {
+        const didUrl = String(verificationMethod);
+        const didDocument = await this.resolveDid(didUrl);
+        if (!didDocument) {
+          return { valid: false, message: 'Failed to resolve DID' };
+        }
+        const candidates = await this.extractPublicKeysFromDocument(didDocument);
+        if (candidates.length === 0) {
+          return { valid: false, message: 'No public keys found in DID document' };
+        }
+        const { jwtVerify } = await import('jose');
+        for (const key of candidates) {
+          try {
+            await jwtVerify(jws, key);
+            return { valid: true };
+          } catch {
+            // Try the next candidate key.
+          }
+        }
+        return { valid: false, message: 'Signature could not be verified with any key from the DID document' };
+      }
+
+      return { valid: false, message: `Unsupported verification method: ${verificationMethod}` };
+    } catch (error) {
+      console.error('Error verifying external proof:', error);
+      return { valid: false, message: `Error verifying proof: ${error.message}` };
+    }
+  },
+
+  /**
+   * Extract public key candidates from a verification method document or
+   * DID document. Returns an array of CryptoKey objects ready for jwtVerify.
+   * Handles: { publicKeyJwk }, { "publicKeyMultibase" } (base64 Ed25519),
+   * nested verificationMethod arrays, and jwks-style key sets.
+   */
+  async extractPublicKeysFromDocument(doc) {
+    const candidates = [];
+    const { importJWK, importSPKI } = await import('jose');
+
+    // Normalize into a single array of key objects.
+    const keyCandidates = [];
+    if (doc.publicKeyJwk) {
+      keyCandidates.push(doc.publicKeyJwk);
+    }
+    if (Array.isArray(doc.verificationMethod)) {
+      for (const vm of doc.verificationMethod) {
+        if (vm.publicKeyJwk) keyCandidates.push(vm.publicKeyJwk);
+        if (Array.isArray(vm.publicKeyJwk?.jwk)) {
+          keyCandidates.push(...vm.publicKeyJwk.jwk);
+        }
+        if (vm.publicKeyMultibase) keyCandidates.push({ multibase: vm.publicKeyMultibase });
+      }
+    } else if (doc.verificationMethod?.publicKeyJwk) {
+      keyCandidates.push(doc.verificationMethod.publicKeyJwk);
+    }
+    if (Array.isArray(doc.publicKey)) {
+      for (const pk of doc.publicKey) {
+        if (pk.publicKeyJwk) keyCandidates.push(pk.publicKeyJwk);
+        if (Array.isArray(pk.publicKeyJwk?.jwk)) {
+          keyCandidates.push(...pk.publicKeyJwk.jwk);
+        }
+        if (pk.publicKeyMultibase) keyCandidates.push({ multibase: pk.publicKeyMultibase });
+      }
+    }
+    // JWKS-style: { keys: [...] }
+    if (Array.isArray(doc.keys)) {
+      keyCandidates.push(...doc.keys);
+    }
+    // Our own issuer-keys publicKeyJwk shape: { kty, crv, x }
+    if (doc.kty && doc.crv && doc.x) {
+      keyCandidates.push(doc);
+    }
+
+    for (const key of keyCandidates) {
+      try {
+        if (key.kty && key.crv && key.x) {
+          const cryptoKey = await importJWK(key, 'EdDSA');
+          if (cryptoKey) candidates.push(cryptoKey);
+        } else if (key.multibase) {
+          // Base64-encoded raw Ed25519 public key; we can only verify with it
+          // if it's DER/PEM wrapped SPKI, but try anyway.
+          const base64 = key.multibase.startsWith('z')
+            ? Buffer.from(key.multibase.slice(1), 'base64').toString('base64')
+            : key.multibase;
+          const pem = `-----BEGIN PUBLIC KEY-----\n${(base64.match(/.{1,64}/g) || [base64]).join('\n')}\n-----END PUBLIC KEY-----\n`;
+          const cryptoKey = await importSPKI(pem, 'EdDSA');
+          if (cryptoKey) candidates.push(cryptoKey);
+        }
+      } catch {
+        // Skip malformed keys.
+      }
+    }
+
+    return candidates;
+  },
+
+  /**
+   * Resolve a DID (did:web or did:key) to its DID document.
+   * did:web: <did:web:example.com:path> → https://example.com/path/did.json
+   * did:key: single public key, no HTTP fetch needed.
+   */
+  async resolveDid(didUrl) {
+    try {
+      // did:web resolution
+      if (didUrl.startsWith('did:web:')) {
+        const authorityPath = didUrl.slice('did:web:'.length);
+        // The identifier after # is a fragment, not part of the URL.
+        const [didIdentifier] = authorityPath.split('#');
+        // Convert did:web:example.com:path → https://example.com/path/did.json
+        // (colon-separated segments become path segments; first is the host)
+        const segments = didIdentifier.split(':');
+        const host = segments[0];
+        // Special case: a single leading "w" segment is the "www" shorthand.
+        const pathSegments = segments.slice(1);
+        const didJsonUrl = `https://${host}/${pathSegments.join('/')}/did.json`;
+        const response = await fetch(didJsonUrl, {
+          headers: { Accept: 'application/did+json, application/json' },
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!response.ok) {
+          return null;
+        }
+        return await response.json();
+      }
+
+      // did:key resolution — a single Ed25519 key in the multibase format.
+      // did:key:z6Mk... maps directly to a public key.
+      if (didUrl.startsWith('did:key:')) {
+        const multibase = didUrl.slice('did:key:'.length);
+        const base64 = Buffer.from(multibase.slice(1), 'base64').toString('base64');
+        const pem = `-----BEGIN PUBLIC KEY-----\n${(base64.match(/.{1,64}/g) || [base64]).join('\n')}\n-----END PUBLIC KEY-----\n`;
+        const { importSPKI } = await import('jose');
+        const cryptoKey = await importSPKI(pem, 'EdDSA').catch(() => null);
+        // Return a document-shaped object so extractPublicKeysFromDocument
+        // can handle it uniformly.
+        return cryptoKey ? { verificationMethod: [{ publicKeyJwk: null, publicKeyMultibase: multibase }] } : null;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error resolving DID:', error);
+      return null;
+    }
+  },
+
   /**
    * Find an issuer by URL
    */

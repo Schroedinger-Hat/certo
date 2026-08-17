@@ -61,6 +61,7 @@
     "emailRequired": "Email is required",
     "passwordRequired": "Password is required",
     "rememberMe": "Remember me",
+    "orContinueWith": "or continue with",
     "signUp": "Sign Up",
     "passwordMismatch": "Passwords do not match",
     "termsRequired": "You must accept the terms and conditions",

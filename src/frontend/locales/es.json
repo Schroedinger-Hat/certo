@@ -69,7 +69,8 @@
     "newPassword": "Nueva contraseña",
     "currentPassword": "Contraseña actual",
     "checkEmail": "Revisa tu correo electrónico para el enlace de restablecimiento",
-    "alreadyHaveAccount": "¿Ya tienes una cuenta?"
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "orContinueWith": "o continúa con"
   },
   "credential": {
     "title": "Credencial",

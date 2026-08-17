@@ -69,7 +69,8 @@
     "newPassword": "Nouveau mot de passe",
     "currentPassword": "Mot de passe actuel",
     "checkEmail": "Vérifiez votre e-mail pour le lien de réinitialisation",
-    "alreadyHaveAccount": "Vous avez déjà un compte?"
+    "alreadyHaveAccount": "Vous avez déjà un compte?",
+    "orContinueWith": "ou continuer avec"
   },
   "credential": {
     "title": "Justificatif",

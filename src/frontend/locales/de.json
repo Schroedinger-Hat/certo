@@ -69,7 +69,8 @@
     "newPassword": "Neues Passwort",
     "currentPassword": "Aktuelles Passwort",
     "checkEmail": "Überprüfen Sie Ihre E-Mail auf den Zurücksetzen-Link",
-    "alreadyHaveAccount": "Sie haben bereits ein Konto?"
+    "alreadyHaveAccount": "Sie haben bereits ein Konto?",
+    "orContinueWith": "oder weiter mit"
   },
   "credential": {
     "title": "Nachweis",

@@ -85,6 +85,19 @@ secrets:
   # long-lived secret.
   encryptionKey: ""
 
+# Scheduled backups via a Kubernetes CronJob (daily by default). Runs
+# `npm run backup` in the backend image, mounting a dedicated PVC; see
+# templates/backup-cronjob.yaml. Disabled by default — enable for
+# production. Schedule is standard cron syntax (UTC).
+backup:
+  enabled: false
+  schedule: "0 2 * * *"
+  size: 10Gi
+  storageClassName: ""
+  # Optional: keep only the last N days of backups. Leave empty to keep
+  # all backups.
+  retentionDays: ""
+
 # Bundled Postgres: a plain StatefulSet + PVC, suitable for testing/small
 # deployments - NOT horizontally scalable and not a replacement for a real
 # managed Postgres in production. Set enabled: false and fill in `external`

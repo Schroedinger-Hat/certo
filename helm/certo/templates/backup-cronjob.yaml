@@ -1,0 +1,95 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "certo.fullname" . }}-backup
+  labels:
+    {{- include "certo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
+spec:
+  # Daily backup at 02:00 UTC by default. Override with
+  # `--set backup.schedule="0 3 * * *"`.
+  schedule: {{ .Values.backup.schedule | default "0 2 * * *" | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+              imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+              command: ["npm", "run", "backup"]
+              envFrom:
+                - secretRef:
+                    name: {{ include "certo.secretName" . }}
+              env:
+                {{- if .Values.postgresql.enabled }}
+                - name: DATABASE_CLIENT
+                  value: "postgres"
+                - name: DATABASE_HOST
+                  value: {{ include "certo.postgresql.fullname" . | quote }}
+                - name: DATABASE_PORT
+                  value: "5432"
+                - name: DATABASE_NAME
+                  value: {{ .Values.postgresql.database | quote }}
+                - name: DATABASE_USERNAME
+                  value: {{ .Values.postgresql.username | quote }}
+                {{- else if .Values.postgresql.external.host }}
+                - name: DATABASE_CLIENT
+                  value: "postgres"
+                - name: DATABASE_HOST
+                  value: {{ .Values.postgresql.external.host | quote }}
+                - name: DATABASE_PORT
+                  value: {{ .Values.postgresql.external.port | quote }}
+                - name: DATABASE_NAME
+                  value: {{ .Values.postgresql.database | quote }}
+                - name: DATABASE_USERNAME
+                  value: {{ .Values.postgresql.username | quote }}
+                {{- else }}
+                - name: DATABASE_CLIENT
+                  value: "sqlite"
+                {{- end }}
+                {{- if .Values.backup.retentionDays }}
+                - name: BACKUP_RETENTION_DAYS
+                  value: {{ .Values.backup.retentionDays | quote }}
+                {{- end }}
+              volumeMounts:
+                - name: backup-data
+                  mountPath: /app/backups
+                {{- if .Values.backend.uploads.enabled }}
+                - name: uploads-data
+                  mountPath: /app/public/uploads
+                {{- end }}
+              resources:
+                {{- toYaml .Values.backend.resources | nindent 16 }}
+          volumes:
+            - name: backup-data
+              persistentVolumeClaim:
+                claimName: {{ include "certo.fullname" . }}-backup
+            {{- if .Values.backend.uploads.enabled }}
+            - name: uploads-data
+              persistentVolumeClaim:
+                claimName: {{ include "certo.backend.fullname" . }}-uploads
+            {{- end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "certo.fullname" . }}-backup
+  labels:
+    {{- include "certo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.backup.storageClassName }}
+  storageClassName: {{ .Values.backup.storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.backup.size | default "10Gi" }}
+{{- end }}
