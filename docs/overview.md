@@ -17,7 +17,8 @@ correct; a stray MIT mention in a few scripts/docs was fixed, see
 - **Issue** an achievement to a recipient by email, producing a signed **credential** (OBv3 VerifiableCredential/OpenBadgeCredential), and email the recipient a link to it.
 - **Batch issue** an achievement to many recipients at once.
 - Render each credential as a **certificate** (SVG image) for display/download/social sharing.
-- **Verify** a credential by ID — checks revocation, expiration, and (currently, structural-only — see [open-badges.md](./open-badges.md)) proof presence.
+- **Verify** a credential by ID — checks revocation, expiration, and the Ed25519 JWS proof.
+- **Verify external** Ed25519 credentials using HTTPS verification methods or `did:web` issuer documents.
 - **Import** an external OBv3 credential JSON, creating local `profile`/`achievement`/`credential` rows for it.
 - **Revoke** a credential.
 - Basic **auth** (register/login) with three roles: `public`, `authenticated`, `issuer`.
@@ -29,9 +30,9 @@ These are current gaps, not just "future features" — see
 [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) for the
 stubs/placeholders in the code and for the long term plan:
 
-- No real cryptographic verification of an *externally-submitted* credential's signature (locally-issued credentials are now verified for real — see [open-badges.md](./open-badges.md#verification)).
+- Other proof suites and external revocation status-list resolution are not implemented yet — see [open-badges.md](./open-badges.md#verification).
 - No webhooks, event bus, or pluggable notification providers.
-- No RBAC beyond three fixed roles; no multi-tenancy; no audit log.
+- No multi-tenancy; fixed-role authorization and audit logging are implemented.
 - No OAuth2/OIDC; local auth only (Strapi's `users-permissions`).
 - Backend test coverage is narrow (unit tests for the signing/verification code only, no full integration suite) and Playwright E2E isn't run in CI yet.
 - No abstraction that would let a different CMS/backend replace Strapi (see [tool-agnostic.md](./tool-agnostic.md)).

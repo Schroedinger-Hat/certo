@@ -2,6 +2,8 @@
  * Open Badges service
  */
 
+import { resolveDidWeb } from '../../../utils/did-web';
+
 export default ({ strapi }) => ({
   /**
    * Validate an external Open Badge 3.0 credential
@@ -23,10 +25,10 @@ export default ({ strapi }) => ({
       
       // If the issuer is a string, it should be a URL or DID
       if (typeof issuerIdentifier === 'string') {
-        // For DIDs, we would validate against a DID resolver
         if (issuerIdentifier.startsWith('did:')) {
-          // Placeholder for DID verification
-          issuerVerified = true;
+          const didDocument = await this.resolveDid(issuerIdentifier);
+          const documentId = (didDocument as { id?: string } | null)?.id?.split('#', 1)[0];
+          issuerVerified = !!didDocument && (!documentId || documentId === issuerIdentifier.split('#', 1)[0]);
         } 
         // For URLs, we can check if it's a known issuer in our system
         else if (issuerIdentifier.startsWith('http')) {
@@ -225,7 +227,7 @@ export default ({ strapi }) => ({
         if (!didDocument) {
           return { valid: false, message: 'Failed to resolve DID' };
         }
-        const candidates = await this.extractPublicKeysFromDocument(didDocument);
+        const candidates = await this.extractPublicKeysFromDocument(didDocument, didUrl);
         if (candidates.length === 0) {
           return { valid: false, message: 'No public keys found in DID document' };
         }
@@ -254,7 +256,7 @@ export default ({ strapi }) => ({
    * Handles: { publicKeyJwk }, { "publicKeyMultibase" } (base64 Ed25519),
    * nested verificationMethod arrays, and jwks-style key sets.
    */
-  async extractPublicKeysFromDocument(doc) {
+  async extractPublicKeysFromDocument(doc, verificationMethod?: string) {
     const candidates = [];
     const { importJWK, importSPKI } = await import('jose');
 
@@ -264,7 +266,10 @@ export default ({ strapi }) => ({
       keyCandidates.push(doc.publicKeyJwk);
     }
     if (Array.isArray(doc.verificationMethod)) {
-      for (const vm of doc.verificationMethod) {
+      const methods = verificationMethod
+        ? doc.verificationMethod.filter(vm => vm.id === verificationMethod)
+        : doc.verificationMethod;
+      for (const vm of methods) {
         if (vm.publicKeyJwk) keyCandidates.push(vm.publicKeyJwk);
         if (Array.isArray(vm.publicKeyJwk?.jwk)) {
           keyCandidates.push(...vm.publicKeyJwk.jwk);
@@ -322,26 +327,8 @@ export default ({ strapi }) => ({
    */
   async resolveDid(didUrl) {
     try {
-      // did:web resolution
       if (didUrl.startsWith('did:web:')) {
-        const authorityPath = didUrl.slice('did:web:'.length);
-        // The identifier after # is a fragment, not part of the URL.
-        const [didIdentifier] = authorityPath.split('#');
-        // Convert did:web:example.com:path → https://example.com/path/did.json
-        // (colon-separated segments become path segments; first is the host)
-        const segments = didIdentifier.split(':');
-        const host = segments[0];
-        // Special case: a single leading "w" segment is the "www" shorthand.
-        const pathSegments = segments.slice(1);
-        const didJsonUrl = `https://${host}/${pathSegments.join('/')}/did.json`;
-        const response = await fetch(didJsonUrl, {
-          headers: { Accept: 'application/did+json, application/json' },
-          signal: AbortSignal.timeout(10000),
-        });
-        if (!response.ok) {
-          return null;
-        }
-        return await response.json();
+        return await resolveDidWeb(didUrl);
       }
 
       // did:key resolution — a single Ed25519 key in the multibase format.
