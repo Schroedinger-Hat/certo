@@ -232,6 +232,35 @@ export interface CreateCredentialRequestInput {
   message?: string;
 }
 
+// Webhook subscriptions
+
+export type WebhookEvent =
+  | 'credential.issued'
+  | 'credential.revoked'
+  | 'credential.renewed'
+  | 'credential.expired'
+  | 'credential.deleted'
+  | 'achievement.created'
+  | 'achievement.updated'
+  | 'achievement.deleted'
+  | 'issuer.created'
+  | 'issuer.updated'
+  | 'user.created';
+
+export interface WebhookSubscription {
+  id: number;
+  url: string;
+  events: WebhookEvent[];
+  enabled: boolean;
+}
+
+export interface CreateWebhookSubscriptionInput {
+  url: string;
+  events: WebhookEvent[];
+  secret: string;
+  enabled?: boolean;
+}
+
 // ──────────────────────────────────────────────────────────────
 // SDK Client options
 // ──────────────────────────────────────────────────────────────

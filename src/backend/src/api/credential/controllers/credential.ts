@@ -296,6 +296,13 @@ export default factories.createCoreController('api::credential.credential', ({ s
         ctx.state.user?.id
       )
 
+      const webhookDispatcher = strapi.service('api::webhook-subscription.dispatch')
+      await webhookDispatcher.dispatch('credential.renewed', {
+        originalCredentialId: existing.credentialId,
+        credentialId: newCredential?.credentialId,
+        expirationDate: parsedDate.toISOString(),
+      })
+
       const auditLog = strapi.service('api::audit-log-entry.audit-log')
       await auditLog.record({
         action: 'credential.renew',

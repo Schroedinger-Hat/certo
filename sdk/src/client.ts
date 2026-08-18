@@ -5,6 +5,7 @@ import { CredentialsResource } from './resources/credentials.js';
 import { ProfilesResource } from './resources/profiles.js';
 import { ScheduledResource } from './resources/scheduled.js';
 import { RequestsResource } from './resources/requests.js';
+import { WebhooksResource } from './resources/webhooks.js';
 import type { CertoClientOptions } from './types.js';
 
 /**
@@ -42,6 +43,9 @@ export class CertoClient {
   /** Approval workflow — submit, approve, reject credential requests */
   readonly requests: RequestsResource;
 
+  /** Authenticated outbound webhook subscription management */
+  readonly webhooks: WebhooksResource;
+
   constructor(opts: CertoClientOptions = {}) {
     this._http = new HttpClient(opts);
     this.auth = new AuthResource(this._http);
@@ -50,6 +54,7 @@ export class CertoClient {
     this.profiles = new ProfilesResource(this._http);
     this.scheduled = new ScheduledResource(this._http);
     this.requests = new RequestsResource(this._http);
+    this.webhooks = new WebhooksResource(this._http);
   }
 
   /**

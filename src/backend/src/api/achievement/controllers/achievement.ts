@@ -41,6 +41,12 @@ export default factories.createCoreController('api::achievement.achievement', ({
       })
       achievementsCreatedTotal.inc()
 
+      await strapi.service('api::webhook-subscription.dispatch').dispatch('achievement.created', {
+        achievementId: entity.id,
+        name: entity.name,
+        actorId: ctx.state.user?.id,
+      })
+
       // Return the created entity
       return response;
     } catch (error) {
@@ -73,6 +79,12 @@ export default factories.createCoreController('api::achievement.achievement', ({
         metadata: { name: achievement.name },
       })
       achievementsCreatedTotal.inc()
+
+      await strapi.service('api::webhook-subscription.dispatch').dispatch('achievement.created', {
+        achievementId: achievement.id,
+        name: achievement.name,
+        actorId: ctx.state.user?.id,
+      })
       
       return response;
     } catch (error) {

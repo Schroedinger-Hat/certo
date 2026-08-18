@@ -64,10 +64,24 @@ const AUTHENTICATED_PERMISSIONS = [
   'api::endorsement.endorsement.update',
   'api::endorsement.endorsement.delete',
   'api::endorsement.endorsement.verify',
+
+  // Webhook subscription management
+  'api::webhook-subscription.webhook-subscription.find',
+  'api::webhook-subscription.webhook-subscription.findOne',
+  'api::webhook-subscription.webhook-subscription.create',
+  'api::webhook-subscription.webhook-subscription.update',
+  'api::webhook-subscription.webhook-subscription.delete',
 ];
 
 // Permissions to enable for the issuer role
 const ISSUER_PERMISSIONS = [
+  // Webhook subscription management
+  'api::webhook-subscription.webhook-subscription.find',
+  'api::webhook-subscription.webhook-subscription.findOne',
+  'api::webhook-subscription.webhook-subscription.create',
+  'api::webhook-subscription.webhook-subscription.update',
+  'api::webhook-subscription.webhook-subscription.delete',
+
   // Credential permissions
   'api::credential.credential.find',
   'api::credential.credential.findOne',

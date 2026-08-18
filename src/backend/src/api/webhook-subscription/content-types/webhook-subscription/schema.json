@@ -5,7 +5,7 @@
     "singularName": "webhook-subscription",
     "pluralName": "webhook-subscriptions",
     "displayName": "Webhook Subscription",
-    "description": "Outbound webhook endpoints notified on credential lifecycle events. Managed via the admin panel content manager - no public/authenticated REST routes are defined for this content type."
+    "description": "Outbound webhook endpoints notified on credential lifecycle events. Managed through authenticated API routes or the admin panel."
   },
   "options": {
     "draftAndPublish": false
