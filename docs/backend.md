@@ -101,6 +101,13 @@ since the frontend (`api-client.ts`) and the Netlify OG-image function both
 hardcode literal `/api/...` paths and weren't migrated. `/api/v1/*` is the
 recommended path for new integrations going forward.
 
+Authenticated issuers and administrators can manage outbound webhook
+subscriptions at `/api/webhook-subscriptions`. `POST` and `PUT` accept a
+`data` object containing an HTTPS/HTTP `url`, one or more supported `events`, a
+minimum 16-character `secret`, and optional `enabled`. Responses never include
+the secret. Delivery is signed with HMAC-SHA256 in `X-Certo-Signature` and is
+best-effort, so a failed endpoint does not fail credential issuance.
+
 ## Database
 
 Strapi's built-in Query Engine / Entity Service (Knex underneath) — no separate

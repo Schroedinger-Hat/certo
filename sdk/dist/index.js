@@ -29,4 +29,5 @@ export { CredentialsResource } from './resources/credentials.js';
 export { ProfilesResource } from './resources/profiles.js';
 export { ScheduledResource } from './resources/scheduled.js';
 export { RequestsResource } from './resources/requests.js';
+export { WebhooksResource } from './resources/webhooks.js';
 //# sourceMappingURL=index.js.map

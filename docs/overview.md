@@ -31,7 +31,8 @@ These are current gaps, not just "future features" — see
 stubs/placeholders in the code and for the long term plan:
 
 - Other proof suites and external revocation status-list resolution are not implemented yet — see [open-badges.md](./open-badges.md#verification).
-- No webhooks, event bus, or pluggable notification providers.
+- Outbound webhooks are supported for configured credential and lifecycle events;
+	an internal event bus and pluggable notification providers are not implemented.
 - No multi-tenancy; fixed-role authorization and audit logging are implemented.
 - No OAuth2/OIDC; local auth only (Strapi's `users-permissions`).
 - Backend test coverage is narrow (unit tests for the signing/verification code only, no full integration suite) and Playwright E2E isn't run in CI yet.

@@ -31,6 +31,7 @@ export { CredentialsResource } from './resources/credentials.js';
 export { ProfilesResource } from './resources/profiles.js';
 export { ScheduledResource } from './resources/scheduled.js';
 export { RequestsResource } from './resources/requests.js';
+export { WebhooksResource } from './resources/webhooks.js';
 
 // All types
 export type {
@@ -57,4 +58,7 @@ export type {
   CredentialRequest,
   CredentialRequestStatus,
   CreateCredentialRequestInput,
+  WebhookEvent,
+  WebhookSubscription,
+  CreateWebhookSubscriptionInput,
 } from './types.js';

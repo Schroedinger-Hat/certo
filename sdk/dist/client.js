@@ -5,6 +5,7 @@ import { CredentialsResource } from './resources/credentials.js';
 import { ProfilesResource } from './resources/profiles.js';
 import { ScheduledResource } from './resources/scheduled.js';
 import { RequestsResource } from './resources/requests.js';
+import { WebhooksResource } from './resources/webhooks.js';
 /**
  * The main entry point for the Certo SDK.
  *
@@ -27,6 +28,7 @@ export class CertoClient {
         this.profiles = new ProfilesResource(this._http);
         this.scheduled = new ScheduledResource(this._http);
         this.requests = new RequestsResource(this._http);
+        this.webhooks = new WebhooksResource(this._http);
     }
     /**
      * Convenience: set a bearer token directly without going through login.

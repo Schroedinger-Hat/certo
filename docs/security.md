@@ -85,11 +85,11 @@ instance checks the real Ed25519/JWS signature
 [open-badges.md](./open-badges.md#signing) and
 [open-badges.md](./open-badges.md#verification) for the full detail.
 
-**Gap**: verifying an *externally-submitted* (third-party-issued) OBv3
-credential does not check its signature yet — that needs DID resolution or
-fetching a remote key, and remains a stub
-(`validateExternalCredential`'s `proofVerified = true`). Don't describe
-"import/validate an external badge" as cryptographically verified.
+Externally-submitted (third-party-issued) OBv3 credentials using Ed25519
+compact JWS proofs are also checked cryptographically. HTTPS verification
+methods and `did:web` issuer documents are supported, with the proof bound to
+its declared verification method. Other proof suites and external status-list
+resolution remain unsupported.
 
 ## Secrets inventory
 

@@ -243,3 +243,21 @@ describe('scheduled.create', () => {
     expect(body.data.scheduledFor).toBe('2026-12-31T00:00:00.000Z');
   });
 });
+
+describe('webhooks.create', () => {
+  it('creates an authenticated webhook subscription with the data envelope', async () => {
+    const spy = captureFetch();
+    spy.setNext(200, { data: { id: 1, url: 'https://example.com/hook', events: ['credential.issued'], enabled: true } });
+    const client = new CertoClient({ fetch: spy.fetch, token: 'issuer-token' });
+
+    await client.webhooks.create({
+      url: 'https://example.com/hook',
+      events: ['credential.issued'],
+      secret: 'a'.repeat(16),
+    });
+
+    expect(spy.calls[0]!.url).toContain('/api/webhook-subscriptions');
+    expect((spy.calls[0]!.init?.headers as Record<string, string>).Authorization).toBe('Bearer issuer-token');
+    expect(JSON.parse(spy.calls[0]!.init?.body as string).data.secret).toHaveLength(16);
+  });
+});

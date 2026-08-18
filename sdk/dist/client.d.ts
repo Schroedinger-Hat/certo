@@ -5,6 +5,7 @@ import { CredentialsResource } from './resources/credentials.js';
 import { ProfilesResource } from './resources/profiles.js';
 import { ScheduledResource } from './resources/scheduled.js';
 import { RequestsResource } from './resources/requests.js';
+import { WebhooksResource } from './resources/webhooks.js';
 import type { CertoClientOptions } from './types.js';
 /**
  * The main entry point for the Certo SDK.
@@ -34,6 +35,8 @@ export declare class CertoClient {
     readonly scheduled: ScheduledResource;
     /** Approval workflow — submit, approve, reject credential requests */
     readonly requests: RequestsResource;
+    /** Authenticated outbound webhook subscription management */
+    readonly webhooks: WebhooksResource;
     constructor(opts?: CertoClientOptions);
     /**
      * Convenience: set a bearer token directly without going through login.

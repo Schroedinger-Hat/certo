@@ -171,6 +171,19 @@ export interface CreateCredentialRequestInput {
     achievementId: number;
     message?: string;
 }
+export type WebhookEvent = 'credential.issued' | 'credential.revoked' | 'credential.renewed' | 'credential.expired' | 'credential.deleted' | 'achievement.created' | 'achievement.updated' | 'achievement.deleted' | 'issuer.created' | 'issuer.updated' | 'user.created';
+export interface WebhookSubscription {
+    id: number;
+    url: string;
+    events: WebhookEvent[];
+    enabled: boolean;
+}
+export interface CreateWebhookSubscriptionInput {
+    url: string;
+    events: WebhookEvent[];
+    secret: string;
+    enabled?: boolean;
+}
 export interface CertoClientOptions {
     /** Base URL of the Certo backend. Default: http://localhost:1337 */
     baseUrl?: string;
