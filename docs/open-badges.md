@@ -45,14 +45,11 @@ a stored `credential` row:
 
 Used when someone submits an external OBv3 credential for verification/import.
 Checks: has `id`, has `type` including both `VerifiableCredential` and
-`OpenBadgeCredential`, has `issuer`, has `credentialSubject`, has
-`issuanceDate`. Issuer verification: DIDs are auto-accepted
-(`issuerVerified = true`, explicitly a placeholder), HTTP(S) issuer URLs are
-checked against `findIssuerByUrl` (looks for a matching local `profile` by
-numeric ID parsed out of a `/api/profiles/:id` URL — so this only recognizes
-issuers that are also profiles in *this* Strapi instance). **Proof verification
-here is a hardcoded `const proofVerified = true`** — explicitly a placeholder in
-the code, not a real check.
+`OpenBadgeCredential`, has `issuer`, has `credentialSubject`, and has
+`issuanceDate`. Issuer verification resolves `did:web` documents or checks
+HTTPS issuer URLs against `findIssuerByUrl`. Proof verification uses Ed25519
+JWS verification against the issuer's declared verification method. Other
+proof suites and external revocation status lists are not supported yet.
 
 ### `importCredential(vcData)`
 
@@ -106,14 +103,12 @@ malformed JWS. A `proofValue`-only proof (no `jws`) is now explicitly
 rejected as non-verifiable, rather than silently passing — see
 [known-issues-and-dev-notes.md](./known-issues-and-dev-notes.md) item 1.
 
-**This does not extend to external, third-party-issued credentials.**
-`validateExternalCredential()`'s proof check (used when validating/importing
-an OBv3 credential from *another* system) is still a hardcoded
-`const proofVerified = true` placeholder — verifying an arbitrary external
-issuer's signature needs DID resolution or fetching a remote key, which is a
-separate, larger interoperability feature (not part of per-issuer key
-management for *our own* issuers). Don't conflate the two: local credentials
-are now really verified; externally-submitted ones are not yet.
+External credentials are cryptographically verified when they use an Ed25519
+compact JWS and a supported HTTPS or `did:web` verification method. DID
+documents are fetched from the standards-defined location and the proof is
+bound to its declared verification method; unrelated keys in the document are
+not tried. Other proof suites and external status-list resolution remain future
+interoperability work.
 
 ## Endorsements
 
