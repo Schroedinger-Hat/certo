@@ -63,6 +63,17 @@ export class CredentialsResource {
         return this.http.get(`/api/credentials/${encodeURIComponent(String(id))}/verify`);
     }
     /**
+     * Validate an external Open Badges 3.0 / Verifiable Credential document.
+     * Works without authentication and performs issuer/proof/expiration checks.
+     *
+     * @example
+     * const result = await client.credentials.validateExternal(credentialJson);
+     * if (result.verified) console.log('External credential is valid');
+     */
+    validateExternal(credential) {
+        return this.http.post('/api/credentials/validate', { credential });
+    }
+    /**
      * Revoke a credential. Requires an issuer or admin token.
      *
      * @example

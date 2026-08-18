@@ -146,6 +146,26 @@ describe('credentials.verify', () => {
   });
 });
 
+describe('credentials.validateExternal', () => {
+  it('posts an external credential without requiring authentication', async () => {
+    const result: VerifyResult = { verified: true, checks: [] };
+    const credential = {
+      id: 'urn:uuid:external-123',
+      type: ['VerifiableCredential', 'OpenBadgeCredential'],
+    };
+    const spy = captureFetch();
+    spy.setNext(200, result);
+    const client = new CertoClient({ fetch: spy.fetch });
+
+    const response = await client.credentials.validateExternal(credential);
+
+    expect(response.verified).toBe(true);
+    expect(spy.calls[0]!.url).toContain('/api/credentials/validate');
+    expect(spy.calls[0]!.init?.headers).toEqual({ 'Content-Type': 'application/json' });
+    expect(JSON.parse(spy.calls[0]!.init?.body as string)).toEqual({ credential });
+  });
+});
+
 describe('credentials.issue', () => {
   it('posts the correct body shape', async () => {
     const spy = captureFetch();

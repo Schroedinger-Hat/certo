@@ -28,5 +28,5 @@ export { CredentialsResource } from './resources/credentials.js';
 export { ProfilesResource } from './resources/profiles.js';
 export { ScheduledResource } from './resources/scheduled.js';
 export { RequestsResource } from './resources/requests.js';
-export type { CertoClientOptions, StrapiListResponse, StrapiSingleResponse, StrapiMeta, LoginOptions, AuthResponse, Profile, ProfileType, ProfileExport, Achievement, CreateAchievementInput, Credential, CredentialStatus, IssueCredentialInput, VerifyResult, ListCredentialsOptions, RevocationCheckResult, ScheduledIssuance, CreateScheduledIssuanceInput, CredentialRequest, CredentialRequestStatus, CreateCredentialRequestInput, } from './types.js';
+export type { CertoClientOptions, StrapiListResponse, StrapiSingleResponse, StrapiMeta, LoginOptions, AuthResponse, Profile, ProfileType, ProfileExport, Achievement, CreateAchievementInput, Credential, ExternalCredential, CredentialStatus, IssueCredentialInput, VerifyResult, ListCredentialsOptions, RevocationCheckResult, ScheduledIssuance, CreateScheduledIssuanceInput, CredentialRequest, CredentialRequestStatus, CreateCredentialRequestInput, } from './types.js';
 //# sourceMappingURL=index.d.ts.map

@@ -147,6 +147,9 @@ export interface VerifyResult {
   error?: string;
 }
 
+/** An external Open Badges 3.0 / Verifiable Credential document. */
+export type ExternalCredential = Record<string, unknown>;
+
 export interface ListCredentialsOptions {
   page?: number;
   pageSize?: number;
