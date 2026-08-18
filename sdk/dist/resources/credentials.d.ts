@@ -1,5 +1,5 @@
 import type { HttpClient } from '../http.js';
-import type { Credential, IssueCredentialInput, ListCredentialsOptions, StrapiListResponse, StrapiSingleResponse, VerifyResult } from '../types.js';
+import type { Credential, IssueCredentialInput, ListCredentialsOptions, StrapiListResponse, StrapiSingleResponse, ExternalCredential, VerifyResult } from '../types.js';
 export declare class CredentialsResource {
     private readonly http;
     constructor(http: HttpClient);
@@ -41,6 +41,15 @@ export declare class CredentialsResource {
      * if (result.verified) console.log('✓ Valid');
      */
     verify(id: number | string): Promise<VerifyResult>;
+    /**
+     * Validate an external Open Badges 3.0 / Verifiable Credential document.
+     * Works without authentication and performs issuer/proof/expiration checks.
+     *
+     * @example
+     * const result = await client.credentials.validateExternal(credentialJson);
+     * if (result.verified) console.log('External credential is valid');
+     */
+    validateExternal(credential: ExternalCredential): Promise<VerifyResult>;
     /**
      * Revoke a credential. Requires an issuer or admin token.
      *

@@ -38,11 +38,16 @@ const { credential } = await client.credentials.issue({
 // Verify a credential (no auth required)
 const { verified } = await client.credentials.verify(credential.credential_id);
 console.log(verified ? '✓ Valid' : '✗ Invalid');
+
+// Validate an external Open Badges / Verifiable Credential document
+const externalResult = await client.credentials.validateExternal(externalCredential);
+console.log(externalResult.verified ? '✓ External credential is valid' : '✗ Invalid');
 ```
 
 ## Features
 
 - **Full Credential Lifecycle** — Issue, verify, revoke, renew, export, and import credentials
+- **External Verification** — Validate third-party Open Badges / Verifiable Credential documents
 - **Batch Operations** — Issue thousands of credentials in a single request
 - **Scheduled Issuance** — Automatically issue credentials at a future date
 - **Approval Workflows** — Submit credential requests for issuer review

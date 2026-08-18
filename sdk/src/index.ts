@@ -46,6 +46,7 @@ export type {
   Achievement,
   CreateAchievementInput,
   Credential,
+  ExternalCredential,
   CredentialStatus,
   IssueCredentialInput,
   VerifyResult,

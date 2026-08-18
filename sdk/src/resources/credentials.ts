@@ -6,6 +6,7 @@ import type {
   ProfileExport,
   StrapiListResponse,
   StrapiSingleResponse,
+  ExternalCredential,
   VerifyResult,
 } from '../types.js';
 
@@ -75,6 +76,18 @@ export class CredentialsResource {
     return this.http.get<VerifyResult>(
       `/api/credentials/${encodeURIComponent(String(id))}/verify`,
     );
+  }
+
+  /**
+   * Validate an external Open Badges 3.0 / Verifiable Credential document.
+   * Works without authentication and performs issuer/proof/expiration checks.
+   *
+   * @example
+   * const result = await client.credentials.validateExternal(credentialJson);
+   * if (result.verified) console.log('External credential is valid');
+   */
+  validateExternal(credential: ExternalCredential): Promise<VerifyResult> {
+    return this.http.post<VerifyResult>('/api/credentials/validate', { credential });
   }
 
   /**
