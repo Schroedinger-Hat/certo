@@ -108,6 +108,24 @@ minimum 16-character `secret`, and optional `enabled`. Responses never include
 the secret. Delivery is signed with HMAC-SHA256 in `X-Certo-Signature` and is
 best-effort, so a failed endpoint does not fail credential issuance.
 
+## Event Bus
+
+Decouples event publishing from webhook delivery, enabling reliable async
+delivery with retries. Governed by `EVENT_BUS_PROVIDER` env var:
+
+- `memory` (default): In-process queue, 100ms processing interval, exponential
+  backoff retries (1s, 2s, 4s), max 3 retries. Suitable for dev and single-instance
+  deployments. No persistence if server restarts.
+- `redis`: Redis Streams-backed consumer groups, messages persisted in Redis
+  (durable across restarts), 5-second block on XREADGROUP. Requires `ioredis`
+  package (`npm install ioredis`). Configured via `EVENT_BUS_REDIS_*` env vars.
+  Recommended for production / multi-replica deployments.
+
+Webhooks are delivered async (fires-and-forget returns immediately from the
+issuing endpoint), with retries happening in the background. One failed webhook
+does not affect other subscriptions or event processing. See [self-hosting.md](./self-hosting.md#webhook-delivery-and-retries)
+for configuration examples.
+
 ## Database
 
 Strapi's built-in Query Engine / Entity Service (Knex underneath) — no separate

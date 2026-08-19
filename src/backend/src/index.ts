@@ -3,6 +3,7 @@ import { seedDevelopmentData } from './bootstrap/seed-data';
 import { setupPermissions } from './bootstrap/permissions-setup';
 import { warnIfDefaultAdminCredentials } from './bootstrap/default-credentials-warning';
 import { registerMonitoringRoutes } from './monitoring/routes';
+import { createEventBus } from './utils/event-bus';
 
 /**
  * Main entry point for the Strapi application
@@ -30,6 +31,55 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }) {
+    // Initialize event bus (in-memory by default, Redis can be configured via EVENT_BUS_PROVIDER=redis)
+    const eventBus = await createEventBus({
+      provider: process.env.EVENT_BUS_PROVIDER as 'memory' | 'redis' | undefined,
+    });
+
+    // Attach to strapi singleton for access from services
+    (strapi as any).eventBus = eventBus;
+
+    // Subscribe webhook dispatcher to all domain events
+    const setupWebhookConsumer = async () => {
+      const webhookDispatcher = strapi.service('api::webhook-subscription.dispatch');
+      const webhookEvents = [
+        'credential.created',
+        'credential.issued',
+        'credential.updated',
+        'credential.expired',
+        'credential.revoked',
+        'credential.renewed',
+        'credential.deleted',
+        'badge.created',
+        'badge.updated',
+        'badge.deleted',
+        'issuer.created',
+        'issuer.updated',
+        'achievement.created',
+      ];
+
+      for (const eventName of webhookEvents) {
+        eventBus.subscribe(eventName, async (event) => {
+          try {
+            await webhookDispatcher.dispatchEvent(eventName, event.data);
+          } catch (error: any) {
+            strapi.log.error(`[event-bus] webhook dispatch failed for ${eventName}:`, error.message);
+            throw error; // Re-throw so event bus retries
+          }
+        });
+      }
+
+      // Start the consumer (processes events from queue/stream)
+      await eventBus.startConsumer();
+      strapi.log.info('[event-bus] webhook consumer started');
+    };
+
+    try {
+      await setupWebhookConsumer();
+    } catch (error: any) {
+      strapi.log.error('[bootstrap] event bus setup failed:', error.message);
+    }
+
     // Seed development data (only creates data if it doesn't exist)
     await seedDevelopmentData(strapi);
 
