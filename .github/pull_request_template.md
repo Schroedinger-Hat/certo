@@ -1,36 +1,55 @@
-<!---
-☝️ PR title should follow conventional commits (https://conventionalcommits.org)
-
-Please carefully read the code of conduct before creating a pull request
- 👉 https://www.schroedinger-hat.org/code-of-conduct
+<!--
+Use a Conventional Commit title, for example:
+  feat(backend): add directory synchronization
+  fix(frontend): preserve credential verification state
+Read CONTRIBUTING.md before submitting.
 -->
 
-### 🔗 Linked issue
+## Linked Issues
 
-<!-- Please ensure there is an open issue and mention its number as #123 -->
-<!-- If it resolves an open issue, please link to the issue here. For example "Resolves #123" -->
+<!-- Use "Resolves #123" when this PR closes an issue. -->
 
-### ❓ Type of change
+## Description
 
-<!-- What types of changes does your code introduce? Put an `x` in all the boxes that apply. -->
+<!-- What changed, and why is it needed? -->
 
-- [ ] 📖 Documentation (updates to the documentation, readme or JSdoc annotations)
-- [ ] 🐞 Bug fix (a non-breaking change that fixes an issue)
-- [ ] 👌 Enhancement (improving an existing functionality like performance)
-- [ ] ✨ New feature (a non-breaking change that adds functionality)
-- [ ] 🧹 Chore (updates to the build process or auxiliary tools and libraries)
-- [ ] ⚠️ Breaking change (fix or feature that would cause existing functionality to change)
+## Type of Change
 
-### 📚 Description
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Enhancement
+- [ ] Documentation
+- [ ] Chore or dependency update
+- [ ] Breaking change
 
-<!-- Describe your changes in detail -->
-<!-- Why is this change required? What problem does it solve? -->
+## Testing
 
-### 📝 Checklist
+Describe the checks you ran and include relevant output.
 
-<!-- Put an `x` in all the boxes that apply. -->
-<!-- If your change requires a documentation PR, please link it appropriately -->
-<!-- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [ ] Backend tests (`cd src/backend && npm test`)
+- [ ] Frontend tests (`cd src/frontend && npm run test:unit`)
+- [ ] Linting
+- [ ] Manual or integration testing
+- [ ] No tests needed (documentation-only change)
 
-- [ ] I have linked an issue or discussion.
-- [ ] I have updated the documentation accordingly.
+```text
+Test results:
+```
+
+## Documentation
+
+- [ ] Updated the relevant documentation
+- [ ] Updated API or SDK documentation if applicable
+- [ ] Added migration or deployment notes if applicable
+
+## Review Checklist
+
+- [ ] The change is focused and does not include unrelated refactors
+- [ ] New behavior has tests or an explicit reason tests are not needed
+- [ ] Security and authorization implications were considered
+- [ ] No secrets or local environment files are included
+- [ ] Commit messages contain no co-author trailers
+
+## Screenshots
+
+<!-- Include screenshots or recordings for frontend changes. -->

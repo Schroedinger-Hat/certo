@@ -1,5 +1,14 @@
 User-Agent: *
+Allow: /
 Disallow: /admin
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /issue
+Disallow: /scheduled
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
 # Declare AI content usage preferences (Content Signals draft spec)
 # https://contentsignals.org/
 Content-Signal: ai-train=no, search=yes, ai-input=yes
