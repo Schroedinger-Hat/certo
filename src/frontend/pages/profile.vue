@@ -316,7 +316,7 @@ useHead({
         <!-- Sidebar -->
         <div class="lg:col-span-1 space-y-8">
           <!-- Account Stats -->
-          <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg">
+          <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg overflow-hidden">
             <h2 class="text-lg font-medium text-text-primary mb-4">
               Account Overview
             </h2>
@@ -362,19 +362,19 @@ useHead({
             <div v-if="statsLoading" class="h-32 flex items-center justify-center text-text-secondary text-sm">
               Loading…
             </div>
-            <div v-else-if="stats.issuanceTrend.length" class="h-32 flex items-end gap-1.5" role="img" aria-label="Credential issuance trend for the last 12 months">
+            <div v-else-if="stats.issuanceTrend.length" class="h-32 min-w-0 grid grid-cols-12 gap-1" role="img" aria-label="Credential issuance trend for the last 12 months">
               <div
                 v-for="month in stats.issuanceTrend"
                 :key="month.month"
-                class="flex-1 h-full flex flex-col items-center justify-end gap-1"
+                class="min-w-0 h-full flex flex-col items-center justify-end gap-1 overflow-hidden"
                 :title="`${month.month}: ${month.count} credentials`"
               >
-                <span class="text-[10px] text-text-secondary">{{ month.count || '' }}</span>
+                <span class="text-[10px] text-text-secondary leading-none">{{ month.count || '' }}</span>
                 <div
-                  class="w-full max-w-5 rounded-t bg-[var(--brand-primary)] transition-all"
+                  class="w-full max-w-5 min-h-1 rounded-t bg-[var(--brand-primary)] transition-all"
                   :style="{ height: `${Math.max(6, (month.count / maxIssuance) * 88)}%` }"
                 />
-                <span class="text-[9px] text-text-secondary rotate-[-45deg] origin-top-right whitespace-nowrap">{{ month.month }}</span>
+                <span class="w-full truncate text-center text-[8px] leading-none text-text-secondary" :title="month.month">{{ month.month.slice(0, 3) }}</span>
               </div>
             </div>
             <p v-else class="py-8 text-center text-text-secondary text-sm">
