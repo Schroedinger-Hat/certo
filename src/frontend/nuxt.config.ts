@@ -140,6 +140,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: process.env.NUXT_PUBLIC_API_URL,
+      brandName: process.env.NUXT_PUBLIC_BRAND_NAME || 'Certo',
+      brandLogoUrl: process.env.NUXT_PUBLIC_BRAND_LOGO_URL || '/certo-logo-text.png',
+      brandPrimaryColor: process.env.NUXT_PUBLIC_BRAND_PRIMARY_COLOR || '#5AB69F',
     }
   },
   imports: {

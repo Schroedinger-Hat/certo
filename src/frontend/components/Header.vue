@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const { headerLogo } = useHomeContent()
+const branding = useBranding()
 const router = useRouter()
 const isStoreReady = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
@@ -85,8 +85,8 @@ onUnmounted(() => {
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-2">
           <NuxtImg
-            :src="headerLogo.img.src"
-            :alt="headerLogo.img.alt"
+            :src="branding.logoUrl"
+            :alt="`${branding.name} Logo`"
             class="h-10 w-auto"
           />
         </NuxtLink>
@@ -149,7 +149,7 @@ onUnmounted(() => {
               </NuxtLink>
               <NuxtLink
                 to="/get-started"
-                class="px-4 py-2 bg-[#5AB69F] rounded-full font-medium hover:bg-[#5AB69F]/90 transition-colors text-text-primary"
+                class="px-4 py-2 bg-[var(--brand-primary)] rounded-full font-medium hover:opacity-90 transition-colors text-text-primary"
               >
                 {{ t('nav.getStarted') }}
               </NuxtLink>
@@ -204,7 +204,7 @@ onUnmounted(() => {
             </NuxtLink>
             <NuxtLink
               to="/get-started"
-              class="block w-full py-2 text-center bg-[#5AB69F] text-white rounded-full hover:bg-[#5AB69F]/90 transition-colors"
+              class="block w-full py-2 text-center bg-[var(--brand-primary)] text-white rounded-full hover:opacity-90 transition-colors"
             >
               {{ t('nav.getStarted') }}
             </NuxtLink>
