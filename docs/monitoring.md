@@ -55,3 +55,20 @@ A starter dashboard (the four counters above, plus process CPU/memory) is at
 [examples/grafana-dashboard.json](./examples/grafana-dashboard.json) — import
 it in Grafana and point it at a Prometheus data source scraping the config
 above.
+
+## Issuer analytics dashboard
+
+Authenticated issuers can view account-level analytics at `/profile`. The
+dashboard reads `GET /api/profiles/me/dashboard-stats` through the existing
+profile API and shows:
+
+- credentials issued and received
+- revoked credentials
+- achievements created
+- unique recipients
+- a trailing twelve-month issuance trend
+
+The trend is calculated from credential `issuanceDate` values and is scoped to
+the current issuer profile. It is separate from Prometheus metrics: Prometheus
+is intended for operators monitoring the deployment, while the profile view is
+intended for issuers measuring their own credential program.

@@ -43,6 +43,11 @@
       "enum": ["Issuer", "Recipient", "Both"],
       "default": "Both"
     },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
     "did": {
       "type": "string"
     },

@@ -33,6 +33,7 @@ function createFakeStrapi({
               .filter((c) => c.issuer === where.issuer)
               .map((c) => ({
                 id: c.id,
+                issuanceDate: c.issuanceDate,
                 recipient: populate?.recipient ? (c.recipient ? { id: c.recipient } : null) : undefined,
                 achievement: populate?.achievement ? (c.achievement ? { id: c.achievement, achievementName: c.achievementName } : null) : undefined,
               }))
@@ -66,6 +67,8 @@ describe('dashboard service', () => {
     expect(stats.achievementsCreated).toBe(0)
     expect(stats.uniqueRecipients).toBe(0)
     expect(stats.topAchievements).toEqual([])
+    expect(stats.issuanceTrend).toHaveLength(12)
+    expect(stats.issuanceTrend.every((month) => month.count === 0)).toBe(true)
     expect(stats.memberSince).toBe('2024-01-01T00:00:00.000Z')
   })
 
@@ -123,5 +126,18 @@ describe('dashboard service', () => {
     const svc = dashboardFactory({ strapi })
     const stats = await svc.getStats(USER_ID, PROFILE_ID)
     expect(stats.topAchievements.length).toBeLessThanOrEqual(5)
+  })
+
+  it('returns a trailing twelve-month issuance trend', async () => {
+    const credentials = [
+      { id: 1, issuer: PROFILE_ID, revoked: false, issuanceDate: new Date().toISOString() },
+      { id: 2, issuer: PROFILE_ID, revoked: false, issuanceDate: new Date().toISOString() },
+    ]
+    const strapi = createFakeStrapi({ credentials, user: { id: USER_ID, createdAt: '2024-01-01T00:00:00.000Z' } })
+    const svc = dashboardFactory({ strapi })
+    const stats = await svc.getStats(USER_ID, PROFILE_ID)
+
+    expect(stats.issuanceTrend).toHaveLength(12)
+    expect(stats.issuanceTrend.at(-1)?.count).toBe(2)
   })
 })

@@ -8,4 +8,8 @@ export default ({ env }) => ({
   webhooks: {
     populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),
   },
+  custom: {
+    notificationProvider: env('NOTIFICATION_PROVIDER', 'strapi-email'),
+    notificationProviderModule: env('NOTIFICATION_PROVIDER_MODULE', ''),
+  },
 });

@@ -3,13 +3,17 @@ const pageDescription = ref('Open source platform for digital credentials. Issue
 const pageTitle = ref('Certo - Digital Credential Platform')
 
 const { locale } = useI18n()
+const branding = useBranding()
 
 // Keep <html lang="..."> in sync with the active locale — important for SEO
 // and accessibility (screen readers use this to pick the right voice)
 useHead({
   title: 'Digital Credential Platform',
   titleTemplate: '%s | Certo',
-  htmlAttrs: { lang: computed(() => locale.value) },
+  htmlAttrs: {
+    lang: computed(() => locale.value),
+    style: `--brand-primary: ${branding.primaryColor}`,
+  },
 })
 
 useSeoMeta({

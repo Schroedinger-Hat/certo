@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const { headerLogo } = useHomeContent()
+const branding = useBranding()
 const router = useRouter()
 const isStoreReady = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
@@ -85,8 +85,8 @@ onUnmounted(() => {
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-2">
           <NuxtImg
-            :src="headerLogo.img.src"
-            :alt="headerLogo.img.alt"
+            :src="branding.logoUrl"
+            :alt="`${branding.name} Logo`"
             class="h-10 w-auto"
           />
         </NuxtLink>
@@ -149,7 +149,7 @@ onUnmounted(() => {
               </NuxtLink>
               <NuxtLink
                 to="/get-started"
-                class="px-4 py-2 bg-[#5AB69F] rounded-full font-medium hover:bg-[#5AB69F]/90 transition-colors text-text-primary"
+                class="px-4 py-2 bg-[var(--brand-primary)] rounded-full font-medium hover:opacity-90 transition-colors text-text-primary"
               >
                 {{ t('nav.getStarted') }}
               </NuxtLink>
@@ -160,6 +160,8 @@ onUnmounted(() => {
         <!-- Mobile Menu Button -->
         <button
           aria-label="Toggle mobile menu"
+          :aria-expanded="isMobileMenuOpen"
+          aria-controls="mobile-menu"
           class="lg:hidden p-2 rounded-lg hover:bg-gray-100"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
         >
@@ -170,7 +172,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="isMobileMenuOpen" ref="mobile-menu" class="lg:hidden bg-white border-t">
+    <div v-if="isMobileMenuOpen" id="mobile-menu" ref="mobile-menu" class="lg:hidden bg-white border-t">
       <div class="px-4 py-2 space-y-1">
         <NuxtLink
           v-for="link in HEADER_NAV_LINKS"
@@ -204,7 +206,7 @@ onUnmounted(() => {
             </NuxtLink>
             <NuxtLink
               to="/get-started"
-              class="block w-full py-2 text-center bg-[#5AB69F] text-white rounded-full hover:bg-[#5AB69F]/90 transition-colors"
+              class="block w-full py-2 text-center bg-[var(--brand-primary)] text-white rounded-full hover:opacity-90 transition-colors"
             >
               {{ t('nav.getStarted') }}
             </NuxtLink>
