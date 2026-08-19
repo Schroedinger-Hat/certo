@@ -492,3 +492,29 @@ backup/restore, and basic monitoring.
     Trust). See
     [self-hosting.md](./self-hosting.md#multi-tenancy-user-owned-profiles) and
     [backend.md](./backend.md#api-structure).
+
+35. **New: Event Bus for async webhook delivery with retry logic.** Decouples
+    webhook delivery from credential-issuance endpoints via a pub-sub Event Bus
+    with durable retry semantics. Architecture: Provider pattern with two
+    implementations — `MemoryEventBus` (in-process queue, 100ms processing
+    cycle, exponential backoff retries: 1s/2s/4s, max 3 attempts) for dev/
+    single-instance, and `RedisEventBus` (Redis Streams, consumer groups, XACK,
+    message persistence, 5s XREADGROUP block) for production/multi-replica.
+    Configuration via `EVENT_BUS_PROVIDER` env var (defaults to 'memory'),
+    optional ioredis (lazy-loaded, falls back with helpful error if user tries
+    redis without it). Integration: webhook dispatcher split into
+    `publishEvent()` (called by controllers, returns immediately) and
+    `dispatchEvent()` (called by event bus consumer, does actual HTTP delivery
+    with signing). Credential controllers (revoke, renew) now call
+    `publishEvent()` instead of blocking on webhook dispatch. Tests: 7 new
+    Jest tests for MemoryEventBus (publish/consume, ID generation, multiple
+    subscribers, error isolation, retry backoff, max retries, cleanup). Docs:
+    `.env.example` additions, new Event Bus section in
+    [backend.md](./backend.md#event-bus), webhook config section in
+    [self-hosting.md](./self-hosting.md#webhook-delivery-and-retries). Fixes the
+    "best-effort" webhook problem: endpoints are now retried automatically,
+    failed deliveries don't block others, and multi-replica Redis backend gives
+    durable retries across server restarts. See
+    [backend.md](./backend.md#event-bus) and
+    [self-hosting.md](./self-hosting.md#webhook-delivery-and-retries) for
+    details.

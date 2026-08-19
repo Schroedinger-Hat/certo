@@ -120,6 +120,39 @@ Import is idempotent (skips anything that already exists, matched by its
 natural key) and never touches credentials merely *received* by that
 profile — see `src/backend/src/api/profile/services/data-portability.ts`.
 
+## Webhook delivery and retries
+
+Webhooks are delivered asynchronously via an Event Bus, decoupling the issuing
+endpoint (e.g. `POST /credentials/batch-issue`) from the actual HTTP calls to
+subscribed endpoints. This means:
+
+- Credential issuance returns immediately, even if a webhook endpoint is slow
+  or down.
+- Failed deliveries are retried automatically with exponential backoff (1s,
+  2s, 4s) up to 3 times.
+- One subscriber's failure does not prevent delivery to other subscribers.
+
+The Event Bus is configured via `EVENT_BUS_PROVIDER`:
+
+- `memory` (default): In-process queue, suitable for dev and single-instance
+  deployments. No persistence — if the server restarts, in-flight events are lost.
+- `redis` (production): Redis Streams backend, messages persisted in Redis,
+  durable across restarts. Requires `ioredis` package and a Redis instance.
+  Recommended for multi-replica deployments.
+
+To use Redis:
+
+```bash
+EVENT_BUS_PROVIDER=redis
+EVENT_BUS_REDIS_HOST=redis.example.org
+EVENT_BUS_REDIS_PORT=6379
+EVENT_BUS_REDIS_PASSWORD=...
+EVENT_BUS_REDIS_DB=0
+```
+
+If `EVENT_BUS_PROVIDER` is unset or empty, defaults to `memory`. See
+[backend.md](./backend.md#event-bus) for technical details.
+
 ## Monitoring and logging
 
 `/api/health` and `/api/metrics` (Prometheus) are available — see

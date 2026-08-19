@@ -218,7 +218,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
       }
 
       const webhookDispatcher = strapi.service('api::webhook-subscription.dispatch')
-      await webhookDispatcher.dispatch('credential.revoked', {
+      await webhookDispatcher.publishEvent('credential.revoked', {
         credentialId: updatedCredential.credentialId,
         reason: reason || 'No reason provided',
       })
@@ -297,7 +297,7 @@ export default factories.createCoreController('api::credential.credential', ({ s
       )
 
       const webhookDispatcher = strapi.service('api::webhook-subscription.dispatch')
-      await webhookDispatcher.dispatch('credential.renewed', {
+      await webhookDispatcher.publishEvent('credential.renewed', {
         originalCredentialId: existing.credentialId,
         credentialId: newCredential?.credentialId,
         expirationDate: parsedDate.toISOString(),
