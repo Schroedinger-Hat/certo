@@ -1,12 +1,21 @@
 # Certo
 
-Certo is a comprehensive digital credentials platform for issuing, managing, and verifying badges and certificates based on the [Open Badges 3.0](https://www.imsglobal.org/spec/ob/v3p0/) specification and the [W3C Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) data model.
+[![GitHub Stars](https://img.shields.io/github/stars/Schroedinger-Hat/certo?style=social)](https://github.com/Schroedinger-Hat/certo)
+[![License: AGPL 3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](LICENSE)
+[![Open Badges 3.0](https://img.shields.io/badge/Standard-Open%20Badges%203.0-success)](#standards-compliance)
+[![W3C VC](https://img.shields.io/badge/Standard-W3C%20Verifiable%20Credentials-success)](#standards-compliance)
+[![Strapi 5.x](https://img.shields.io/badge/Backend-Strapi%205.x-blue)](https://strapi.io)
+[![Nuxt 3](https://img.shields.io/badge/Frontend-Nuxt%203-green)](https://nuxt.com)
+
+**Topics:** `digital-credentials` `open-badges` `verifiable-credentials` `education` `certification` `self-hosted` `open-source` `badges` `credentials-verification` `w3c-standard` `ims-global`
+
+Certo is a comprehensive open-source platform for issuing, managing, and verifying digital credentials (badges and certificates) based on the [Open Badges 3.0](https://www.imsglobal.org/spec/ob/v3p0/) specification and the [W3C Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) data model.
 
 ![Certo Open Graph Image](./src/frontend/public/og-default.png)
 
 ## Overview
 
-Certo is an open-source platform that enables organizations and individuals to issue verifiable digital credentials (badges and certificates) following global standards. Whether you're running educational programs, workshops, certification courses, or need to recognize achievements, Certo provides a complete solution for creating, issuing, and verifying digital credentials.
+Certo enables organizations and individuals to issue verifiable digital credentials following global standards. Whether you're running educational programs, workshops, certification courses, or need to recognize achievements, Certo provides a complete solution for creating, issuing, and verifying digital credentials.
 
 ### How It Works
 

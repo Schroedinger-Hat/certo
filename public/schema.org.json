@@ -1,0 +1,109 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Certo",
+  "description": "Open-source platform for issuing, managing, and verifying digital credentials and badges based on Open Badges 3.0 and W3C Verifiable Credentials standards.",
+  "url": "https://certo.schroedinger-hat.org",
+  "image": "https://certo.schroedinger-hat.org/og-default.png",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Linux, macOS, Windows",
+  "softwallCategory": [
+    "SaaS",
+    "Identity Management",
+    "Credential Management",
+    "Educational Technology"
+  ],
+  "keywords": [
+    "digital credentials",
+    "Open Badges",
+    "verifiable credentials",
+    "badge issuer",
+    "certification",
+    "W3C standard",
+    "self-hosted",
+    "open source"
+  ],
+  "license": "https://opensource.org/licenses/AGPL-3.0",
+  "author": {
+    "@type": "Organization",
+    "name": "Schroedinger Hat",
+    "url": "https://github.com/Schroedinger-Hat",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "url": "https://github.com/Schroedinger-Hat/certo/issues"
+    }
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "Schroedinger Hat"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Schroedinger Hat",
+    "url": "https://github.com/Schroedinger-Hat"
+  },
+  "downloadUrl": "https://github.com/Schroedinger-Hat/certo/releases",
+  "codeRepository": "https://github.com/Schroedinger-Hat/certo",
+  "version": "1.0.0",
+  "programmingLanguage": [
+    "TypeScript",
+    "JavaScript"
+  ],
+  "featureList": [
+    "Issue and manage digital badges and certificates",
+    "Verify credentials using Open Badges 3.0 and W3C VC standards",
+    "Revoke credentials with built-in revocation list",
+    "Self-hosting with Docker and Kubernetes support",
+    "S3-compatible cloud storage for uploads",
+    "Async webhook delivery with retry logic",
+    "Event Bus for multi-instance deployments",
+    "Structured logging and monitoring",
+    "Role-based access control",
+    "JWT authentication",
+    "Ed25519 digital signatures"
+  ],
+  "audience": {
+    "@type": "Audience",
+    "audienceType": [
+      "Education professionals",
+      "Corporate HR",
+      "Certification bodies",
+      "Event organizers",
+      "Developers"
+    ]
+  },
+  "fileFormat": [
+    "JSON",
+    "JSON-LD",
+    "SVG"
+  ],
+  "requirements": "Node.js 18+, PostgreSQL or SQLite",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "USD",
+    "price": "0",
+    "availability": "https://schema.org/InStock"
+  },
+  "releaseNotes": "See https://github.com/Schroedinger-Hat/certo/releases",
+  "repositoryCode": "https://github.com/Schroedinger-Hat/certo",
+  "sourceCode": "https://github.com/Schroedinger-Hat/certo",
+  "mentions": [
+    {
+      "@type": "Thing",
+      "name": "Open Badges 3.0",
+      "url": "https://www.imsglobal.org/spec/ob/v3p0/"
+    },
+    {
+      "@type": "Thing",
+      "name": "W3C Verifiable Credentials",
+      "url": "https://www.w3.org/TR/vc-data-model/"
+    },
+    {
+      "@type": "Thing",
+      "name": "Ed25519",
+      "url": "https://en.wikipedia.org/wiki/Curve25519"
+    }
+  ]
+}

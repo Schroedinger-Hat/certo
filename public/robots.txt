@@ -1,0 +1,34 @@
+# Certo: Open-Source Digital Credentials Platform
+# https://certo.schroedinger-hat.org
+# https://github.com/Schroedinger-Hat/certo
+
+User-agent: *
+Allow: /
+Allow: /docs/
+Allow: /api/docs/
+
+# Disallow internal paths
+Disallow: /admin/
+Disallow: /.env*
+Disallow: /backups/
+Disallow: /test/
+
+# Crawl delay and request rate
+Crawl-delay: 1
+Request-rate: 1/1s
+
+# Sitemaps
+Sitemap: https://certo.schroedinger-hat.org/sitemap.xml
+Sitemap: https://certo.schroedinger-hat.org/sitemap-docs.xml
+
+# Google-specific crawlers
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+
+# AI agents and crawlers
+User-agent: CCBot
+User-agent: Claude-Web
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 1
