@@ -31,6 +31,56 @@ interface ProfileWithPublicKeys {
 
 export default factories.createCoreController('api::profile.profile', ({ strapi }) => ({
   // Custom controller methods for profile
+
+  /**
+   * Persist ownership for newly-created profiles. Existing ownerless profiles
+   * remain readable for backward compatibility and are claimed on first edit.
+   */
+  async create(ctx) {
+    if (ctx.state.user) {
+      ctx.request.body ??= {};
+      ctx.request.body.data ??= {};
+      ctx.request.body.data.owner = ctx.state.user.id;
+    }
+
+    return super.create(ctx);
+  },
+
+  /** Prevent one authenticated user from editing another user's profile. */
+  async update(ctx) {
+    if (ctx.state.user) {
+      const profile: any = await (strapi.entityService as any).findOne('api::profile.profile', ctx.params.id, {
+        populate: { owner: { fields: ['id'] } },
+      });
+
+      if (!profile) return ctx.notFound('Profile not found');
+      if (profile.owner && profile.owner.id !== ctx.state.user.id) {
+        return ctx.forbidden('You cannot update this profile');
+      }
+
+      ctx.request.body ??= {};
+      ctx.request.body.data ??= {};
+      ctx.request.body.data.owner = ctx.state.user.id;
+    }
+
+    return super.update(ctx);
+  },
+
+  /** Prevent deleting another user's profile or an unowned legacy profile. */
+  async delete(ctx) {
+    if (ctx.state.user) {
+      const profile: any = await (strapi.entityService as any).findOne('api::profile.profile', ctx.params.id, {
+        populate: { owner: { fields: ['id'] } },
+      });
+
+      if (!profile) return ctx.notFound('Profile not found');
+      if (!profile.owner || profile.owner.id !== ctx.state.user.id) {
+        return ctx.forbidden('You cannot delete this profile');
+      }
+    }
+
+    return super.delete(ctx);
+  },
   
   /**
    * Get the current user's profile
