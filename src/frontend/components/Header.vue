@@ -160,6 +160,8 @@ onUnmounted(() => {
         <!-- Mobile Menu Button -->
         <button
           aria-label="Toggle mobile menu"
+          :aria-expanded="isMobileMenuOpen"
+          aria-controls="mobile-menu"
           class="lg:hidden p-2 rounded-lg hover:bg-gray-100"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
         >
@@ -170,7 +172,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="isMobileMenuOpen" ref="mobile-menu" class="lg:hidden bg-white border-t">
+    <div v-if="isMobileMenuOpen" id="mobile-menu" ref="mobile-menu" class="lg:hidden bg-white border-t">
       <div class="px-4 py-2 space-y-1">
         <NuxtLink
           v-for="link in HEADER_NAV_LINKS"
