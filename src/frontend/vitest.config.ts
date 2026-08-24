@@ -1,7 +1,6 @@
-import { resolve } from 'node:path'
-import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 
-export default defineVitestConfig({
+export default defineVitestProject({
   test: {
     environment: 'nuxt',
     environmentOptions: {
@@ -12,13 +11,10 @@ export default defineVitestConfig({
         }
       }
     },
-    alias: {
-      '@': resolve(__dirname),
-    },
     include: [
-      'components/__tests__/**/*.nuxt.spec.ts',
-      'middleware/__tests__/**/*.spec.ts',
-      'api/__tests__/**/*.spec.ts',
+      'app/components/__tests__/**/*.nuxt.spec.ts',
+      'app/middleware/__tests__/**/*.spec.ts',
+      'app/api/__tests__/**/*.spec.ts',
     ]
   }
 })

@@ -24,6 +24,9 @@ describe('authClient', () => {
 
   beforeEach(async () => {
     vi.resetAllMocks()
+    // Ensure any previously loaded (real) modules are discarded so the
+    // vi.doMock registrations below take effect on the fresh import.
+    vi.resetModules()
     // Mock process.client to true
     originalProcessClient = import.meta.client
     globalThis.process = { ...(globalThis.process || {}), client: true }

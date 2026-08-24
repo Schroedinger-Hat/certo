@@ -18,6 +18,9 @@ ed25519*
 /build
 /.next
 /out
+.netlify/
+.output/
+.nuxt/
 
 # Docker
 .dockerignore
