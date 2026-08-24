@@ -2,6 +2,17 @@
   "name": "certo-frontend",
   "private": true,
   "version": "1.4.0",
+  "packageManager": "pnpm@10.20.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "vue-demi"
+    ]
+  },
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
@@ -24,22 +35,14 @@
     "@pinia/nuxt": "^0.5.1",
     "@playwright/test": "^1.53.1",
     "@una-ui/nuxt": "^0.58.0",
-    "date-fns": "^2.30.0",
-    "jose": "^5.2.0",
     "js-cookie": "^3.0.5",
-    "jwt-decode": "^4.0.0",
-    "lucide-vue-next": "^0.323.0",
-    "nuqs": "^1.16.0",
     "nuxt": "^3.10.0",
     "nuxt-gtag": "^3.0.3",
     "nuxt-svgo": "^4.2.2",
-    "papaparse": "^5.5.3",
     "pinia": "^2.1.7",
     "qrcode": "^1.5.4",
     "vue": "^3.4.15",
-    "vue-i18n": "^9.9.1",
-    "vue-router": "^4.2.5",
-    "zod": "^3.22.4"
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.1",
@@ -50,17 +53,13 @@
     "@iconify-json/tabler": "^1.2.19",
     "@nuxt/devtools": "latest",
     "@nuxt/test-utils": "^3.19.1",
-    "@nuxtjs/tailwindcss": "^6.11.1",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.11.15",
     "@types/qrcode": "^1.5.6",
     "@vue/test-utils": "^2.4.6",
-    "changelogen": "^0.6.2",
     "eslint": "^9.29.0",
     "happy-dom": "^17.6.3",
-    "playwright-core": "^1.53.1",
-    "postcss": "^8.4.33",
     "typescript": "^5.3.3",
-    "vitest": "^1.6.1"
+    "vitest": "^3.2.0"
   }
 }

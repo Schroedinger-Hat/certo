@@ -24,18 +24,16 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 22
-        cache: npm
-        cache-dependency-path: 'src/frontend/package-lock.json'
     
     - name: Install dependencies
       run: |
         cd src/frontend
-        npm install 
+        pnpm install
     
     - name: Lint & Format
       run: |
         cd src/frontend
-        npm run lint:fix
+        pnpm run lint:fix
     
     - uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
       with:
