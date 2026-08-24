@@ -1,0 +1,11 @@
+# Netlify reads this file from the site's configured Base directory
+# (src/frontend). It overrides the equivalent UI settings.
+[build]
+  # Ensure pnpm is available via Corepack, then do a frozen install
+  # (guarantees the exact pnpm-lock.yaml versions and rebuilds .pnpm
+  # symlinks, preventing stale/mixed npm caches) before building for
+  # the netlify Nitro preset.
+  command = "corepack enable && pnpm install --frozen-lockfile && pnpm run build --preset netlify"
+
+[build.environment]
+  NODE_VERSION = "22"

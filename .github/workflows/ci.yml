@@ -43,16 +43,18 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: 'src/frontend/package-lock.json'
+          cache-dependency-path: 'src/backend/package-lock.json'
+
+      - run: npm i -fg corepack && corepack enable
 
       - name: Install dependencies
         working-directory: src/frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Test
         working-directory: src/frontend
-        run: npm run test:unit
+        run: pnpm run test:unit
 
       - name: Build
         working-directory: src/frontend
-        run: npm run build
+        run: pnpm run build

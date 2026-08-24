@@ -68,8 +68,8 @@ User Browser → Nuxt Frontend → Strapi Backend
 ## Development Setup
 
 ### Prerequisites
-- Node.js 18–22
-- npm or yarn
+- Node.js 22
+- pnpm (frontend; enabled automatically via Corepack: `corepack enable`) or npm (backend/SDK)
 - PostgreSQL 16 (optional; SQLite for local dev default)
 - Docker (optional; for docker-compose or local Redis)
 
@@ -84,9 +84,10 @@ cd certo
 cd src/backend
 npm install
 
-# Frontend
+# Frontend (uses pnpm via Corepack)
 cd ../frontend
-npm install
+corepack enable # once, if not already done
+pnpm install
 
 # SDK (optional, if modifying SDK)
 cd ../../sdk
@@ -101,7 +102,7 @@ npm run dev
 
 # Terminal 2: Frontend (http://localhost:3000)
 cd src/frontend
-npm run dev
+pnpm run dev
 ```
 
 Backend defaults to SQLite at `.tmp/data.db`; frontend proxies `/api/` to backend.
@@ -159,20 +160,20 @@ npm run restore -- --from backups/<timestamp> --yes
 **Frontend**
 ```bash
 # Development
-npm run dev
+pnpm run dev
 
 # Tests (Vitest)
-npm run test:unit
-npm run test:unit:watch
+pnpm run test:unit
+pnpm run test:unit:watch
 
 # Linting
-npm run lint
+pnpm run lint
 
 # Build
-npm run build
+pnpm run build
 
 # Preview built app
-npm run preview
+pnpm run preview
 ```
 
 **SDK**
