@@ -12,13 +12,21 @@ const { sections, features, trustees } = useHomeContent()
       <p class="text-text-secondary text-xl md:text-2xl mb-12 max-w-2xl mx-auto">
         {{ t('home.heroSubtitle') }}
       </p>
-      <NuxtLink
-        to="/get-started"
-        class="inline-flex items-center px-8 py-4 rounded-full bg-secondary text-text-primary hover:bg-opacity-90 transition-all text-lg font-medium"
-      >
-        {{ t('home.heroButton') }}
-        <span class="i-heroicons-arrow-right ml-2 w-5 h-5" />
-      </NuxtLink>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <NuxtLink
+          to="/get-started"
+          class="inline-flex items-center px-8 py-4 rounded-full bg-secondary text-text-primary hover:bg-opacity-90 transition-all text-lg font-medium"
+        >
+          {{ t('home.heroButton') }}
+          <span class="i-heroicons-arrow-right ml-2 w-5 h-5" />
+        </NuxtLink>
+        <NuxtLink
+          to="/docs"
+          class="inline-flex items-center px-8 py-4 rounded-full border border-slate-300 bg-white text-text-primary hover:border-primary hover:text-primary transition-all text-lg font-medium"
+        >
+          Documentation
+        </NuxtLink>
+      </div>
     </div>
 
     <div class="text-center mb-8 md:mb-16">
